@@ -9,7 +9,7 @@ module ts {
     export function getNodeConstructor(kind: SyntaxKind): new () => Node {
         return nodeConstructors[kind] || (nodeConstructors[kind] = objectAllocator.getNodeConstructor(kind));
     }
- 
+
     function createRootNode(kind: SyntaxKind, pos: number, end: number, flags: NodeFlags): Node {
         var node = new (getNodeConstructor(kind))();
         node.pos = pos;
@@ -442,7 +442,6 @@ module ts {
         pop(): void;
         nodeIsNestedInLabel(label: Identifier, requireIterationStatement: boolean, stopAtFunctionBoundary: boolean): ControlBlockContext;
     }
-
     export function createSourceFile(filename: string, sourceText: string, languageVersion: ScriptTarget, version: string, isOpen: boolean = false): SourceFile {
         var file: SourceFile;
         var scanner: Scanner;
@@ -1347,7 +1346,17 @@ module ts {
                 return;
             }
             else if (parameter.type.kind !== SyntaxKind.StringKeyword &&
-                parameter.type.kind !== SyntaxKind.NumberKeyword) {
+                parameter.type.kind !== SyntaxKind.NumberKeyword &&
+                parameter.type.kind !== SyntaxKind.IntKeyword &&
+                parameter.type.kind !== SyntaxKind.UintKeyword &&
+                parameter.type.kind !== SyntaxKind.I8Keyword &&
+                parameter.type.kind !== SyntaxKind.I16Keyword &&
+                parameter.type.kind !== SyntaxKind.I32Keyword &&
+                parameter.type.kind !== SyntaxKind.U8Keyword &&
+                parameter.type.kind !== SyntaxKind.U16Keyword &&
+                parameter.type.kind !== SyntaxKind.U32Keyword &&
+                parameter.type.kind !== SyntaxKind.FloatKeyword &&
+                parameter.type.kind !== SyntaxKind.DoubleKeyword) {
                 grammarErrorOnNode(parameter.name, Diagnostics.An_index_signature_parameter_type_must_be_string_or_number);
                 return;
             }
@@ -1447,6 +1456,16 @@ module ts {
                 case SyntaxKind.NumberKeyword:
                 case SyntaxKind.BooleanKeyword:
                 case SyntaxKind.VoidKeyword:
+                case SyntaxKind.IntKeyword:
+                case SyntaxKind.UintKeyword:
+                case SyntaxKind.U8Keyword:
+                case SyntaxKind.U16Keyword:
+                case SyntaxKind.U32Keyword:
+                case SyntaxKind.I8Keyword:
+                case SyntaxKind.I16Keyword:
+                case SyntaxKind.I32Keyword:
+                case SyntaxKind.DoubleKeyword:
+                case SyntaxKind.FloatKeyword:
                     var node = tryParse(parseKeywordAndNoDot);
                     return node || parseTypeReference();
                 case SyntaxKind.TypeOfKeyword:
@@ -1478,6 +1497,16 @@ module ts {
                 case SyntaxKind.OpenBraceToken:
                 case SyntaxKind.LessThanToken:
                 case SyntaxKind.NewKeyword:
+                case SyntaxKind.IntKeyword:
+                case SyntaxKind.UintKeyword:
+                case SyntaxKind.U8Keyword:
+                case SyntaxKind.U16Keyword:
+                case SyntaxKind.U32Keyword:
+                case SyntaxKind.I8Keyword:
+                case SyntaxKind.I16Keyword:
+                case SyntaxKind.I32Keyword:
+                case SyntaxKind.DoubleKeyword:
+                case SyntaxKind.FloatKeyword:
                     return true;
                 case SyntaxKind.OpenParenToken:
                     // Only consider an ( as the start of a type if we have  ()  or  (id

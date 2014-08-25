@@ -735,7 +735,12 @@ module ts {
             }
 
             function emitLiteral(node: LiteralExpression) {
-                var text = getSourceTextOfLocalNode(node);
+                var text = "";
+                if(node.pos >= 0 && node.end >= 0) {
+                    text = getSourceTextOfLocalNode(node);
+                } else {
+                    text = node.text;
+                }
                 if (node.kind === SyntaxKind.StringLiteral && compilerOptions.sourceMap) {
                     writer.writeLiteral(text);
                 }
@@ -802,7 +807,12 @@ module ts {
                         write(".");
                     }
                 }
-                write(getSourceTextOfLocalNode(node));
+                var text = "";
+                if(node.pos >= 0 && node.end >= 0)
+                    text = getSourceTextOfLocalNode(node);
+                else
+                    text = node.text;
+                write(text);
             }
 
             function emitThis(node: Node) {

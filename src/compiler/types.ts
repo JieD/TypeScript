@@ -128,6 +128,17 @@ module ts {
         NumberKeyword,
         SetKeyword,
         StringKeyword,
+        IntKeyword,
+        UintKeyword,
+        I8Keyword,
+        U8Keyword,
+        I16Keyword,
+        U16Keyword,
+        I32Keyword,
+        U32Keyword,
+        DoubleKeyword,
+        FloatKeyword,
+
         // Parse tree nodes
         Missing,
         // Names
@@ -395,6 +406,8 @@ module ts {
 
     export interface Block extends Statement {
         statements: NodeArray<Statement>;
+        helperStatements?: NodeArray<Statement>;
+        helperVarCount? : number;
     }
 
     export interface VariableStatement extends Statement {
@@ -805,10 +818,22 @@ module ts {
         Anonymous          = 0x00002000,  // Anonymous
         FromSignature      = 0x00004000,  // Created for signature assignment check
 
-        Intrinsic = Any | String | Number | Boolean | Void | Undefined | Null,
+        Int                = 0x00008000,
+        Uint               = 0x00010000,
+        I8                 = 0x00020000,
+        U8                 = 0x00040000,
+        I16                = 0x00080000,
+        U16                = 0x00100000,
+        I32                = 0x00200000,
+        U32                = 0x00400000,
+        Float              = 0x00800000,
+        Double             = 0x01000000,
+
+        Intrinsic = Any | String | Number | Boolean | Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float | Double | Void | Undefined | Null,
         StringLike = String | StringLiteral,
-        NumberLike = Number | Enum,
-        ObjectType = Class | Interface | Reference | Anonymous
+        NumberLike = Number | Enum | Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float | Double,
+        ObjectType = Class | Interface | Reference | Anonymous,
+        PrimitiveType = Int | Uint | I8 | U8 | I16 | U16 | I32 | U32,
     }
 
     // Properties common to all types

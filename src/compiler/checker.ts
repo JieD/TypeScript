@@ -67,6 +67,17 @@ module ts {
         var unknownType = createIntrinsicType(TypeFlags.Any, "unknown");
         var resolvingType = createIntrinsicType(TypeFlags.Any, "__resolving__");
 
+        var intType = createIntrinsicType(TypeFlags.Int, "int");
+        var uintType = createIntrinsicType(TypeFlags.Uint, "uint");
+        var i8Type = createIntrinsicType(TypeFlags.I8, "i8");
+        var u8Type = createIntrinsicType(TypeFlags.U8, "u8");
+        var i16Type = createIntrinsicType(TypeFlags.I16, "i16");
+        var u16Type = createIntrinsicType(TypeFlags.U16, "u16");
+        var i32Type = createIntrinsicType(TypeFlags.I32, "i32");
+        var u32Type = createIntrinsicType(TypeFlags.U32, "u32");
+        var floatType = createIntrinsicType(TypeFlags.Float, "float");
+        var doubleType = createIntrinsicType(TypeFlags.Double, "double");
+
         var emptyObjectType = createAnonymousType(undefined, emptySymbols, emptyArray, emptyArray, undefined, undefined);
         var anyFunctionType = createAnonymousType(undefined, emptySymbols, emptyArray, emptyArray, undefined, undefined);
         var noConstraintType = createAnonymousType(undefined, emptySymbols, emptyArray, emptyArray, undefined, undefined);
@@ -234,11 +245,11 @@ module ts {
                     }
                 }
             }
-
             // return undefined if we can't find a symbol.
         }
 
         function resolveName(location: Node, name: string, meaning: SymbolFlags, nameNotFoundMessage: DiagnosticMessage, nameArg: string): Symbol {
+
             var errorLocation = location;
             var result: Symbol;
             var lastLocation: Node;
@@ -1470,7 +1481,7 @@ module ts {
         function getTypeOfFuncClassEnumModule(symbol: Symbol): Type {
             var links = getSymbolLinks(symbol);
             if (!links.type) {
-                links.type = createObjectType(TypeFlags.Anonymous, symbol);
+                var type = links.type = createObjectType(TypeFlags.Anonymous, symbol);
             }
             return links.type;
         }
@@ -2308,6 +2319,24 @@ module ts {
                     return stringType;
                 case SyntaxKind.NumberKeyword:
                     return numberType;
+                case SyntaxKind.IntKeyword:
+                case SyntaxKind.I32Keyword:
+                    return i32Type;
+                case SyntaxKind.UintKeyword:
+                case SyntaxKind.U32Keyword:
+                    return u32Type;
+                case SyntaxKind.I16Keyword:
+                    return i16Type;
+                case SyntaxKind.U16Keyword:
+                    return u16Type;
+                case SyntaxKind.I8Keyword:
+                    return i8Type;
+                case SyntaxKind.U8Keyword:
+                    return u8Type;
+                case SyntaxKind.DoubleKeyword:
+                    return doubleType;
+                case SyntaxKind.FloatKeyword:
+                    return floatType;
                 case SyntaxKind.BooleanKeyword:
                     return booleanType;
                 case SyntaxKind.VoidKeyword:
@@ -2659,7 +2688,8 @@ module ts {
                     if (target.flags & TypeFlags.Any) return true;
                     if (source === undefinedType) return true;
                     if (source === nullType && target !== undefinedType) return true;
-                    if (source.flags & TypeFlags.Enum && target === numberType) return true;
+                    if (source.flags & TypeFlags.Enum && target.flags & TypeFlags.NumberLike) return true;
+                    if (source.flags & TypeFlags.NumberLike && target.flags & TypeFlags.NumberLike) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
                     if (relation === assignableRelation) {
                         if (source.flags & TypeFlags.Any) return true;
@@ -2691,6 +2721,7 @@ module ts {
                         return true;
                     }
                 }
+
                 if (reportErrors) {
                     // The error should end in a period when this is the deepest error in the chain
                     // (when errorInfo is undefined). Otherwise, it has a colon before the nested
@@ -4121,8 +4152,13 @@ module ts {
                     var isValidArgument = checkTypeRelatedTo(argType, paramType, relation, reportErrors ? arg : undefined,
                         Diagnostics.Argument_of_type_0_is_not_assignable_to_parameter_of_type_1,
                         Diagnostics.Argument_of_type_0_is_not_assignable_to_parameter_of_type_1);
+
                     if (!isValidArgument) {
                         return false;
+                    }
+
+                    if(paramType.flags & TypeFlags.PrimitiveType) {
+                        node.arguments[i] = convertToLower(paramType, argType, arg);
                     }
                 }
             }
@@ -4589,11 +4625,13 @@ module ts {
 
         function checkPrefixExpression(node: UnaryExpression): Type {
             var operandType = checkExpression(node.operand);
+            var primType : boolean = false;
+            if(operandType.flags & TypeFlags.PrimitiveType) primType = true;
             switch (node.operator) {
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                 case SyntaxKind.TildeToken:
-                    return numberType;
+                    return primType ? operandType : numberType;
                 case SyntaxKind.ExclamationToken:
                 case SyntaxKind.DeleteKeyword:
                     return booleanType;
@@ -4603,24 +4641,58 @@ module ts {
                     return undefinedType;
                 case SyntaxKind.PlusPlusToken:
                 case SyntaxKind.MinusMinusToken:
+                {
                     var ok = checkArithmeticOperandType(node.operand, operandType, Diagnostics.An_arithmetic_operand_must_be_of_type_any_number_or_an_enum_type);
                     if (ok) {
                         // run check only if former checks succeeded to avoid reporting cascading errors
                         checkReferenceExpression(node.operand, Diagnostics.The_operand_of_an_increment_or_decrement_operator_must_be_a_variable_property_or_indexer);
                     }
-                    return numberType;
+                    if(primType) {
+                        var newOp : SyntaxKind = node.operator === SyntaxKind.PlusPlusToken ? SyntaxKind.PlusToken : SyntaxKind.MinusToken;
+                        var newNode = createBinaryNode(node.operand, SyntaxKind.EqualsToken, createLitNode(node.operand, newOp, "1"));
+                        var retType = checkBinaryExpression(newNode);
+                        node.operator = SyntaxKind.Unknown;
+                        node.operand = createParenNode(newNode);
+                        return retType;
+                    } else {
+                        return numberType;
+                    }
+                }
             }
             return unknownType;
         }
 
         function checkPostfixExpression(node: UnaryExpression): Type {
             var operandType = checkExpression(node.operand);
+            var primType : boolean = false;
+            if(operandType.flags & TypeFlags.PrimitiveType) primType = true;
+
+            if(primType && node.operator != SyntaxKind.Unknown) {
+                var block = node.parent;
+                while(block != undefined) {
+                    if((<Block>block).statements != undefined) {
+                        var helperVarName = getNextHelperVarName(<Block>block);
+                        var varDecl = createVariableDeclarationStatement(helperVarName);
+                        varDecl.parent = block;
+                        if((<Block>block).helperStatements === undefined) {
+                            (<Block>block).helperStatements = <NodeArray<VariableDeclaration>>[];
+                        }
+                        (<Block>block).helperStatements.push(varDecl);
+
+                        node.operand = createPostIncrementExpression(varDecl.declarations[0].name, node.operand);
+                        node.operator = SyntaxKind.Unknown;
+                        break;
+                    }
+                    block = block.parent;
+                }
+            }
+
             var ok = checkArithmeticOperandType(node.operand, operandType, Diagnostics.An_arithmetic_operand_must_be_of_type_any_number_or_an_enum_type);
-            if (ok) {
+            if (ok && !primType) {
                 // run check only if former checks succeeded to avoid reporting cascading errors
                 checkReferenceExpression(node.operand, Diagnostics.The_operand_of_an_increment_or_decrement_operator_must_be_a_variable_property_or_indexer);
             }
-            return numberType;
+            return primType ? operandType : numberType;
         }
 
         function isTypeAnyTypeObjectTypeOrTypeParameter(type: Type): boolean {
@@ -4655,10 +4727,291 @@ module ts {
             return booleanType;
         }
 
+        function getSizeOfPrimType(type : Type) : number {
+            if(type.flags & (TypeFlags.U8 | type.flags & TypeFlags.I8)) {
+                return 1;
+            } else if(type.flags & (TypeFlags.U16 | type.flags & TypeFlags.I16)) {
+                return 2;
+            } else if(type.flags & (TypeFlags.U32 | type.flags & TypeFlags.I32 |
+                TypeFlags.Uint | type.flags & TypeFlags.Int | type.flags & TypeFlags.Float)){
+                return 4;
+            } else if(type.flags & (TypeFlags.Double | TypeFlags.Number)) {
+                return 8;
+            } else {
+                return 8;
+            }
+        }
+
+        function isSigned(type : Type) {
+            if(type.flags & (TypeFlags.U8 | type.flags & TypeFlags.U16 |
+               type.flags & TypeFlags.U32 | type.flags & TypeFlags.Uint)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function createLitNode(node : Node, op : SyntaxKind, lit : string){
+            var newer = <BinaryExpression>(new (objectAllocator.getNodeConstructor(SyntaxKind.BinaryExpression))());
+            newer.pos = node.pos;
+            newer.end = node.end;
+
+            var literal = <LiteralExpression>(new (objectAllocator.getNodeConstructor(SyntaxKind.NumericLiteral))());
+            literal.text = lit;
+            literal.pos = literal.end = -1;
+
+            newer.left = node;
+            newer.operator = op;
+            newer.right = literal;
+
+            return newer;
+        }
+
+        function createParenNode(node : Node){
+            var newer = <ParenExpression>(new (objectAllocator.getNodeConstructor(SyntaxKind.ParenExpression))());
+            newer.pos = node.pos;
+            newer.end = node.end;
+
+            newer.expression = node;
+
+            return newer;
+        }
+
+        function createBinaryNode(node : Node, op : SyntaxKind, nodeRight : Node){
+            var newer = <BinaryExpression>(new (objectAllocator.getNodeConstructor(SyntaxKind.BinaryExpression))());
+            newer.pos = node.pos;
+            newer.end = node.end;
+
+            newer.left = node;
+            newer.operator = op;
+            newer.right = nodeRight;
+
+            return newer;
+        }
+
+        function createPostIncrementExpression(tempVarIdentifier : Identifier, incExp : Node) {
+            //return: (t = incExp, incExp = incExp + 1, t)
+
+            var nodeLeft = createBinaryNode(tempVarIdentifier, SyntaxKind.EqualsToken, incExp);
+
+            var nodeMid1 = createLitNode(incExp, SyntaxKind.PlusToken, "1");
+            var nodeMid0 = createBinaryNode(incExp, SyntaxKind.EqualsToken, nodeMid1);
+            checkExpression(nodeMid0);
+
+            var nodeRight = tempVarIdentifier;
+
+            var ret = createBinaryNode(nodeLeft, SyntaxKind.CommaToken, nodeMid0);
+            ret = createBinaryNode(ret, SyntaxKind.CommaToken, nodeRight);
+            return createParenNode(ret);
+        }
+
+        function checkDuplicationOfName(name : string, block : Block) : boolean {
+            var symbol = resolveName(block, name, SymbolFlags.Variable, undefined, "");
+            return symbol !== undefined;
+        }
+
+        function getNextHelperVarName(block : Block) : string {
+            if(block.helperVarCount === undefined) block.helperVarCount = 0;
+            var count : Number = block.helperVarCount++;
+
+            var name = "_$" + count.toString();
+            while(checkDuplicationOfName(name, block)) {
+                count = block.helperVarCount++;
+                name = "_$" + count.toString();
+            }
+            return name;
+        }
+
+        function createVariableDeclarationStatement(varName : string, varType? : Type) : VariableStatement{
+            var ret = <VariableStatement>(new (objectAllocator.getNodeConstructor(SyntaxKind.VariableStatement))());
+            ret.pos = ret.end = -1;
+
+            var varDecl = <VariableDeclaration>(new (objectAllocator.getNodeConstructor(SyntaxKind.VariableDeclaration))());
+            varDecl.pos = varDecl.end = -1;
+
+            var varNameIdentifier = <Identifier>(new (objectAllocator.getNodeConstructor(SyntaxKind.Identifier))());
+            varNameIdentifier.text = varName;
+            varNameIdentifier.pos = varNameIdentifier.end = -1;
+
+            varDecl.name = varNameIdentifier;
+            varDecl.parent = ret;
+
+            varNameIdentifier.parent = varDecl;
+
+            var result = <NodeArray<VariableDeclaration>>[varDecl];
+            result.pos = result.end = -1;
+
+            ret.declarations = result;
+
+            return ret;
+        }
+
+        function isAssignmentOp(op : SyntaxKind) {
+            switch(op){
+                case SyntaxKind.EqualsToken:
+                case SyntaxKind.PlusEqualsToken:
+                case SyntaxKind.MinusEqualsToken:
+                case SyntaxKind.AsteriskEqualsToken:
+                case SyntaxKind.SlashEqualsToken:
+                case SyntaxKind.PercentEqualsToken:
+                case SyntaxKind.LessThanLessThanEqualsToken:
+                case SyntaxKind.GreaterThanGreaterThanEqualsToken:
+                case SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken:
+                case SyntaxKind.AmpersandEqualsToken:
+                case SyntaxKind.BarEqualsToken:
+                case SyntaxKind.CaretEqualsToken:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        function splitAssignmentOp(op : SyntaxKind) {
+            switch(op){
+            case SyntaxKind.PlusEqualsToken:
+                return SyntaxKind.PlusToken;
+            case SyntaxKind.MinusEqualsToken:
+                return SyntaxKind.MinusToken;
+            case SyntaxKind.AsteriskEqualsToken:
+                return SyntaxKind.AsteriskToken;
+            case SyntaxKind.SlashEqualsToken:
+                return SyntaxKind.SlashToken;
+            case SyntaxKind.PercentEqualsToken:
+                return SyntaxKind.PercentToken;
+            case SyntaxKind.LessThanLessThanEqualsToken:
+                return SyntaxKind.LessThanLessThanToken;
+            case SyntaxKind.GreaterThanGreaterThanEqualsToken:
+                return SyntaxKind.GreaterThanGreaterThanToken;
+            case SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken:
+                return SyntaxKind.GreaterThanGreaterThanGreaterThanToken;
+            case SyntaxKind.AmpersandEqualsToken:
+                return SyntaxKind.AmpersandToken;
+            case SyntaxKind.BarEqualsToken:
+                return SyntaxKind.BarToken;
+            case SyntaxKind.CaretEqualsToken:
+                return SyntaxKind.CaretToken;
+            default:
+                return undefined;
+            }
+        }
+
+        function convertToLower(targetType : Type, originType : Type, originNode : Node) : Node {
+            if(!(targetType.flags & TypeFlags.PrimitiveType)) {
+                return originNode;
+            }
+            if(targetType.flags == originType.flags){
+                return originNode;
+            }
+
+            var sizeLeft = getSizeOfPrimType(targetType);
+            var signedLeft = isSigned(targetType);
+            var widthLeft = sizeLeft << 3;
+            var mask = (1 << widthLeft) - 1;
+            var shift = 32 - widthLeft;
+
+            var sizeRight = getSizeOfPrimType(originType);
+            var signedRight = isSigned(originType);
+            var widthRight = sizeRight << 3;
+
+            var retNode : Node = undefined;
+
+            if (originNode.kind == SyntaxKind.NumericLiteral ||
+                originNode.kind == SyntaxKind.PrefixOperator) {
+                var val : number;
+
+                if(originNode.kind == SyntaxKind.NumericLiteral) {
+                    var text = (<LiteralExpression>(originNode)).text;
+                    val = parseFloat(text);
+                } else {
+                    var unaryNode = <UnaryExpression>originNode;
+                    if(unaryNode.operand.kind == SyntaxKind.NumericLiteral){
+                        var text = (<LiteralExpression>(unaryNode.operand)).text;
+                        val = parseFloat(text);
+                        if(unaryNode.operator === SyntaxKind.PlusToken) {
+                            val = val;
+                        } else if(unaryNode.operator === SyntaxKind.MinusToken) {
+                            val = -val;
+                        } else if(unaryNode.operator === SyntaxKind.ExclamationToken) {
+                            val = !val ? 0 : 1;
+                        } else if(unaryNode.operator === SyntaxKind.TildeToken) {
+                            val = ~val;
+                        } else {
+                            console.error("Invalid unary expression, failed to convert to lower expression");
+                        }
+                    }
+                }
+
+                var val2 : number;
+
+                if (widthLeft !== 32 && widthLeft < widthRight) {
+                    val2 = val & mask;
+                    if (signedLeft) val2 = (val2 << shift) >> shift;
+                } else if (widthLeft !== widthRight || signedLeft != signedRight) {
+                    if (signedLeft) {
+                        val2 = val | 0;
+                    } else {
+                        val2 = val >>> 0;
+                    }
+                } else {
+                    val2 = val;
+                }
+
+                if (val === val2) {
+                    return originNode;
+                }
+            }
+
+            if (widthLeft !== 32 && widthLeft < widthRight) {
+                retNode = createLitNode(originNode, SyntaxKind.AmpersandToken, new Number(mask).toString());
+                // Do we need to sign extend?
+                if (signedLeft) {
+                    retNode = createParenNode(retNode);
+                    retNode = createLitNode(retNode, SyntaxKind.LessThanLessThanToken, new Number(shift).toString());
+                    retNode = createLitNode(retNode, SyntaxKind.GreaterThanGreaterThanToken, new Number(shift).toString());
+                }
+            } else {
+                retNode = createLitNode(originNode,
+                    signedLeft ? SyntaxKind.BarToken : SyntaxKind.GreaterThanGreaterThanGreaterThanToken, "0");
+            }
+
+            return retNode;
+        }
+
         function checkBinaryExpression(node: BinaryExpression, contextualMapper?: TypeMapper) {
             var operator = node.operator;
+
             var leftType = checkExpression(node.left, contextualMapper);
             var rightType = checkExpression(node.right, contextualMapper);
+
+            var splitedOp = splitAssignmentOp(operator);
+
+            if(leftType.flags & TypeFlags.PrimitiveType && splitedOp != undefined) {
+                operator = node.operator = SyntaxKind.EqualsToken;
+
+                var lowerNode = convertToLower(leftType, rightType, node.right);
+                node.right = createBinaryNode(node.left, splitedOp, createParenNode(lowerNode));
+            }
+
+            if (isAssignmentOp(operator)) {
+                if(leftType.flags & TypeFlags.Reference) {
+                    var tRef = <TypeReference>leftType;
+                    if(tRef.target === globalArrayType && node.right.kind === SyntaxKind.ArrayLiteral
+                        && tRef.typeArguments[0].flags & TypeFlags.PrimitiveType) {
+                        for(var i = 0; i < (<ArrayLiteral>node.right).elements.length; ++i) {
+                            var origType = checkAndMarkExpression((<ArrayLiteral>node.right).elements[i]);
+                            (<ArrayLiteral>node.right).elements[i] = convertToLower(tRef.typeArguments[0],
+                                origType, (<ArrayLiteral>node.right).elements[i]);
+                        }
+                    }
+                } else {
+                    var lowerNode = convertToLower(leftType, rightType, node.right);
+                    if(lowerNode != node.right){
+                        node.right = lowerNode;
+                        rightType = leftType;
+                    }
+                }
+            }
+
             switch (operator) {
                 case SyntaxKind.AsteriskToken:
                 case SyntaxKind.AsteriskEqualsToken:
@@ -4819,7 +5172,7 @@ module ts {
         // object, it serves as an indicator that all contained function and arrow expressions should be considered to
         // have the wildcard function type; this form of type check is used during overload resolution to exclude
         // contextually typed function and arrow expressions in the initial phase.
-        function checkExpression(node: Expression, contextualMapper?: TypeMapper): Type {
+        function checkExpression(node: Expression, contextualMapper?: TypeMapper) : Type {
             switch (node.kind) {
                 case SyntaxKind.Identifier:
                     return checkIdentifier(<Identifier>node);
@@ -5520,6 +5873,12 @@ module ts {
 
         function checkBlock(node: Block) {
             forEach(node.statements, checkSourceElement);
+
+            if(node.helperStatements !== undefined) {
+                while(node.helperStatements.length > 0){
+                    node.statements.unshift(node.helperStatements.pop());
+                }
+            }
         }
 
         function checkCollisionWithArgumentsInGeneratedCode(node: SignatureDeclaration) {
@@ -5699,16 +6058,29 @@ module ts {
                 var useTypeFromValueDeclaration = node === symbol.valueDeclaration;
                 if (useTypeFromValueDeclaration) {
                     type = typeOfValueDeclaration;
-                }
-                else {
+                } else {
                     type = getTypeOfVariableDeclaration(node);
                 }
-
 
                 if (node.initializer) {
                     if (!(getNodeLinks(node.initializer).flags & NodeCheckFlags.TypeChecked)) {
                         // Use default messages
-                        checkTypeAssignableTo(checkAndMarkExpression(node.initializer), type, node, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
+                        var initializerType = checkAndMarkExpression(node.initializer);
+                        checkTypeAssignableTo(initializerType, type, node, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
+
+                        if(type.flags & TypeFlags.Reference) {
+                            var tRef = <TypeReference>type;
+                            if(tRef.target === globalArrayType && node.initializer.kind === SyntaxKind.ArrayLiteral
+                                && tRef.typeArguments[0].flags & TypeFlags.PrimitiveType) {
+                                for(var i = 0; i < (<ArrayLiteral>node.initializer).elements.length; ++i) {
+                                    var origType = checkAndMarkExpression((<ArrayLiteral>node.initializer).elements[i]);
+                                    (<ArrayLiteral>node.initializer).elements[i] = convertToLower(tRef.typeArguments[0],
+                                        origType, (<ArrayLiteral>node.initializer).elements[i]);
+                                }
+                            }
+                        } else if(type.flags & TypeFlags.PrimitiveType) {
+                            node.initializer = convertToLower(type, initializerType, node.initializer);
+                        }
                     }
                 }
 
@@ -6458,6 +6830,12 @@ module ts {
                 emitExtends = false;
                 potentialThisCollisions.length = 0;
                 forEach(node.statements, checkSourceElement);
+                if(node.helperStatements !== undefined) {
+                    while(node.helperStatements.length > 0){
+                        node.statements.unshift(node.helperStatements.pop());
+                    }
+                }
+
                 if (isExternalModule(node)) {
                     var symbol = getExportAssignmentSymbol(node.symbol);
                     if (symbol && symbol.flags & SymbolFlags.Import) {
@@ -7149,6 +7527,7 @@ module ts {
                 bindSourceFile(file);
                 forEach(file.semanticErrors, addDiagnostic);
             });
+
             // Initialize global symbol table
             forEach(program.getSourceFiles(), file => {
                 if (!isExternalModule(file)) {
@@ -7161,6 +7540,7 @@ module ts {
             getSymbolLinks(unknownSymbol).type = unknownType;
             globals[undefinedSymbol.name] = undefinedSymbol;
             // Initialize special types
+
             globalArraySymbol = getGlobalSymbol("Array");
             globalArrayType = getTypeOfGlobalSymbol(globalArraySymbol, 1);
             globalObjectType = getGlobalType("Object");
