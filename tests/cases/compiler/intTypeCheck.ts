@@ -39,7 +39,7 @@ interface i4 {
 interface i5 extends i1 { }
 interface i6 extends i2 { }
 interface i7 extends i3 { }
-interface i8 extends i4 { }
+interface _i8 extends i4 { }
 interface i9 { }
 
 class Base { foo() { } }
@@ -190,14 +190,14 @@ var obj76: i7 = new {};
 //
 // Interface Derived I4
 //
-var obj77: i8;
-var obj78: i8 = {};
-var obj79: i8 = new Object();
-var obj80: i8 = new obj77;
-var obj81: i8 = new Base;
-var obj82: i8 = null;
-var obj83: i8 = function () { };
-//var obj84: i8 = function foo() { };
-var obj85: i8 = <i8> anyVar;
-var obj86: i8 = new <i8> anyVar;
-var obj87: i8 = new {};
+var obj77: _i8;
+var obj78: _i8 = {};
+var obj79: _i8 = new Object();
+var obj80: _i8 = new obj77;
+var obj81: _i8 = new Base;
+var obj82: _i8 = null;
+var obj83: _i8 = function () { };
+//var obj84: _i8 = function foo() { };
+var obj85: _i8 = <_i8> anyVar;
+var obj86: _i8 = new <_i8> anyVar;
+var obj87: _i8 = new {};

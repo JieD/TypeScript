@@ -1481,7 +1481,7 @@ module ts {
         function getTypeOfFuncClassEnumModule(symbol: Symbol): Type {
             var links = getSymbolLinks(symbol);
             if (!links.type) {
-                var type = links.type = createObjectType(TypeFlags.Anonymous, symbol);
+                links.type = createObjectType(TypeFlags.Anonymous, symbol);
             }
             return links.type;
         }
@@ -2688,8 +2688,9 @@ module ts {
                     if (target.flags & TypeFlags.Any) return true;
                     if (source === undefinedType) return true;
                     if (source === nullType && target !== undefinedType) return true;
-                    if (source.flags & TypeFlags.Enum && target.flags & TypeFlags.NumberLike) return true;
-                    if (source.flags & TypeFlags.NumberLike && target.flags & TypeFlags.NumberLike) return true;
+                    if (source.flags & TypeFlags.Enum && target === numberType) return true;
+                    if (source.flags & TypeFlags.NumberLike && target.flags & TypeFlags.NumberLike
+                        && !(target.flags & TypeFlags.Enum)) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
                     if (relation === assignableRelation) {
                         if (source.flags & TypeFlags.Any) return true;

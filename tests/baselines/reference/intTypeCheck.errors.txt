@@ -46,7 +46,7 @@
     interface i5 extends i1 { }
     interface i6 extends i2 { }
     interface i7 extends i3 { }
-    interface i8 extends i4 { }
+    interface _i8 extends i4 { }
     interface i9 { }
     
     class Base { foo() { } }
@@ -335,34 +335,34 @@
     //
     // Interface Derived I4
     //
-    var obj77: i8;
-    var obj78: i8 = {};
-    var obj79: i8 = new Object();
+    var obj77: _i8;
+    var obj78: _i8 = {};
+    var obj79: _i8 = new Object();
         ~~~~~
-!!! Type 'Object' is not assignable to type 'i8':
+!!! Type 'Object' is not assignable to type '_i8':
 !!!   Index signature is missing in type 'Object'.
-    var obj80: i8 = new obj77;
-                    ~~~~~~~~~
+    var obj80: _i8 = new obj77;
+                     ~~~~~~~~~
 !!! Cannot use 'new' with an expression whose type lacks a call or construct signature.
-    var obj81: i8 = new Base;
+    var obj81: _i8 = new Base;
         ~~~~~
-!!! Type 'Base' is not assignable to type 'i8':
+!!! Type 'Base' is not assignable to type '_i8':
 !!!   Index signature is missing in type 'Base'.
-    var obj82: i8 = null;
-    var obj83: i8 = function () { };
+    var obj82: _i8 = null;
+    var obj83: _i8 = function () { };
         ~~~~~
-!!! Type '() => void' is not assignable to type 'i8':
+!!! Type '() => void' is not assignable to type '_i8':
 !!!   Index signature is missing in type '() => void'.
-    //var obj84: i8 = function foo() { };
-    var obj85: i8 = <i8> anyVar;
-    var obj86: i8 = new <i8> anyVar;
-                        ~
+    //var obj84: _i8 = function foo() { };
+    var obj85: _i8 = <_i8> anyVar;
+    var obj86: _i8 = new <_i8> anyVar;
+                         ~
 !!! Expression expected.
         ~~~~~
-!!! Type 'boolean' is not assignable to type 'i8':
+!!! Type 'boolean' is not assignable to type '_i8':
 !!!   Index signature is missing in type 'Boolean'.
-                         ~~
-!!! Cannot find name 'i8'.
-    var obj87: i8 = new {};
-                    ~~~~~~
+                          ~~~
+!!! Cannot find name '_i8'.
+    var obj87: _i8 = new {};
+                     ~~~~~~
 !!! Cannot use 'new' with an expression whose type lacks a call or construct signature.
