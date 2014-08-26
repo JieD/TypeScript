@@ -3979,7 +3979,11 @@ module ts {
                 // Try to use a number indexer.
                 if (indexType.flags & (TypeFlags.Any | TypeFlags.NumberLike)) {
                     var numberIndexType = getIndexTypeOfType(apparentType, IndexKind.Number);
+
                     if (numberIndexType) {
+                        if (numberIndexType.flags & TypeFlags.PrimitiveType) {
+                            node.index = convertToLower(numberIndexType, indexType, node.index, true);
+                        }
                         return numberIndexType;
                     }
                 }
@@ -4158,7 +4162,9 @@ module ts {
                         return false;
                     }
 
-                    if(paramType.flags & TypeFlags.PrimitiveType) {
+                    if (argType.flags & TypeFlags.PrimitiveType) {
+                        node.arguments[i] = convertToLower(argType, argType, arg, true);
+                    } else if (paramType.flags & TypeFlags.PrimitiveType) {
                         node.arguments[i] = convertToLower(paramType, argType, arg);
                     }
                 }
@@ -4358,6 +4364,9 @@ module ts {
                 if (!(isTypeAssignableTo(exprType, targetType) || isTypeAssignableTo(targetType, widenedType))) {
                     checkTypeAssignableTo(targetType, widenedType, node, Diagnostics.Neither_type_0_nor_type_1_is_assignable_to_the_other_Colon, Diagnostics.Neither_type_0_nor_type_1_is_assignable_to_the_other);
                 }
+            }
+            if (targetType.flags & TypeFlags.PrimitiveType) {
+                node.operand = <Expression>createParenNode(convertToLower(targetType, exprType, node.operand));
             }
             return targetType;
         }
@@ -4651,7 +4660,7 @@ module ts {
                     if(primType) {
                         var newOp : SyntaxKind = node.operator === SyntaxKind.PlusPlusToken ? SyntaxKind.PlusToken : SyntaxKind.MinusToken;
                         var newNode = createBinaryNode(node.operand, SyntaxKind.EqualsToken, createLitNode(node.operand, newOp, "1"));
-                        var retType = checkBinaryExpression(newNode);
+                        var retType = checkBinaryExpression(<BinaryExpression>newNode);
                         node.operator = SyntaxKind.Unknown;
                         node.operand = createParenNode(newNode);
                         return retType;
@@ -4734,9 +4743,9 @@ module ts {
             } else if(type.flags & (TypeFlags.U16 | type.flags & TypeFlags.I16)) {
                 return 2;
             } else if(type.flags & (TypeFlags.U32 | type.flags & TypeFlags.I32 |
-                TypeFlags.Uint | type.flags & TypeFlags.Int | type.flags & TypeFlags.Float)){
+                TypeFlags.Uint | type.flags & TypeFlags.Int | type.flags & TypeFlags.Float)) {
                 return 4;
-            } else if(type.flags & (TypeFlags.Double | TypeFlags.Number)) {
+            } else if(type.flags & (TypeFlags.Double | TypeFlags.Number | TypeFlags.Enum)) {
                 return 8;
             } else {
                 return 8;
@@ -4752,7 +4761,7 @@ module ts {
             }
         }
 
-        function createLitNode(node : Node, op : SyntaxKind, lit : string){
+        function createLitNode(node : Node, op : SyntaxKind, lit : string) {
             var newer = <BinaryExpression>(new (objectAllocator.getNodeConstructor(SyntaxKind.BinaryExpression))());
             newer.pos = node.pos;
             newer.end = node.end;
@@ -4768,7 +4777,7 @@ module ts {
             return newer;
         }
 
-        function createParenNode(node : Node){
+        function createParenNode(node : Node) {
             var newer = <ParenExpression>(new (objectAllocator.getNodeConstructor(SyntaxKind.ParenExpression))());
             newer.pos = node.pos;
             newer.end = node.end;
@@ -4778,7 +4787,7 @@ module ts {
             return newer;
         }
 
-        function createBinaryNode(node : Node, op : SyntaxKind, nodeRight : Node){
+        function createBinaryNode(node : Node, op : SyntaxKind, nodeRight : Node) : Expression{
             var newer = <BinaryExpression>(new (objectAllocator.getNodeConstructor(SyntaxKind.BinaryExpression))());
             newer.pos = node.pos;
             newer.end = node.end;
@@ -4802,8 +4811,8 @@ module ts {
             var nodeRight = tempVarIdentifier;
 
             var ret = createBinaryNode(nodeLeft, SyntaxKind.CommaToken, nodeMid0);
-            ret = createBinaryNode(ret, SyntaxKind.CommaToken, nodeRight);
-            return createParenNode(ret);
+            ret = createParenNode(createBinaryNode(ret, SyntaxKind.CommaToken, nodeRight));
+            return ret;
         }
 
         function checkDuplicationOfName(name : string, block : Block) : boolean {
@@ -4896,11 +4905,67 @@ module ts {
             }
         }
 
-        function convertToLower(targetType : Type, originType : Type, originNode : Node) : Node {
+        function getNumericLiteralValue(originNode : Node) : number{
+            var val : number;
+            if(originNode.kind == SyntaxKind.NumericLiteral) {
+                var text = (<LiteralExpression>(originNode)).text;
+                val = parseFloat(text);
+            } else {
+                var unaryNode = <UnaryExpression>originNode;
+                if(unaryNode.operand.kind == SyntaxKind.NumericLiteral){
+                    var text = (<LiteralExpression>(unaryNode.operand)).text;
+                    val = parseFloat(text);
+                    if(unaryNode.operator === SyntaxKind.PlusToken) {
+                        val = val;
+                    } else if(unaryNode.operator === SyntaxKind.MinusToken) {
+                        val = -val;
+                    } else if(unaryNode.operator === SyntaxKind.ExclamationToken) {
+                        val = !val ? 0 : 1;
+                    } else if(unaryNode.operator === SyntaxKind.TildeToken) {
+                        val = ~val;
+                    } else {
+                        console.error("Invalid unary expression, failed to convert to lower expression");
+                    }
+                }
+            }
+            return val;
+        }
+
+        function canIgnoreConvertNumericLit(targetType : Type, originType : Type, originNode : Expression) {
+            if (originNode.kind == SyntaxKind.NumericLiteral ||
+                originNode.kind == SyntaxKind.PrefixOperator) {
+                var val : number = getNumericLiteralValue(originNode);
+                var val2 : number;
+
+                var sizeLeft = getSizeOfPrimType(targetType);
+                var signedLeft = isSigned(targetType);
+                var widthLeft = sizeLeft << 3;
+                var sizeRight = getSizeOfPrimType(originType);
+                var signedRight = isSigned(originType);
+                var widthRight = sizeRight << 3;
+
+                if (widthLeft !== 32 && widthLeft < widthRight) {
+                    val2 = val & ((1 << widthLeft) - 1);
+                    if (signedLeft) val2 = (val2 << (32 - widthLeft)) >> (32 - widthLeft);
+                } else if (widthLeft !== widthRight || signedLeft != signedRight) {
+                    if (signedLeft) val2 = val | 0;
+                    else val2 = val >>> 0;
+                } else {
+                    val2 = val;
+                }
+
+                if (val === val2) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function convertToLower(targetType : Type, originType : Type, originNode : Expression, forceConv : boolean = false) : Expression {
             if(!(targetType.flags & TypeFlags.PrimitiveType)) {
                 return originNode;
             }
-            if(targetType.flags == originType.flags){
+            if(targetType.flags == originType.flags && !forceConv){
                 return originNode;
             }
 
@@ -4910,57 +4975,11 @@ module ts {
             var mask = (1 << widthLeft) - 1;
             var shift = 32 - widthLeft;
 
-            var sizeRight = getSizeOfPrimType(originType);
-            var signedRight = isSigned(originType);
-            var widthRight = sizeRight << 3;
+            var widthRight = getSizeOfPrimType(originType) << 3;
 
-            var retNode : Node = undefined;
+            var retNode : Expression = undefined;
 
-            if (originNode.kind == SyntaxKind.NumericLiteral ||
-                originNode.kind == SyntaxKind.PrefixOperator) {
-                var val : number;
-
-                if(originNode.kind == SyntaxKind.NumericLiteral) {
-                    var text = (<LiteralExpression>(originNode)).text;
-                    val = parseFloat(text);
-                } else {
-                    var unaryNode = <UnaryExpression>originNode;
-                    if(unaryNode.operand.kind == SyntaxKind.NumericLiteral){
-                        var text = (<LiteralExpression>(unaryNode.operand)).text;
-                        val = parseFloat(text);
-                        if(unaryNode.operator === SyntaxKind.PlusToken) {
-                            val = val;
-                        } else if(unaryNode.operator === SyntaxKind.MinusToken) {
-                            val = -val;
-                        } else if(unaryNode.operator === SyntaxKind.ExclamationToken) {
-                            val = !val ? 0 : 1;
-                        } else if(unaryNode.operator === SyntaxKind.TildeToken) {
-                            val = ~val;
-                        } else {
-                            console.error("Invalid unary expression, failed to convert to lower expression");
-                        }
-                    }
-                }
-
-                var val2 : number;
-
-                if (widthLeft !== 32 && widthLeft < widthRight) {
-                    val2 = val & mask;
-                    if (signedLeft) val2 = (val2 << shift) >> shift;
-                } else if (widthLeft !== widthRight || signedLeft != signedRight) {
-                    if (signedLeft) {
-                        val2 = val | 0;
-                    } else {
-                        val2 = val >>> 0;
-                    }
-                } else {
-                    val2 = val;
-                }
-
-                if (val === val2) {
-                    return originNode;
-                }
-            }
+            if(canIgnoreConvertNumericLit(targetType, originType, originNode)) return originNode;
 
             if (widthLeft !== 32 && widthLeft < widthRight) {
                 retNode = createLitNode(originNode, SyntaxKind.AmpersandToken, new Number(mask).toString());
@@ -4974,11 +4993,17 @@ module ts {
                 retNode = createLitNode(originNode,
                     signedLeft ? SyntaxKind.BarToken : SyntaxKind.GreaterThanGreaterThanGreaterThanToken, "0");
             }
-
             return retNode;
         }
 
-        function checkBinaryExpression(node: BinaryExpression, contextualMapper?: TypeMapper) {
+        function checkBinaryExpression(node: BinaryExpression, contextualMapper?: TypeMapper) : Type {
+
+            function getBestSizeFromNumberLikes(leftType : Type, rightType : Type) : Type {
+                var leftSize = getSizeOfPrimType(leftType);
+                var rightSize = getSizeOfPrimType(rightType);
+                return leftSize < rightSize ? rightType : leftType;
+            }
+
             var operator = node.operator;
 
             var leftType = checkExpression(node.left, contextualMapper);
@@ -4994,11 +5019,11 @@ module ts {
             }
 
             if (isAssignmentOp(operator)) {
-                if(leftType.flags & TypeFlags.Reference) {
+                if (leftType.flags & TypeFlags.Reference) {
                     var tRef = <TypeReference>leftType;
-                    if(tRef.target === globalArrayType && node.right.kind === SyntaxKind.ArrayLiteral
+                    if (tRef.target === globalArrayType && node.right.kind === SyntaxKind.ArrayLiteral
                         && tRef.typeArguments[0].flags & TypeFlags.PrimitiveType) {
-                        for(var i = 0; i < (<ArrayLiteral>node.right).elements.length; ++i) {
+                        for (var i = 0; i < (<ArrayLiteral>node.right).elements.length; ++i) {
                             var origType = checkAndMarkExpression((<ArrayLiteral>node.right).elements[i]);
                             (<ArrayLiteral>node.right).elements[i] = convertToLower(tRef.typeArguments[0],
                                 origType, (<ArrayLiteral>node.right).elements[i]);
@@ -5006,7 +5031,7 @@ module ts {
                     }
                 } else {
                     var lowerNode = convertToLower(leftType, rightType, node.right);
-                    if(lowerNode != node.right){
+                    if(lowerNode != node.right) {
                         node.right = lowerNode;
                         rightType = leftType;
                     }
@@ -5049,7 +5074,21 @@ module ts {
                         checkAssignmentOperator(numberType);
                     }
 
-                    return numberType;
+                    if (leftType.flags & TypeFlags.NumberLike && rightType.flags & TypeFlags.NumberLike) {
+                        var leftSize = getSizeOfPrimType(leftType);
+                        var rightSize = getSizeOfPrimType(rightType);
+                        if (leftSize != rightSize) {
+                            if (canIgnoreConvertNumericLit(leftType, rightType, node.right)) {
+                                return leftType;
+                            } else if (canIgnoreConvertNumericLit(rightType, leftType, node.left)) {
+                                return rightType;
+                            } else {
+                                return leftSize < rightSize ? rightType : leftType;
+                            }
+                        }
+                    }
+                    else
+                        return numberType;
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.PlusEqualsToken:
                     // TypeScript 1.0 spec (April 2014): 4.15.2
@@ -5064,7 +5103,7 @@ module ts {
                     if (leftType.flags & TypeFlags.NumberLike && rightType.flags & TypeFlags.NumberLike) {
                         // Operands of an enum type are treated as having the primitive type Number.
                         // If both operands are of the Number primitive type, the result is of the Number primitive type.
-                        resultType = numberType;
+                        resultType = getBestSizeFromNumberLikes(leftType, rightType);
                     }
                     else if (leftType.flags & TypeFlags.StringLike || rightType.flags & TypeFlags.StringLike) {
                         // If one or both operands are of the String primitive type, the result is of the String primitive type.
@@ -6076,7 +6115,7 @@ module ts {
                                 for(var i = 0; i < (<ArrayLiteral>node.initializer).elements.length; ++i) {
                                     var origType = checkAndMarkExpression((<ArrayLiteral>node.initializer).elements[i]);
                                     (<ArrayLiteral>node.initializer).elements[i] = convertToLower(tRef.typeArguments[0],
-                                        origType, (<ArrayLiteral>node.initializer).elements[i]);
+                                        origType, (<ArrayLiteral>node.initializer).elements[i], true);
                                 }
                             }
                         } else if(type.flags & TypeFlags.PrimitiveType) {
