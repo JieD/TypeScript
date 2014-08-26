@@ -4999,6 +4999,7 @@ module ts {
         function checkBinaryExpression(node: BinaryExpression, contextualMapper?: TypeMapper) : Type {
 
             function getBestSizeFromNumberLikes(leftType : Type, rightType : Type) : Type {
+                if((leftType.flags & TypeFlags.Enum) || (rightType.flags & TypeFlags.Enum)) return numberType;
                 var leftSize = getSizeOfPrimType(leftType);
                 var rightSize = getSizeOfPrimType(rightType);
                 return leftSize < rightSize ? rightType : leftType;
