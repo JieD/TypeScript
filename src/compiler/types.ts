@@ -12,6 +12,10 @@ module ts {
     export enum SyntaxKind {
         Unknown,
         EndOfFileToken,
+        SingleLineCommentTrivia,
+        MultiLineCommentTrivia,
+        NewLineTrivia,
+        WhitespaceTrivia,
         // Literals
         NumericLiteral,
         StringLiteral,
@@ -160,6 +164,7 @@ module ts {
         TypeQuery,
         TypeLiteral,
         ArrayType,
+        TupleType,
         // Expression
         ArrayLiteral,
         ObjectLiteral,
@@ -194,7 +199,7 @@ module ts {
         SwitchStatement,
         CaseClause,
         DefaultClause,
-        LabelledStatement,
+        LabeledStatement,
         ThrowStatement,
         TryStatement,
         TryBlock,
@@ -230,9 +235,13 @@ module ts {
         FirstFutureReservedWord = ImplementsKeyword,
         LastFutureReservedWord = YieldKeyword,
         FirstTypeNode = TypeReference,
-        LastTypeNode = ArrayType,
-        FirstPunctuation= OpenBraceToken,
-        LastPunctuation = CaretEqualsToken
+        LastTypeNode = TupleType,
+        FirstPunctuation = OpenBraceToken,
+        LastPunctuation = CaretEqualsToken,
+        FirstToken = EndOfFileToken,
+        LastToken = StringKeyword,
+        FirstTriviaToken = SingleLineCommentTrivia,
+        LastTriviaToken = WhitespaceTrivia
     }
 
     export enum NodeFlags {
@@ -242,12 +251,14 @@ module ts {
         Rest             = 0x00000008,  // Parameter
         Public           = 0x00000010,  // Property/Method
         Private          = 0x00000020,  // Property/Method
-        Static           = 0x00000040,  // Property/Method
-        MultiLine        = 0x00000080,  // Multi-line array or object literal
-        Synthetic        = 0x00000100,  // Synthetic node (for full fidelity)
-        DeclarationFile  = 0x00000200,  // Node is a .d.ts file
+        Protected        = 0x00000040,  // Property/Method
+        Static           = 0x00000080,  // Property/Method
+        MultiLine        = 0x00000100,  // Multi-line array or object literal
+        Synthetic        = 0x00000200,  // Synthetic node (for full fidelity)
+        DeclarationFile  = 0x00000400,  // Node is a .d.ts file
 
-        Modifier = Export | Ambient | Public | Private | Static
+        Modifier = Export | Ambient | Public | Private | Protected | Static,
+        AccessibilityModifier = Public | Private | Protected
     }
 
     export interface Node extends TextRange {
@@ -261,7 +272,9 @@ module ts {
         localSymbol?: Symbol;         // Local symbol declared by node (initialized by binding only for exported nodes)
     }
 
-    export interface NodeArray<T> extends Array<T>, TextRange { }
+    export interface NodeArray<T> extends Array<T>, TextRange {
+        hasTrailingComma?: boolean;
+    }
 
     export interface Identifier extends Node {
         text: string;                 // Text of identifier (with escapes converted to characters)
@@ -329,6 +342,10 @@ module ts {
 
     export interface ArrayTypeNode extends TypeNode {
         elementType: TypeNode;
+    }
+
+    export interface TupleTypeNode extends TypeNode {
+        elementTypes: NodeArray<TypeNode>;
     }
 
     export interface StringLiteralTypeNode extends TypeNode {
@@ -472,7 +489,7 @@ module ts {
         statements: NodeArray<Statement>;
     }
 
-    export interface LabelledStatement extends Statement {
+    export interface LabeledStatement extends Statement {
         label: Identifier;
         statement: Statement;
     }
@@ -529,7 +546,7 @@ module ts {
         filename: string;
     }
 
-    export interface Comment extends TextRange {
+    export interface CommentRange extends TextRange {
         hasTrailingNewLine?: boolean;
     }
 
@@ -550,6 +567,7 @@ module ts {
         isOpen: boolean;
         version: string;
         languageVersion: ScriptTarget;
+        identifiers: Map<string>;
     }
 
     export interface Program {
@@ -581,7 +599,7 @@ module ts {
     export interface SourceMapData {
         /** Where the sourcemap file is written */
         sourceMapFilePath: string;
-        /** source map url written in the js file */
+        /** source map URL written in the js file */
         jsSourceMappingURL: string;
         /** Source map's file field - js file name*/
         sourceMapFile: string;
@@ -600,7 +618,18 @@ module ts {
         sourceMapDecodedMappings: SourceMapSpan[];
     }
 
+    // Return code used by getEmitOutput function to indicate status of the function
+    export enum EmitReturnStatus {
+        Succeeded = 0,                      // All outputs generated as requested (.js, .map, .d.ts), no errors reported
+        AllOutputGenerationSkipped = 1,     // No .js generated because of syntax errors, nothing generated
+        JSGeneratedWithSemanticErrors = 2,  // .js and .map generated with semantic errors
+        DeclarationGenerationSkipped = 3,   // .d.ts generation skipped because of semantic errors or declaration emitter specific errors; Output .js with semantic errors
+        EmitErrorsEncountered = 4,          // Emitter errors occurred during emitting process
+        CompilerOptionsErrors = 5,          // Errors occurred in parsing compiler options, nothing generated
+    }
+
     export interface EmitResult {
+        emitResultStatus: EmitReturnStatus;
         errors: Diagnostic[];
         sourceMaps: SourceMapData[];  // Array of sourceMapData if compiler emitted sourcemaps
     }
@@ -614,7 +643,7 @@ module ts {
         getSymbolCount(): number;
         getTypeCount(): number;
         checkProgram(): void;
-        emitFiles(): EmitResult;
+        emitFiles(targetSourceFile?: SourceFile): EmitResult;
         getParentOfSymbol(symbol: Symbol): Symbol;
         getTypeOfSymbol(symbol: Symbol): Type;
         getPropertiesOfType(type: Type): Symbol[];
@@ -628,12 +657,24 @@ module ts {
         getApparentType(type: Type): ApparentType;
         typeToString(type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): string;
         symbolToString(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): string;
+        typeToDisplayParts(type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): SymbolDisplayPart[];
+        symbolToDisplayParts(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): SymbolDisplayPart[];
+        getFullyQualifiedName(symbol: Symbol): string;
         getAugmentedPropertiesOfApparentType(type: Type): Symbol[];
+        getRootSymbol(symbol: Symbol): Symbol;
+        getContextualType(node: Node): Type;
+        getResolvedSignature(node: CallExpression, candidatesOutArray?: Signature[]): Signature;
+
+        // Returns the constant value of this enum member, or 'undefined' if the enum member has a 
+        // computed value.
+        getEnumMemberValue(node: EnumMember): number;
+
+        isValidPropertyAccess(node: PropertyAccess, propertyName: string): boolean;
     }
 
     export interface TextWriter {
         write(s: string): void;
-        writeSymbol(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): void;
+        trackSymbol(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): void;
         writeLine(): void;
         increaseIndent(): void;
         decreaseIndent(): void;
@@ -641,12 +682,10 @@ module ts {
     }
 
     export enum TypeFormatFlags {
-        None                        = 0x00000000, 
-
-        /** writes Array<T> instead T[]  */
-        WriteArrayAsGenericType     = 0x00000001,  // Declarations
-
-        UseTypeOfFunction           = 0x00000002,  // instead of writing signature type of function use typeof
+        None                    = 0x00000000, 
+        WriteArrayAsGenericType = 0x00000001,  // Write Array<T> instead T[]
+        UseTypeOfFunction       = 0x00000002,  // Write typeof instead of function type literal
+        NoTruncation            = 0x00000004,  // Don't truncate typeToString result
     }
 
     export enum SymbolAccessibility {
@@ -658,7 +697,7 @@ module ts {
     export interface SymbolAccessiblityResult {
         accessibility: SymbolAccessibility;
         errorSymbolName?: string // Optional symbol name that results in error
-        errorModuleName?: string // If the symbol is not visibile from module, module's name
+        errorModuleName?: string // If the symbol is not visible from module, module's name
         aliasesToMakeVisible?: ImportDeclaration[]; // aliases that need to have this symbol visible
     }
 
@@ -666,20 +705,22 @@ module ts {
         getProgram(): Program;
         getLocalNameOfContainer(container: Declaration): string;
         getExpressionNamePrefix(node: Identifier): string;
-        getPropertyAccessSubstitution(node: PropertyAccess): string;
         getExportAssignmentName(node: SourceFile): string;
         isReferencedImportDeclaration(node: ImportDeclaration): boolean;
         isTopLevelValueImportedViaEntityName(node: ImportDeclaration): boolean;
         getNodeCheckFlags(node: Node): NodeCheckFlags;
         getEnumMemberValue(node: EnumMember): number;
-        shouldEmitDeclarations(): boolean;
+        hasSemanticErrors(): boolean;
         isDeclarationVisible(node: Declaration): boolean;
         isImplementationOfOverload(node: FunctionDeclaration): boolean;
         writeTypeAtLocation(location: Node, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: TextWriter): void;
         writeReturnTypeOfSignatureDeclaration(signatureDeclaration: SignatureDeclaration, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: TextWriter): void;
-        writeSymbol(symbol: Symbol, enclosingDeclaration: Node, meaning: SymbolFlags, writer: TextWriter): void;
         isSymbolAccessible(symbol: Symbol, enclosingDeclaration: Node, meaning: SymbolFlags): SymbolAccessiblityResult;
         isImportDeclarationEntityNameReferenceDeclarationVisibile(entityName: EntityName): SymbolAccessiblityResult;
+
+        // Returns the constant value this property access resolves to, or 'undefined' if it does 
+        // resolve to a constant.
+        getConstantValue(node: PropertyAccess): number;
     }
 
     export enum SymbolFlags {
@@ -781,13 +822,16 @@ module ts {
     }
 
     export enum NodeCheckFlags {
-        TypeChecked    = 0x00000001,  // Node has been type checked
-        LexicalThis    = 0x00000002,  // Lexical 'this' reference
-        CaptureThis    = 0x00000004,  // Lexical 'this' used in body
-        EmitExtends    = 0x00000008,  // Emit __extends
-        SuperInstance  = 0x00000010,  // Instance 'super' reference
-        SuperStatic    = 0x00000020,  // Static 'super' reference
-        ContextChecked = 0x00000040,  // Contextual types have been assigned
+        TypeChecked        = 0x00000001,  // Node has been type checked
+        LexicalThis        = 0x00000002,  // Lexical 'this' reference
+        CaptureThis        = 0x00000004,  // Lexical 'this' used in body
+        EmitExtends        = 0x00000008,  // Emit __extends
+        SuperInstance      = 0x00000010,  // Instance 'super' reference
+        SuperStatic        = 0x00000020,  // Static 'super' reference
+        ContextChecked     = 0x00000040,  // Contextual types have been assigned
+
+        // Values for enum members have been computed, and any errors have been reported for them.
+        EnumValuesComputed = 0x00000080,
     }
 
     export interface NodeLinks {
@@ -815,24 +859,25 @@ module ts {
         Class              = 0x00000400,  // Class
         Interface          = 0x00000800,  // Interface
         Reference          = 0x00001000,  // Generic type reference
-        Anonymous          = 0x00002000,  // Anonymous
-        FromSignature      = 0x00004000,  // Created for signature assignment check
+        Tuple              = 0x00002000,  // Tuple
+        Anonymous          = 0x00004000,  // Anonymous
+        FromSignature      = 0x00008000,  // Created for signature assignment check
 
-        Int                = 0x00008000,
-        Uint               = 0x00010000,
-        I8                 = 0x00020000,
-        U8                 = 0x00040000,
-        I16                = 0x00080000,
-        U16                = 0x00100000,
-        I32                = 0x00200000,
-        U32                = 0x00400000,
-        Float              = 0x00800000,
-        Double             = 0x01000000,
+        Int                = 0x00010000,
+        Uint               = 0x00020000,
+        I8                 = 0x00040000,
+        U8                 = 0x00080000,
+        I16                = 0x00100000,
+        U16                = 0x00200000,
+        I32                = 0x00400000,
+        U32                = 0x00800000,
+        Float              = 0x01000000,
+        Double             = 0x02000000,
 
         Intrinsic = Any | String | Number | Boolean | Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float | Double | Void | Undefined | Null,
         StringLike = String | StringLiteral,
         NumberLike = Number | Enum | Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float | Double,
-        ObjectType = Class | Interface | Reference | Anonymous,
+        ObjectType = Class | Interface | Reference | Tuple | Anonymous,
         PrimitiveType = Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float,
         DoublePrecisionFloat = Number | Double,
         SinglePrecisionFloat = Float,
@@ -889,6 +934,11 @@ module ts {
         openReferenceChecks: Map<boolean>;    // Open type reference check cache
     }
 
+    export interface TupleType extends ObjectType {
+        elementTypes: Type[];          // Element types
+        baseArrayType: TypeReference;  // Array<T> where T is best common type of element types
+    }
+
     // Resolved object type
     export interface ResolvedObjectType extends ObjectType {
         members: SymbolTable;              // Properties by name
@@ -918,7 +968,7 @@ module ts {
         resolvedReturnType: Type;           // Resolved return type
         minArgumentCount: number;           // Number of non-optional parameters
         hasRestParameter: boolean;          // True if last parameter is rest parameter
-        hasStringLiterals: boolean;         // True if instantiated
+        hasStringLiterals: boolean;         // True if specialized
         target?: Signature;                 // Instantiation target
         mapper?: TypeMapper;                // Instantiation mapper
         erasedSignatureCache?: Signature;   // Erased version of signature (deferred)
@@ -982,6 +1032,7 @@ module ts {
         locale?: string;
         mapRoot?: string;
         module?: ModuleKind;
+        noErrorTruncation?: boolean;
         noImplicitAny?: boolean;
         noLib?: boolean;
         noLibCheck?: boolean;
@@ -994,7 +1045,6 @@ module ts {
         target?: ScriptTarget;
         version?: boolean;
         watch?: boolean;
-
         [option: string]: any;
     }
 
@@ -1003,6 +1053,15 @@ module ts {
         CommonJS,
         AMD,
     }
+
+    export interface LineAndCharacter {
+        line: number;
+        /*
+         * This value denotes the character position in line and is different from the 'column' because of tab characters.
+         */
+        character: number;
+    }
+
 
     export enum ScriptTarget {
         ES3,
@@ -1032,9 +1091,6 @@ module ts {
         carriageReturn = 0x0D,        // \r
         lineSeparator = 0x2028,
         paragraphSeparator = 0x2029,
-
-        // REVIEW: do we need to support this?  The scanner doesn't, but our IText does.  This seems 
-        // like an odd disparity?  (Or maybe it's completely fine for them to be different).
         nextLine = 0x0085,
 
         // Unicode 3.0 space characters
@@ -1159,6 +1215,52 @@ module ts {
         byteOrderMark = 0xFEFF,
         tab = 0x09,                   // \t
         verticalTab = 0x0B,           // \v
+    }
+
+    export class SymbolDisplayPart {
+        constructor(public text: string,
+                    public kind: SymbolDisplayPartKind,
+                    public symbol: Symbol) {
+        }
+
+        public toJSON() {
+            return {
+                text: this.text,
+                kind: SymbolDisplayPartKind[this.kind]
+            };
+        }
+
+        public static toString(parts: SymbolDisplayPart[]) {
+            return parts.map(p => p.text).join("");
+        }
+    }
+
+    export enum SymbolDisplayPartKind {
+        aliasName,
+        className,
+        enumName,
+        fieldName,
+        interfaceName,
+        keyword,
+        labelName,
+        lineBreak,
+        numericLiteral,
+        stringLiteral,
+        localName,
+        methodName,
+        moduleName,
+        namespaceName,
+        operator,
+        parameterName,
+        propertyName,
+        punctuation,
+        space,
+        anonymousTypeIndicator,
+        text,
+        typeParameterName,
+        enumMemberName,
+        functionName,
+        regularExpressionLiteral,
     }
 
     export interface CancellationToken {

@@ -11,7 +11,9 @@ module ts {
         var result: U;
         if (array) {
             for (var i = 0, len = array.length; i < len; i++) {
-                if (result = callback(array[i])) break;
+                if (result = callback(array[i])) {
+                    break;
+                }
             }
         }
         return result;
@@ -19,8 +21,7 @@ module ts {
 
     export function contains<T>(array: T[], value: T): boolean {
         if (array) {
-            var len = array.length;
-            for (var i = 0; i < len; i++) {
+            for (var i = 0, len = array.length; i < len; i++) {
                 if (array[i] === value) {
                     return true;
                 }
@@ -31,8 +32,7 @@ module ts {
 
     export function indexOf<T>(array: T[], value: T): number {
         if (array) {
-            var len = array.length;
-            for (var i = 0; i < len; i++) {
+            for (var i = 0, len = array.length; i < len; i++) {
                 if (array[i] === value) {
                     return i;
                 }
@@ -41,10 +41,21 @@ module ts {
         return -1;
     }
 
-    export function filter<T>(array: T[], f: (x: T) => boolean): T[] {
-        var result: T[];
+    export function countWhere<T>(array: T[], predicate: (x: T) => boolean): number {
+        var count = 0;
         if (array) {
-            result = [];
+            for (var i = 0, len = array.length; i < len; i++) {
+                if (predicate(array[i])) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    export function filter<T>(array: T[], f: (x: T) => boolean): T[] {
+        if (array) {
+            var result: T[] = [];
             for (var i = 0, len = array.length; i < len; i++) {
                 var item = array[i];
                 if (f(item)) {
@@ -56,11 +67,9 @@ module ts {
     }
 
     export function map<T, U>(array: T[], f: (x: T) => U): U[] {
-        var result: U[];
         if (array) {
-            result = [];
-            var len = array.length;
-            for (var i = 0; i < len; i++) {
+            var result: U[] = [];
+            for (var i = 0, len = array.length; i < len; i++) {
                 result.push(f(array[i]));
             }
         }
@@ -71,6 +80,17 @@ module ts {
         if (!array2 || !array2.length) return array1;
         if (!array1 || !array1.length) return array2;
         return array1.concat(array2);
+    }
+
+    export function uniqueElements<T>(array: T[]): T[] {
+        if (array) {
+            var result: T[] = [];
+            for (var i = 0, len = array.length; i < len; i++) {
+                var item = array[i];
+                if (!contains(result, item)) result.push(item);
+            }
+        }
+        return result;
     }
 
     export function sum(array: any[], prop: string): number {
@@ -198,6 +218,9 @@ module ts {
 
     export function createFileDiagnostic(file: SourceFile, start: number, length: number, message: DiagnosticMessage, ...args: any[]): Diagnostic;
     export function createFileDiagnostic(file: SourceFile, start: number, length: number, message: DiagnosticMessage): Diagnostic {
+        Debug.assert(start >= 0, "start must be non-negative, is " + start);
+        Debug.assert(length >= 0, "length must be non-negative, is " + length);
+
         var text = getLocaleSpecificMessage(message.key);
         
         if (arguments.length > 4) {
@@ -252,6 +275,9 @@ module ts {
     }
 
     export function flattenDiagnosticChain(file: SourceFile, start: number, length: number, diagnosticChain: DiagnosticMessageChain, newLine: string): Diagnostic {
+        Debug.assert(start >= 0, "start must be non-negative, is " + start);
+        Debug.assert(length >= 0, "length must be non-negative, is " + length);
+
         var code = diagnosticChain.code;
         var category = diagnosticChain.category;
         var messageText = "";
@@ -395,7 +421,7 @@ module ts {
         return normalizedPathComponents(path, rootLength);
     }
 
-    export function getNormalizedPathFromPathCompoments(pathComponents: string[]) {
+    export function getNormalizedPathFromPathComponents(pathComponents: string[]) {
         if (pathComponents && pathComponents.length) {
             return pathComponents[0] + pathComponents.slice(1).join(directorySeparator);
         }
@@ -456,7 +482,7 @@ module ts {
         var pathComponents = getNormalizedPathOrUrlComponents(relativeOrAbsolutePath, currentDirectory);
         var directoryComponents = getNormalizedPathOrUrlComponents(directoryPathOrUrl, currentDirectory);
         if (directoryComponents.length > 1 && directoryComponents[directoryComponents.length - 1] === "") {
-            // If the directory path given was of type test/cases/ then we really need components of directry to be only till its name 
+            // If the directory path given was of type test/cases/ then we really need components of directory to be only till its name
             // that is  ["test", "cases", ""] needs to be actually ["test", "cases"]
             directoryComponents.length--;
         }
@@ -482,7 +508,7 @@ module ts {
         }
 
         // Cant find the relative path, get the absolute path
-        var absolutePath = getNormalizedPathFromPathCompoments(pathComponents);
+        var absolutePath = getNormalizedPathFromPathComponents(pathComponents);
         if (isAbsolutePathAnUrl && isRootedDiskPath(absolutePath)) {
             absolutePath = "file:///" + absolutePath;
         }
@@ -507,12 +533,6 @@ module ts {
         var pathLen = path.length;
         var extLen = extension.length;
         return pathLen > extLen && path.substr(pathLen - extLen, extLen) === extension;
-    }
-
-    export function getCanonicalFileName(fileName: string): string {
-        // if underlying system can distinguish between two files whose names differs only in cases then file name already in canonical form.
-        // otherwise use toLowerCase as a canonical form.
-        return sys.useCaseSensitiveFileNames ? fileName : fileName.toLowerCase();
     }
 
     export interface ObjectAllocator {

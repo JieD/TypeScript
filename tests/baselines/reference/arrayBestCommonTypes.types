@@ -222,7 +222,7 @@ class f {
 >base : base
 >[ { x: undefined, y: new base() }, { x: '', y: new derived() } ] : { x: string; y: base; }[]
 >{ x: undefined, y: new base() } : { x: undefined; y: base; }
->x : any
+>x : undefined
 >undefined : undefined
 >y : base
 >new base() : base
@@ -248,7 +248,7 @@ class f {
 >y : string
 >{x: anyObj, y: 'a'} : { x: any; y: string; }
 >x : any
->anyObj : anyObj
+>anyObj : any
 >y : string
 
         var a2 = [ {x: anyObj, y: 'a'}, {x: 0, y: 'a'}, {x: 'a', y: 'a'} ];
@@ -256,7 +256,7 @@ class f {
 >[ {x: anyObj, y: 'a'}, {x: 0, y: 'a'}, {x: 'a', y: 'a'} ] : { x: any; y: string; }[]
 >{x: anyObj, y: 'a'} : { x: any; y: string; }
 >x : any
->anyObj : anyObj
+>anyObj : any
 >y : string
 >{x: 0, y: 'a'} : { x: number; y: string; }
 >x : number
@@ -273,7 +273,7 @@ class f {
 >y : string
 >{x: anyObj, y: 'a'} : { x: any; y: string; }
 >x : any
->anyObj : anyObj
+>anyObj : any
 >y : string
 >{x: 'a', y: 'a'} : { x: string; y: string; }
 >x : string

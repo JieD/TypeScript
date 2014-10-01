@@ -534,13 +534,17 @@ module Harness {
         export var defaultLibFileName = 'lib.d.ts';
         export var defaultLibSourceFile = ts.createSourceFile(defaultLibFileName, IO.readFile(libFolder + 'lib.core.d.ts'), /*languageVersion*/ ts.ScriptTarget.ES5, /*version:*/ "0");
 
+        export function getCanonicalFileName(fileName: string): string {
+            return sys.useCaseSensitiveFileNames ? fileName : fileName.toLowerCase();
+        }
+
         export function createCompilerHost(filemap: { [filename: string]: ts.SourceFile; }, writeFile: (fn: string, contents: string, writeByteOrderMark:boolean) => void): ts.CompilerHost {
             return {
                 getCurrentDirectory: sys.getCurrentDirectory,
                 getCancellationToken: (): any => undefined,
                 getSourceFile: (fn, languageVersion) => {
-                    if (Object.prototype.hasOwnProperty.call(filemap, ts.getCanonicalFileName(fn))) {
-                        return filemap[ts.getCanonicalFileName(fn)];
+                    if (Object.prototype.hasOwnProperty.call(filemap, getCanonicalFileName(fn))) {
+                        return filemap[getCanonicalFileName(fn)];
                     } else {
                         var lib = defaultLibFileName;
                         if (fn === defaultLibFileName) {
@@ -552,7 +556,7 @@ module Harness {
                 },
                 getDefaultLibFilename: () => defaultLibFileName,
                 writeFile: writeFile,
-                getCanonicalFileName: ts.getCanonicalFileName,
+                getCanonicalFileName: getCanonicalFileName,
                 useCaseSensitiveFileNames: () => sys.useCaseSensitiveFileNames,
                 getNewLine: ()=> sys.newLine
             };
@@ -618,6 +622,7 @@ module Harness {
                 options = options || { noResolve: false };
                 options.target = options.target || ts.ScriptTarget.ES3;
                 options.module = options.module || ts.ModuleKind.None;
+                options.noErrorTruncation = true;
 
                 if (settingsCallback) {
                     settingsCallback(null);
@@ -721,6 +726,10 @@ module Harness {
                             options.emitBOM = !!setting.value;
                             break;
 
+                        case 'errortruncation':
+                            options.noErrorTruncation = setting.value === 'false';
+                            break;
+
                         default:
                             throw new Error('Unsupported compiler setting ' + setting.flag);
                     }
@@ -728,8 +737,10 @@ module Harness {
 
                 var filemap: { [name: string]: ts.SourceFile; } = {};
                 var register = (file: { unitName: string; content: string; }) => {
-                    var filename = Path.switchToForwardSlashes(file.unitName);
-                    filemap[ts.getCanonicalFileName(filename)] = ts.createSourceFile(filename, file.content, options.target, /*version:*/ "0");
+                    if (file.content !== undefined) {
+                        var filename = Path.switchToForwardSlashes(file.unitName);
+                        filemap[getCanonicalFileName(filename)] = ts.createSourceFile(filename, file.content, options.target, /*version:*/ "0");
+                    }
                 };
                 inputFiles.forEach(register);
                 otherFiles.forEach(register);
@@ -796,9 +807,7 @@ module Harness {
             return errorOutput;
         }
 
-        export function getErrorBaseline(inputFiles: { unitName: string; content: string }[],
-            diagnostics: HarnessDiagnostic[]
-            ) {
+        export function getErrorBaseline(inputFiles: { unitName: string; content: string }[], diagnostics: HarnessDiagnostic[]) {
 
             var outputLines: string[] = [];
             // Count up all the errors we find so we don't miss any
@@ -809,18 +818,18 @@ module Harness {
                     .split('\n')
                     .map(s => s.length > 0 && s.charAt(s.length - 1) === '\r' ? s.substr(0, s.length - 1) : s)
                     .filter(s => s.length > 0)
-                    .map(s => '!!! ' + s);
+                    .map(s => '!!! ' + error.category + " TS" + error.code + ": " + s);
                 errLines.forEach(e => outputLines.push(e));
 
                 totalErrorsReported++;
             }
 
-            // Report glovbal errors:
+            // Report global errors
             var globalErrors = diagnostics.filter(err => !err.filename);
             globalErrors.forEach(err => outputErrorText(err));
 
             // 'merge' the lines of each input file with any errors associated with it
-            inputFiles.forEach(inputFile => {
+            inputFiles.filter(f => f.content !== undefined).forEach(inputFile => {
                 // Filter down to the errors in the file
                 var fileErrors = diagnostics.filter(e => {
                     var errFn = e.filename;
@@ -885,7 +894,8 @@ module Harness {
             // Verify we didn't miss any errors in total
             assert.equal(totalErrorsReported, diagnostics.length, 'total number of errors');
 
-            return outputLines.join('\r\n');
+            return minimalDiagnosticsToString(diagnostics) +
+                sys.newLine + sys.newLine + outputLines.join('\r\n');
         }
 
         /* TODO: Delete?
@@ -906,7 +916,7 @@ module Harness {
         export function recreate(options?: { useMinimalDefaultLib: boolean; noImplicitAny: boolean; }) {
         }
 
-        /** The harness' compiler instance used when tests are actually run. Reseting or changing settings of this compiler instance must be done within a testcase (i.e., describe/it) */
+        /** The harness' compiler instance used when tests are actually run. Reseting or changing settings of this compiler instance must be done within a test case (i.e., describe/it) */
         var harnessCompiler: HarnessCompiler;
 
         /** Returns the singleton harness compiler instance for generating and running tests.
@@ -1005,7 +1015,7 @@ module Harness {
     }
 
     export module TestCaseParser {
-        /** all the necesarry information to set the right compiler settings */
+        /** all the necessary information to set the right compiler settings */
         export interface CompilerSetting {
             flag: string;
             value: string;
@@ -1024,7 +1034,7 @@ module Harness {
         var optionRegex = /^[\/]{2}\s*@(\w+)\s*:\s*(\S*)/gm;  // multiple matches on multiple lines
 
         // List of allowed metadata names
-        var fileMetadataNames = ["filename", "comments", "declaration", "module", "nolib", "sourcemap", "target", "out", "outDir", "noimplicitany", "noresolve", "newline", "newlines", "emitbom"];
+        var fileMetadataNames = ["filename", "comments", "declaration", "module", "nolib", "sourcemap", "target", "out", "outDir", "noimplicitany", "noresolve", "newline", "newlines", "emitbom", "errortruncation"];
 
         function extractCompilerSettings(content: string): CompilerSetting[] {
 
@@ -1249,7 +1259,7 @@ module Harness {
     }
 
     export function isLibraryFile(filePath: string): boolean {
-        return filePath.indexOf('lib.d.ts') >= 0 || filePath.indexOf('lib.core.d.ts') >= 0;
+        return (Path.getFileName(filePath) === 'lib.d.ts') || (Path.getFileName(filePath) === 'lib.core.d.ts');
     }
 
     if (Error) (<any>Error).stackTraceLimit = 1;

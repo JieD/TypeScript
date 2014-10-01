@@ -29,7 +29,9 @@ module Microsoft.PeopleAtWork.Model {
 "use strict";
 var Microsoft;
 (function (Microsoft) {
+    var PeopleAtWork;
     (function (PeopleAtWork) {
+        var Model;
         (function (Model) {
             var _Person = (function () {
                 function _Person() {
@@ -40,18 +42,20 @@ var Microsoft;
                 return _Person;
             })();
             Model._Person = _Person;
-        })(PeopleAtWork.Model || (PeopleAtWork.Model = {}));
-        var Model = PeopleAtWork.Model;
-    })(Microsoft.PeopleAtWork || (Microsoft.PeopleAtWork = {}));
-    var PeopleAtWork = Microsoft.PeopleAtWork;
+        })(Model = PeopleAtWork.Model || (PeopleAtWork.Model = {}));
+    })(PeopleAtWork = Microsoft.PeopleAtWork || (Microsoft.PeopleAtWork = {}));
 })(Microsoft || (Microsoft = {}));
 //// [emitMemberAccessExpression_file1.js]
 /// <reference path="emitMemberAccessExpression_file3.ts" />
 "use strict";
 //// [emitMemberAccessExpression_file3.js]
+/// <reference path="emitMemberAccessExpression_file2.ts" />
+/// <reference path="emitMemberAccessExpression_file1.ts" />
 var Microsoft;
 (function (Microsoft) {
+    var PeopleAtWork;
     (function (PeopleAtWork) {
+        var Model;
         (function (Model) {
             var KnockoutExtentions = (function () {
                 function KnockoutExtentions() {
@@ -59,8 +63,6 @@ var Microsoft;
                 return KnockoutExtentions;
             })();
             Model.KnockoutExtentions = KnockoutExtentions;
-        })(PeopleAtWork.Model || (PeopleAtWork.Model = {}));
-        var Model = PeopleAtWork.Model;
-    })(Microsoft.PeopleAtWork || (Microsoft.PeopleAtWork = {}));
-    var PeopleAtWork = Microsoft.PeopleAtWork;
+        })(Model = PeopleAtWork.Model || (PeopleAtWork.Model = {}));
+    })(PeopleAtWork = Microsoft.PeopleAtWork || (Microsoft.PeopleAtWork = {}));
 })(Microsoft || (Microsoft = {}));

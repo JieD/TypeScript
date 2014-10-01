@@ -22,12 +22,10 @@ var a: {
 
 var b = {
 >b : { foo: any; }
->{
-    foo: null
-} : { foo: null; }
+>{    foo: null} : { foo: null; }
 
     foo: null
->foo : any
+>foo : null
 }
 
 // These should all be of type 'any'
