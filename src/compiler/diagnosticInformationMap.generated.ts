@@ -390,5 +390,6 @@ module ts {
         Rest_parameter_0_implicitly_has_an_any_type: { code: 7019, category: DiagnosticCategory.Error, key: "Rest parameter '{0}' implicitly has an 'any[]' type." },
         Call_signature_which_lacks_return_type_annotation_implicitly_has_an_any_return_type: { code: 7020, category: DiagnosticCategory.Error, key: "Call signature, which lacks return-type annotation, implicitly has an 'any' return type." },
         You_cannot_rename_this_element: { code: 8000, category: DiagnosticCategory.Error, key: "You cannot rename this element." },
+        Primitive_type_declaration_0_cannot_be_optional: { code: 8001, category: DiagnosticCategory.Error, key: "Primitive type declaration '{0}' cannot be optional." },
     };
 }

@@ -833,7 +833,10 @@ module ts {
         StringLike = String | StringLiteral,
         NumberLike = Number | Enum | Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float | Double,
         ObjectType = Class | Interface | Reference | Anonymous,
-        PrimitiveType = Int | Uint | I8 | U8 | I16 | U16 | I32 | U32,
+        PrimitiveType = Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float,
+        DoublePrecisionFloat = Number | Double,
+        SinglePrecisionFloat = Float,
+        RealNumber = Number | Double | Float
     }
 
     // Properties common to all types

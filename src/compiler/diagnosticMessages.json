@@ -1555,5 +1555,9 @@
     "You cannot rename this element.": {
         "category": "Error",
         "code": 8000
+    },
+    "Primitive type declaration '{0}' cannot be optional.": {
+        "category": "Error",
+        "code": 8001
     }
 }

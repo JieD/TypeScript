@@ -1407,6 +1407,12 @@ module ts {
             else if (links.type === resolvingType) {
                 links.type = anyType;
             }
+
+            if(symbol.valueDeclaration && (symbol.valueDeclaration.flags & NodeFlags.QuestionMark) &&
+                (links.type.flags & TypeFlags.PrimitiveType)) {
+                error(symbol.valueDeclaration,Diagnostics.Primitive_type_declaration_0_cannot_be_optional, symbol.name, typeToString(links.type));
+            }
+
             return links.type;
         }
 
@@ -2878,6 +2884,7 @@ module ts {
                     }
 
                     var targetPropIsOptional = isOptionalProperty(targetProp);
+
                     if (!sourceProp) {
                         if (!targetPropIsOptional) {
                             if (reportErrors) {
@@ -4162,11 +4169,13 @@ module ts {
                         return false;
                     }
 
+                    /*
                     if (argType.flags & TypeFlags.PrimitiveType) {
                         node.arguments[i] = convertToLower(argType, argType, arg, true);
                     } else if (paramType.flags & TypeFlags.PrimitiveType) {
                         node.arguments[i] = convertToLower(paramType, argType, arg);
                     }
+                    */
                 }
             }
             return true;
@@ -4553,6 +4562,7 @@ module ts {
                         if (!node.type) {
                             signature.resolvedReturnType = resolvingType;
                             var returnType = getReturnTypeFromBody(node, contextualMapper);
+                            //console.log(typeToString(returnType));
                             if (signature.resolvedReturnType === resolvingType) {
                                 signature.resolvedReturnType = returnType;
                             }
@@ -4961,7 +4971,30 @@ module ts {
             return false;
         }
 
+        function convertDoubleToFloat(originNode : Expression) : Expression {
+
+            /*
+            var funcName = <Identifier>(new (objectAllocator.getNodeConstructor(SyntaxKind.Identifier))());
+            funcName.text = "Math.fround";
+            funcName.pos = funcName.end = -1;
+
+            var newer = <CallExpression>(new (objectAllocator.getNodeConstructor(SyntaxKind.CallExpression))());
+            newer.func = funcName;
+            newer.arguments = <NodeArray<Expression>>[];
+            newer.arguments.push(originNode);
+
+            funcName.parent = newer;
+
+            return newer;
+            */
+            return originNode;
+        }
+
         function convertToLower(targetType : Type, originType : Type, originNode : Expression, forceConv : boolean = false) : Expression {
+            if(originType.flags & TypeFlags.RealNumber &&
+                targetType.flags & TypeFlags.SinglePrecisionFloat) {
+                return convertDoubleToFloat(originNode);
+            }
             if(!(targetType.flags & TypeFlags.PrimitiveType)) {
                 return originNode;
             }
@@ -5913,11 +5946,32 @@ module ts {
         }
 
         function checkBlock(node: Block) {
+
             forEach(node.statements, checkSourceElement);
 
             if(node.helperStatements !== undefined) {
                 while(node.helperStatements.length > 0){
                     node.statements.unshift(node.helperStatements.pop());
+                }
+            }
+
+            if(node.kind == SyntaxKind.FunctionBlock) {
+                var func = getContainingFunction(node);
+
+                for (var i = 0, n = func.parameters.length; i < n; i++) {
+                    var param = func.parameters[i];
+
+                    if(param.type && param.name) {
+                        var type = getTypeFromTypeNode(param.type);
+                        if(type && type.flags & TypeFlags.PrimitiveType) {
+                            var lower = convertToLower(type,new Type(checker, TypeFlags.Number),param.name,true);
+                            var ret = <ExpressionStatement>(new (objectAllocator.getNodeConstructor(SyntaxKind.ExpressionStatement))());
+                            ret.expression = createBinaryNode(param.name, SyntaxKind.EqualsToken, lower);
+                            ret.expression.parent = ret;
+                            ret.parent = node;
+                            node.statements.unshift(ret);
+                        }
+                    }
                 }
             }
         }
@@ -6235,6 +6289,7 @@ module ts {
                     }
                     else {
                         var returnType = getReturnTypeOfSignature(getSignatureFromDeclaration(func));
+                        var returnExpType = checkExpression(node.expression);
                         // do assignability check only if we short circuited in determining return type
                         // - function has explicit type annotation
                         // - function is getter with no type annotation and setter parameter type is used
@@ -6243,7 +6298,7 @@ module ts {
                             func.type ||
                             (func.kind === SyntaxKind.GetAccessor && getSetAccessorTypeAnnotationNode(<AccessorDeclaration>getDeclarationOfKind(func.symbol, SyntaxKind.SetAccessor)));
                         if (checkAssignability) {
-                            checkTypeAssignableTo(checkExpression(node.expression), returnType, node.expression, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
+                            checkTypeAssignableTo(returnExpType, returnType, node.expression, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
                         }
                         else if (func.kind == SyntaxKind.Constructor) {
                             // constructor doesn't have explicit return type annontation and yet its return type is known - declaring type
@@ -6251,6 +6306,10 @@ module ts {
                             if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {
                                 error(node.expression, Diagnostics.Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type_of_the_class);
                             }
+                        }
+
+                        if (returnType.flags & TypeFlags.PrimitiveType) {
+                            node.expression = convertToLower(returnType, returnExpType, node.expression, true);
                         }
                     }
                 }
@@ -7109,7 +7168,6 @@ module ts {
                         case SyntaxKind.SwitchStatement:
                         case SyntaxKind.CaseClause:
                         case SyntaxKind.ThrowStatement:
-                        case SyntaxKind.SwitchStatement:
                             return (<ExpressionStatement>parent).expression === node;
                         case SyntaxKind.ForStatement:
                             return (<ForStatement>parent).initializer === node ||
