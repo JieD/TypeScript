@@ -4329,6 +4329,10 @@ module ts {
                 if (indexType.flags & (TypeFlags.Any | TypeFlags.NumberLike)) {
                     var numberIndexType = getIndexTypeOfType(apparentType, IndexKind.Number);
                     if (numberIndexType) {
+                        if (numberIndexType.flags & TypeFlags.PrimitiveType) {
+                            console.log("prim");
+                            node.index = convertToLower(numberIndexType, indexType, node.index, true);
+                        }
                         return numberIndexType;
                     }
                 }
@@ -4481,14 +4485,6 @@ module ts {
                     if (!isValidArgument) {
                         return false;
                     }
-
-                    /*
-                    if (argType.flags & TypeFlags.PrimitiveType) {
-                        node.arguments[i] = convertToLower(argType, argType, arg, true);
-                    } else if (paramType.flags & TypeFlags.PrimitiveType) {
-                        node.arguments[i] = convertToLower(paramType, argType, arg);
-                    }
-                    */
                 }
             }
             return true;
@@ -6596,8 +6592,12 @@ module ts {
 
                 if (node.initializer) {
                     if (!(getNodeLinks(node.initializer).flags & NodeCheckFlags.TypeChecked)) {
-                        // Use default messages
-                        checkTypeAssignableTo(checkAndMarkExpression(node.initializer), type, node, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
+                        var initializerType = checkAndMarkExpression(node.initializer);
+                        checkTypeAssignableTo(initializerType, type, node, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
+
+                        if(type.flags & TypeFlags.PrimitiveType) {
+                            node.initializer = convertToLower(type, initializerType, node.initializer);
+                        }
                     }
                 }
 
