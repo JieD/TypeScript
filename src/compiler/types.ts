@@ -829,9 +829,10 @@ module ts {
         SuperInstance      = 0x00000010,  // Instance 'super' reference
         SuperStatic        = 0x00000020,  // Static 'super' reference
         ContextChecked     = 0x00000040,  // Contextual types have been assigned
+        EmitMathFround     = 0x00000080,  // Emit Math.fround if using float
 
         // Values for enum members have been computed, and any errors have been reported for them.
-        EnumValuesComputed = 0x00000080,
+        EnumValuesComputed = 0x00000100,
     }
 
     export interface NodeLinks {

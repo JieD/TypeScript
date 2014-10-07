@@ -144,6 +144,7 @@ module ts {
         var tupleTypes: Map<TupleType> = {};
         var stringLiteralTypes: Map<StringLiteralType> = {};
         var emitExtends = false;
+        var emitMathFround = false;
 
         var mergedSymbols: Symbol[] = [];
         var symbolLinks: SymbolLinks[] = [];
@@ -5315,7 +5316,8 @@ module ts {
 
         function convertDoubleToFloat(originNode : Expression) : Expression {
 
-            /*
+            emitMathFround = true;
+
             var funcName = <Identifier>(new (objectAllocator.getNodeConstructor(SyntaxKind.Identifier))());
             funcName.text = "Math.fround";
             funcName.pos = funcName.end = -1;
@@ -5328,8 +5330,6 @@ module ts {
             funcName.parent = newer;
 
             return newer;
-            */
-            return originNode;
         }
 
         function convertToLower(targetType : Type, originType : Type, originNode : Expression, forceConv : boolean = false) : Expression {
@@ -7408,6 +7408,7 @@ module ts {
                     potentialThisCollisions.length = 0;
                 }
                 if (emitExtends) links.flags |= NodeCheckFlags.EmitExtends;
+                if (emitMathFround) links.flags |= NodeCheckFlags.EmitMathFround;
                 links.flags |= NodeCheckFlags.TypeChecked;
             }
         }

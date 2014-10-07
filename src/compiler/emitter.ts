@@ -314,6 +314,7 @@ module ts {
             var decreaseIndent = writer.decreaseIndent;
 
             var extendsEmitted = false;
+            var froundEmitted = false;
 
             /** write emitted output to disk*/
             var writeEmittedFiles = writeJavaScriptFile;
@@ -2027,6 +2028,34 @@ module ts {
                 emitDetachedComments(node);
                 // emit prologue directives prior to __extends
                 var startIndex = emitDirectivePrologues(node.statements, /*startWithNewLine*/ false);
+
+                if (!froundEmitted && resolver.getNodeCheckFlags(node) & NodeCheckFlags.EmitMathFround) {
+                    writeLine();
+                    write("if (Math.fround === undefined) {");
+                    writeLine();
+                    increaseIndent();
+                    write("Math.fround = function(x) {");
+                    writeLine();
+                    increaseIndent();
+                    write("if (isNaN(x)) return NaN;");
+                    writeLine();
+                    write("x = Number(x);");
+                    writeLine();
+                    write("if (x === 0) return x;");
+                    writeLine();
+                    write("if (!isFinite(x)) return x;");
+                    writeLine();
+                    write("return new Float32Array([x])[0];");
+                    writeLine();
+                    decreaseIndent();
+                    write("}");
+                    writeLine();
+                    decreaseIndent();
+                    write("}");
+                    writeLine();
+                    froundEmitted = true;
+                }
+
                 if (!extendsEmitted && resolver.getNodeCheckFlags(node) & NodeCheckFlags.EmitExtends) {
                     writeLine();
                     write("var __extends = this.__extends || function (d, b) {");
