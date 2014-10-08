@@ -5378,9 +5378,10 @@ module ts {
 
             function getBestSizeFromNumberLikes(leftType : Type, rightType : Type) : Type {
                 if((leftType.flags & TypeFlags.Enum) || (rightType.flags & TypeFlags.Enum)) return numberType;
-                var leftSize = getSizeOfPrimType(leftType);
-                var rightSize = getSizeOfPrimType(rightType);
-                return leftSize < rightSize ? rightType : leftType;
+                if(leftType.flags & TypeFlags.Double || leftType.flags & TypeFlags.Number) return numberType;
+                if(leftType.flags & TypeFlags.Float) return floatType;
+                if(leftType.flags & TypeFlags.Uint || leftType.flags & TypeFlags.U32) return u32Type;
+                return i32Type;
             }
 
             var operator = node.operator;
