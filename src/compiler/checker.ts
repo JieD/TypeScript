@@ -4330,7 +4330,6 @@ module ts {
                     var numberIndexType = getIndexTypeOfType(apparentType, IndexKind.Number);
                     if (numberIndexType) {
                         if (numberIndexType.flags & TypeFlags.PrimitiveType) {
-                            console.log("prim");
                             node.index = convertToLower(numberIndexType, indexType, node.index, true);
                         }
                         return numberIndexType;
@@ -6595,7 +6594,17 @@ module ts {
                         var initializerType = checkAndMarkExpression(node.initializer);
                         checkTypeAssignableTo(initializerType, type, node, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
 
-                        if(type.flags & TypeFlags.PrimitiveType) {
+                        if(type.flags & TypeFlags.Reference) {
+                            var tRef = <TypeReference>type;
+                            if(tRef.target === globalArrayType && node.initializer.kind === SyntaxKind.ArrayLiteral
+                                && tRef.typeArguments[0].flags & TypeFlags.PrimitiveType) {
+                                for(var i = 0; i < (<ArrayLiteral>node.initializer).elements.length; ++i) {
+                                    var origType = checkAndMarkExpression((<ArrayLiteral>node.initializer).elements[i]);
+                                    (<ArrayLiteral>node.initializer).elements[i] = convertToLower(tRef.typeArguments[0],
+                                        origType, (<ArrayLiteral>node.initializer).elements[i], true);
+                                }
+                            }
+                        } else if(type.flags & TypeFlags.PrimitiveType) {
                             node.initializer = convertToLower(type, initializerType, node.initializer);
                         }
                     }
