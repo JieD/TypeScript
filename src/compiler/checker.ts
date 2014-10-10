@@ -1637,6 +1637,12 @@ module ts {
                     error(symbol.valueDeclaration, diagnostic, symbolToString(symbol));
                 }
             }
+
+            if(symbol.valueDeclaration && (symbol.valueDeclaration.flags & NodeFlags.QuestionMark) &&
+                (links.type.flags & TypeFlags.PrimitiveType)) {
+                error(symbol.valueDeclaration,Diagnostics.Primitive_type_declaration_0_cannot_be_optional, symbol.name, typeToString(links.type));
+            }
+            
             return links.type;
         }
 
@@ -5378,9 +5384,11 @@ module ts {
 
             function getBestSizeFromNumberLikes(leftType : Type, rightType : Type) : Type {
                 if((leftType.flags & TypeFlags.Enum) || (rightType.flags & TypeFlags.Enum)) return numberType;
-                if(leftType.flags & TypeFlags.Double || leftType.flags & TypeFlags.Number) return numberType;
-                if(leftType.flags & TypeFlags.Float) return floatType;
-                if(leftType.flags & TypeFlags.Uint || leftType.flags & TypeFlags.U32) return u32Type;
+                if(leftType.flags & TypeFlags.Double || leftType.flags & TypeFlags.Number ||
+                    rightType.flags & TypeFlags.Double || rightType.flags & TypeFlags.Number) return numberType;
+                if(leftType.flags & TypeFlags.Float || rightType.flags & TypeFlags.Float) return floatType;
+                if(leftType.flags & TypeFlags.Uint || leftType.flags & TypeFlags.U32 ||
+                    rightType.flags & TypeFlags.Uint || rightType.flags & TypeFlags.U32) return u32Type;
                 return i32Type;
             }
 
