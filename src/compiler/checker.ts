@@ -1642,7 +1642,7 @@ module ts {
                 (links.type.flags & TypeFlags.PrimitiveType)) {
                 error(symbol.valueDeclaration,Diagnostics.Primitive_type_declaration_0_cannot_be_optional, symbol.name, typeToString(links.type));
             }
-            
+
             return links.type;
         }
 
@@ -4489,6 +4489,12 @@ module ts {
 
                     if (!isValidArgument) {
                         return false;
+                    }
+
+                    if (argType.flags & TypeFlags.PrimitiveType) {
+                        node.arguments[i] = convertToLower(argType, argType, arg, true);
+                    } else if (paramType.flags & TypeFlags.PrimitiveType) {
+                        node.arguments[i] = convertToLower(paramType, argType, arg);
                     }
                 }
             }
