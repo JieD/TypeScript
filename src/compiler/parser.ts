@@ -221,6 +221,8 @@ module ts {
                 return child((<ArrayTypeNode>node).elementType);
             case SyntaxKind.TupleType:
                 return children((<TupleTypeNode>node).elementTypes);
+            case SyntaxKind.UnionType:
+                return children((<UnionTypeNode>node).types);
             case SyntaxKind.ArrayLiteral:
                 return children((<ArrayLiteral>node).elements);
             case SyntaxKind.ObjectLiteral:
@@ -1849,12 +1851,28 @@ module ts {
             }
         }
 
-        function parseType(): TypeNode {
+        function parseNonUnionType(): TypeNode {
             var type = parseNonArrayType();
-            while (type && !scanner.hasPrecedingLineBreak() && parseOptional(SyntaxKind.OpenBracketToken)) {
+            while (!scanner.hasPrecedingLineBreak() && parseOptional(SyntaxKind.OpenBracketToken)) {
                 parseExpected(SyntaxKind.CloseBracketToken);
                 var node = <ArrayTypeNode>createNode(SyntaxKind.ArrayType, type.pos);
                 node.elementType = type;
+                type = finishNode(node);
+            }
+            return type;
+        }
+
+        function parseType(): TypeNode {
+            var type = parseNonUnionType();
+            if (token === SyntaxKind.BarToken) {
+                var types = <NodeArray<TypeNode>>[type];
+                types.pos = type.pos;
+                while (parseOptional(SyntaxKind.BarToken)) {
+                    types.push(parseNonUnionType());
+                }
+                types.end = getNodeEnd();
+                var node = <UnionTypeNode>createNode(SyntaxKind.UnionType, type.pos);
+                node.types = types;
                 type = finishNode(node);
             }
             return type;
@@ -2427,9 +2445,6 @@ module ts {
                     else {
                         parseExpected(SyntaxKind.OpenParenToken);
                     }
-                    // It is an error to have a trailing comma in an argument list. However, the checker
-                    // needs evidence of a trailing comma in order to give good results for signature help.
-                    // That is why we do not allow a trailing comma, but we "preserve" a trailing comma.
                     callExpr.arguments = parseDelimitedList(ParsingContext.ArgumentExpressions,
                         parseArgumentExpression, /*allowTrailingComma*/ false);
                     parseExpected(SyntaxKind.CloseParenToken);
@@ -2657,9 +2672,6 @@ module ts {
             parseExpected(SyntaxKind.NewKeyword);
             node.func = parseCallAndAccess(parsePrimaryExpression(), /* inNewExpression */ true);
             if (parseOptional(SyntaxKind.OpenParenToken) || token === SyntaxKind.LessThanToken && (node.typeArguments = tryParse(parseTypeArgumentsAndOpenParen))) {
-                // It is an error to have a trailing comma in an argument list. However, the checker
-                // needs evidence of a trailing comma in order to give good results for signature help.
-                // That is why we do not allow a trailing comma, but we "preserve" a trailing comma.
                 node.arguments = parseDelimitedList(ParsingContext.ArgumentExpressions,
                     parseArgumentExpression, /*allowTrailingComma*/ false);
                 parseExpected(SyntaxKind.CloseParenToken);
