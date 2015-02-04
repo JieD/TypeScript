@@ -65,7 +65,12 @@ module ts {
             return emitOutputFilePathWithoutExtension + extension;
         }
 
-        function getFirstConstructorWithBody(node: ClassDeclaration): ConstructorDeclaration {
+        function getFirstConstructorWithBody(nodeHolder: Declaration): ConstructorDeclaration {
+            if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
+                var node = <StructDeclaration>nodeHolder;
+            } else if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
+                var node = <ClassDeclaration>nodeHolder;
+            }
             return forEach(node.members, member => {
                 if (member.kind === SyntaxKind.Constructor && (<ConstructorDeclaration>member).body) {
                     return <ConstructorDeclaration>member;
@@ -73,7 +78,13 @@ module ts {
             });
         }
 
-        function getAllAccessorDeclarations(node: ClassDeclaration, accessor: AccessorDeclaration) {
+        function getAllAccessorDeclarations(nodeHolder: ClassDeclaration, accessor: AccessorDeclaration) {
+            if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
+                var node = <StructDeclaration>nodeHolder;
+            } else if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
+                var node = <ClassDeclaration>nodeHolder;
+            }
+
             var firstAccessor: AccessorDeclaration;
             var getAccessor: AccessorDeclaration;
             var setAccessor: AccessorDeclaration;
@@ -569,6 +580,7 @@ module ts {
                         node.kind === SyntaxKind.GetAccessor ||
                         node.kind === SyntaxKind.SetAccessor ||
                         node.kind === SyntaxKind.ModuleDeclaration ||
+                        node.kind === SyntaxKind.StructDeclaration ||
                         node.kind === SyntaxKind.ClassDeclaration ||
                         node.kind === SyntaxKind.EnumDeclaration) {
                         // Declaration and has associated name use it
@@ -830,6 +842,7 @@ module ts {
                     case SyntaxKind.GetAccessor:
                     case SyntaxKind.SetAccessor:
                     case SyntaxKind.FunctionExpression:
+                    case SyntaxKind.StructDeclaration:
                     case SyntaxKind.ClassDeclaration:
                     case SyntaxKind.InterfaceDeclaration:
                     case SyntaxKind.EnumDeclaration:
@@ -1523,7 +1536,12 @@ module ts {
                 }
             }
 
-            function emitMemberAssignments(node: ClassDeclaration, staticFlag: NodeFlags) {
+            function emitMemberAssignments(nodeHolder: ClassDeclaration, staticFlag: NodeFlags) {
+                if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
+                    var node = <ClassDeclaration>nodeHolder;
+                } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
+                    var node = <StructDeclaration>nodeHolder;
+                }
                 forEach(node.members, member => {
                     if (member.kind === SyntaxKind.Property && (member.flags & NodeFlags.Static) === staticFlag && (<PropertyDeclaration>member).initializer) {
                         writeLine();
@@ -1547,7 +1565,12 @@ module ts {
                 });
             }
 
-            function emitMemberFunctions(node: ClassDeclaration) {
+            function emitMemberFunctions(nodeHolder: ClassDeclaration) {
+                if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
+                    var node = <ClassDeclaration>nodeHolder;
+                } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
+                    var node = <StructDeclaration>nodeHolder;
+                }
                 forEach(node.members, member => {
                     if (member.kind === SyntaxKind.Method) {
                         if (!(<MethodDeclaration>member).body) {
@@ -1623,7 +1646,21 @@ module ts {
                 });
             }
 
+            function emitStructDeclaration(node: StructDeclaration) {
+                emitStructOrClassDeclaration(node);
+            }
+
             function emitClassDeclaration(node: ClassDeclaration) {
+                emitStructOrClassDeclaration(node);
+            }
+
+            function emitStructOrClassDeclaration(nodeHolder: Declaration) {
+                if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
+                    var node = <ClassDeclaration>nodeHolder;
+                } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
+                    var node = <StructDeclaration>nodeHolder;
+                }
+
                 emitLeadingComments(node);
                 write("var ");
                 emit(node.name);
@@ -2176,6 +2213,8 @@ module ts {
                         return emitDebuggerStatement(node);
                     case SyntaxKind.VariableDeclaration:
                         return emitVariableDeclaration(<VariableDeclaration>node);
+                    case SyntaxKind.StructDeclaration:
+                        return emitStructDeclaration(<StructDeclaration>node);
                     case SyntaxKind.ClassDeclaration:
                         return emitClassDeclaration(<ClassDeclaration>node);
                     case SyntaxKind.InterfaceDeclaration:
@@ -2598,6 +2637,11 @@ module ts {
                         // Type parameter constraints are named by user so we should always be able to name it
                         var diagnosticMessage: DiagnosticMessage;
                         switch (node.parent.kind) {
+                            case SyntaxKind.StructDeclaration:
+                                diagnosticMessage = symbolAccesibilityResult.errorModuleName ?
+                                    Diagnostics.Type_parameter_0_of_exported_class_has_or_is_using_name_1_from_private_module_2 :
+                                    Diagnostics.Type_parameter_0_of_exported_class_has_or_is_using_private_name_1;
+                                break;
                             case SyntaxKind.ClassDeclaration:
                                 diagnosticMessage = symbolAccesibilityResult.errorModuleName ?
                                 Diagnostics.Type_parameter_0_of_exported_class_has_or_is_using_name_1_from_private_module_2 :
@@ -2628,7 +2672,7 @@ module ts {
                                     Diagnostics.Type_parameter_0_of_public_static_method_from_exported_class_has_or_is_using_name_1_from_private_module_2 :
                                     Diagnostics.Type_parameter_0_of_public_static_method_from_exported_class_has_or_is_using_private_name_1;
                                 }
-                                else if (node.parent.parent.kind === SyntaxKind.ClassDeclaration) {
+                                else if ( (node.parent.parent.kind === SyntaxKind.ClassDeclaration) || (node.parent.parent.kind === SyntaxKind.StructDeclaration) )  {
                                     diagnosticMessage = symbolAccesibilityResult.errorModuleName ?
                                     Diagnostics.Type_parameter_0_of_public_method_from_exported_class_has_or_is_using_name_1_from_private_module_2 :
                                     Diagnostics.Type_parameter_0_of_public_method_from_exported_class_has_or_is_using_private_name_1;
@@ -2689,8 +2733,8 @@ module ts {
                     function getHeritageClauseVisibilityError(symbolAccesibilityResult: SymbolAccessiblityResult) {
                         var diagnosticMessage: DiagnosticMessage;
                         // Heritage clause is written by user so it can always be named
-                        if (node.parent.kind === SyntaxKind.ClassDeclaration) {
-                            // Class
+                        if ( (node.parent.kind === SyntaxKind.StructDeclaration) || (node.parent.kind === SyntaxKind.ClassDeclaration) ) {
+                            // Struct/Class
                             if (symbolAccesibilityResult.errorModuleName) {
                                 // Module is inaccessible
                                 diagnosticMessage = isImplementsList ?
@@ -2724,7 +2768,24 @@ module ts {
                 }
             }
 
+            function emitStructDeclaration(node: StructDeclaration) {
+                emitStructOrClassDeclaration(node);
+            }
+
             function emitClassDeclaration(node: ClassDeclaration) {
+                emitStructOrClassDeclaration(node);
+            }
+
+            function emitStructOrClassDeclaration(nodeHolder: Declaration) {
+                var type: string;
+                if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
+                    var node = <ClassDeclaration>nodeHolder;
+                    type = "class ";
+                } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
+                    var node = <StructDeclaration>nodeHolder;
+                    type = "struct ";
+                }
+
                 function emitParameterProperties(constructorDeclaration: ConstructorDeclaration) {
                     if (constructorDeclaration) {
                         forEach(constructorDeclaration.parameters, param => {
@@ -2738,7 +2799,7 @@ module ts {
                 if (resolver.isDeclarationVisible(node)) {
                     emitJsDocComments(node);
                     emitDeclarationFlags(node);
-                    write("class ");
+                    write(type);
                     emitSourceTextOfNode(node.name);
                     var prevEnclosingDeclaration = enclosingDeclaration;
                     enclosingDeclaration = node;
@@ -2822,7 +2883,7 @@ module ts {
                             Diagnostics.Public_static_property_0_of_exported_class_has_or_is_using_name_1_from_private_module_2 :
                             Diagnostics.Public_static_property_0_of_exported_class_has_or_is_using_private_name_1;
                         }
-                        else if (node.parent.kind === SyntaxKind.ClassDeclaration) {
+                        else if ( (node.parent.kind === SyntaxKind.StructDeclaration) || (node.parent.kind === SyntaxKind.ClassDeclaration) ) {
                             diagnosticMessage = symbolAccesibilityResult.errorModuleName ?
                             symbolAccesibilityResult.accessibility === SymbolAccessibility.CannotBeNamed ?
                             Diagnostics.Public_property_0_of_exported_class_has_or_is_using_name_1_from_external_module_2_but_cannot_be_named :
@@ -2858,7 +2919,10 @@ module ts {
             }
 
             function emitAccessorDeclaration(node: AccessorDeclaration) {
-                var accessors = getAllAccessorDeclarations(<ClassDeclaration>node.parent, node);
+                var parentNode: any = undefined;
+                parentNode = node.parent.kind === SyntaxKind.ClassDeclaration ? (<ClassDeclaration>node.parent) : (<StructDeclaration>node.parent);
+
+                var accessors = getAllAccessorDeclarations(parentNode, node);
                 if (node === accessors.firstAccessor) {
                     emitJsDocComments(accessors.getAccessor);
                     emitJsDocComments(accessors.setAccessor);
@@ -3011,7 +3075,7 @@ module ts {
                                 Diagnostics.Return_type_of_public_static_method_from_exported_class_has_or_is_using_name_0_from_private_module_1 :
                                 Diagnostics.Return_type_of_public_static_method_from_exported_class_has_or_is_using_private_name_0;
                             }
-                            else if (node.parent.kind === SyntaxKind.ClassDeclaration) {
+                            else if ( (node.parent.kind === SyntaxKind.StructDeclaration) || (node.parent.kind === SyntaxKind.ClassDeclaration) ) {
                                 diagnosticMessage = symbolAccesibilityResult.errorModuleName ?
                                 symbolAccesibilityResult.accessibility === SymbolAccessibility.CannotBeNamed ?
                                 Diagnostics.Return_type_of_public_method_from_exported_class_has_or_is_using_name_0_from_external_module_1_but_cannot_be_named :
@@ -3096,7 +3160,7 @@ module ts {
                                 Diagnostics.Parameter_0_of_public_static_method_from_exported_class_has_or_is_using_name_1_from_private_module_2 :
                                 Diagnostics.Parameter_0_of_public_static_method_from_exported_class_has_or_is_using_private_name_1;
                             }
-                            else if (node.parent.parent.kind === SyntaxKind.ClassDeclaration) {
+                            else if ( (node.parent.parent.kind === SyntaxKind.StructDeclaration) || (node.parent.parent.kind === SyntaxKind.ClassDeclaration) ) {
                                 diagnosticMessage = symbolAccesibilityResult.errorModuleName ?
                                 symbolAccesibilityResult.accessibility === SymbolAccessibility.CannotBeNamed ?
                                 Diagnostics.Parameter_0_of_public_method_from_exported_class_has_or_is_using_name_1_from_external_module_2_but_cannot_be_named :
@@ -3151,6 +3215,8 @@ module ts {
                         return emitPropertyDeclaration(<PropertyDeclaration>node);
                     case SyntaxKind.InterfaceDeclaration:
                         return emitInterfaceDeclaration(<InterfaceDeclaration>node);
+                    case SyntaxKind.StructDeclaration:
+                        return emitStructDeclaration(<StructDeclaration>node);
                     case SyntaxKind.ClassDeclaration:
                         return emitClassDeclaration(<ClassDeclaration>node);
                     case SyntaxKind.EnumMember:

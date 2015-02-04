@@ -90,6 +90,7 @@ module ts {
             // This list is a work in progress. Add missing node kinds to improve their error
             // spans.
             case SyntaxKind.VariableDeclaration:
+            case SyntaxKind.StructDeclaration:
             case SyntaxKind.ClassDeclaration:
             case SyntaxKind.InterfaceDeclaration:
             case SyntaxKind.ModuleDeclaration:
@@ -316,6 +317,12 @@ module ts {
                 return child((<VariableDeclaration>node).name) ||
                     child((<VariableDeclaration>node).type) ||
                     child((<VariableDeclaration>node).initializer);
+            case SyntaxKind.StructDeclaration:
+                return child((<StructDeclaration>node).name) ||
+                    children((<StructDeclaration>node).typeParameters) ||
+                    child((<StructDeclaration>node).baseType) ||
+                    children((<StructDeclaration>node).implementedTypes) ||
+                    children((<StructDeclaration>node).members);
             case SyntaxKind.ClassDeclaration:
                 return child((<ClassDeclaration>node).name) ||
                     children((<ClassDeclaration>node).typeParameters) ||
@@ -481,6 +488,7 @@ module ts {
         switch (node.kind) {
             case SyntaxKind.TypeParameter:
             case SyntaxKind.ClassDeclaration:
+            case SyntaxKind.StructDeclaration:
             case SyntaxKind.InterfaceDeclaration:
             case SyntaxKind.EnumDeclaration:
                 return true;
@@ -564,6 +572,7 @@ module ts {
             case SyntaxKind.FunctionDeclaration:
             case SyntaxKind.GetAccessor:
             case SyntaxKind.SetAccessor:
+            case SyntaxKind.StructDeclaration:
             case SyntaxKind.ClassDeclaration:
             case SyntaxKind.InterfaceDeclaration:
             case SyntaxKind.EnumDeclaration:
@@ -620,12 +629,31 @@ module ts {
 
     export function getAncestor(node: Node, kind: SyntaxKind): Node {
         switch (kind) {
+            case SyntaxKind.StructDeclaration:
+                while (node) {
+                    switch (node.kind) {
+                        case SyntaxKind.StructDeclaration:
+                            return <StructDeclaration>node;
+                        case SyntaxKind.ClassDeclaration:
+                        case SyntaxKind.EnumDeclaration:
+                        case SyntaxKind.InterfaceDeclaration:
+                        case SyntaxKind.ModuleDeclaration:
+                        case SyntaxKind.ImportDeclaration:
+                            // early exit cases - declarations cannot be nested in structs
+                            return undefined;
+                        default:
+                            node = node.parent;
+                            continue;
+                    }
+                }
+                break;
             // special-cases that can be come first
             case SyntaxKind.ClassDeclaration:
                 while (node) {
                     switch (node.kind) {
                         case SyntaxKind.ClassDeclaration:
                             return <ClassDeclaration>node;
+                        case SyntaxKind.StructDeclaration:
                         case SyntaxKind.EnumDeclaration:
                         case SyntaxKind.InterfaceDeclaration:
                         case SyntaxKind.ModuleDeclaration:
@@ -658,6 +686,7 @@ module ts {
         SwitchClauses,           // Clauses in switch statement
         SwitchClauseStatements,  // Statements in switch clause
         TypeMembers,             // Members in interface or type literal
+        StructMembers,           // Members in struct declaration
         ClassMembers,            // Members in class declaration
         EnumMembers,             // Members in enum declaration
         BaseTypeReferences,      // Type references in extends or implements clause
@@ -686,6 +715,7 @@ module ts {
             case ParsingContext.SwitchClauses:          return Diagnostics.case_or_default_expected;
             case ParsingContext.SwitchClauseStatements: return Diagnostics.Statement_expected;
             case ParsingContext.TypeMembers:            return Diagnostics.Property_or_signature_expected;
+            case ParsingContext.StructMembers:          return Diagnostics.Unexpected_token_A_constructor_method_accessor_or_property_was_expected;
             case ParsingContext.ClassMembers:           return Diagnostics.Unexpected_token_A_constructor_method_accessor_or_property_was_expected;
             case ParsingContext.EnumMembers:            return Diagnostics.Enum_member_expected;
             case ParsingContext.BaseTypeReferences:     return Diagnostics.Type_reference_expected;
@@ -709,6 +739,7 @@ module ts {
     enum ModifierContext {
         SourceElements,          // Top level elements in a source file
         ModuleElements,          // Elements in module declaration
+        StructMembers,           // Members in struct declaration
         ClassMembers,            // Members in class declaration
         Parameters,              // Parameters in parameter list
     }
@@ -1150,6 +1181,8 @@ module ts {
                     return token === SyntaxKind.CaseKeyword || token === SyntaxKind.DefaultKeyword;
                 case ParsingContext.TypeMembers:
                     return isTypeMember();
+                case ParsingContext.StructMembers:
+                    return lookAhead(isStructMemberStart);
                 case ParsingContext.ClassMembers:
                     return lookAhead(isClassMemberStart);
                 case ParsingContext.EnumMembers:
@@ -1186,6 +1219,7 @@ module ts {
                 case ParsingContext.BlockStatements:
                 case ParsingContext.SwitchClauses:
                 case ParsingContext.TypeMembers:
+                case ParsingContext.StructMembers:
                 case ParsingContext.ClassMembers:
                 case ParsingContext.EnumMembers:
                 case ParsingContext.ObjectLiteralMembers:
@@ -3127,6 +3161,7 @@ module ts {
                 case SyntaxKind.FinallyKeyword:
                     return true;
                 case SyntaxKind.InterfaceKeyword:
+                case SyntaxKind.StructKeyword:
                 case SyntaxKind.ClassKeyword:
                 case SyntaxKind.ModuleKeyword:
                 case SyntaxKind.EnumKeyword:
@@ -3399,6 +3434,56 @@ module ts {
             return finishNode(node);
         }
 
+        function isStructMemberStart(): boolean {
+            var idToken: SyntaxKind;
+
+            // Eat up all modifiers, but hold on to the last one in case it is actually an identifier.
+            while (isModifier(token)) {
+                idToken = token;
+                nextToken();
+            }
+
+            // Try to get the first property-like token following all modifiers.
+            // This can either be an identifier or the 'get' or 'set' keywords.
+            if (isPropertyName()) {
+                idToken = token;
+                nextToken();
+            }
+
+            // Index signatures are struct members; we can parse.
+            if (token === SyntaxKind.OpenBracketToken) {
+                return true;
+            }
+
+            // If we were able to get any potential identifier...
+            if (idToken !== undefined) {
+                // If we have a non-keyword identifier, or if we have an accessor, then it's safe to parse.
+                if (!isKeyword(idToken) || idToken === SyntaxKind.SetKeyword || idToken === SyntaxKind.GetKeyword) {
+                    return true;
+                }
+
+                // If it *is* a keyword, but not an accessor, check a little farther along
+                // to see if it should actually be parsed as a struct member.
+                switch (token) {
+                    case SyntaxKind.OpenParenToken:     // Method declaration
+                    case SyntaxKind.LessThanToken:      // Generic Method declaration
+                    case SyntaxKind.ColonToken:         // Type Annotation for declaration
+                    case SyntaxKind.EqualsToken:        // Initializer for declaration
+                    case SyntaxKind.QuestionToken:      // Not valid, but permitted so that it gets caught later on.
+                        return true;
+                    default:
+                        // Covers
+                        //  - Semicolons     (declaration termination)
+                        //  - Closing braces (end-of-struct, must be declaration)
+                        //  - End-of-files   (not valid, but permitted so that it gets caught later on)
+                        //  - Line-breaks    (enabling *automatic semicolon insertion*)
+                        return canParseSemicolon();
+                }
+            }
+
+            return false;
+        }
+
         function isClassMemberStart(): boolean {
             var idToken: SyntaxKind;
 
@@ -3535,6 +3620,9 @@ module ts {
                         else if (flags & NodeFlags.Ambient) {
                             grammarErrorAtPos(modifierStart, modifierLength, Diagnostics._0_modifier_must_precede_1_modifier, "export", "declare");
                         }
+                        else if (context === ModifierContext.StructMembers) {
+                            grammarErrorAtPos(modifierStart, modifierLength, Diagnostics._0_modifier_cannot_appear_on_a_struct_element, "export");
+                        }
                         else if (context === ModifierContext.ClassMembers) {
                             grammarErrorAtPos(modifierStart, modifierLength, Diagnostics._0_modifier_cannot_appear_on_a_class_element, "export");
                         }
@@ -3547,6 +3635,9 @@ module ts {
                     case SyntaxKind.DeclareKeyword:
                         if (flags & NodeFlags.Ambient) {
                             grammarErrorAtPos(modifierStart, modifierLength, Diagnostics._0_modifier_already_seen, "declare");
+                        }
+                        else if (context === ModifierContext.StructMembers) {
+                            grammarErrorAtPos(modifierStart, modifierLength, Diagnostics._0_modifier_cannot_appear_on_a_struct_element, "declare");
                         }
                         else if (context === ModifierContext.ClassMembers) {
                             grammarErrorAtPos(modifierStart, modifierLength, Diagnostics._0_modifier_cannot_appear_on_a_class_element, "declare");
@@ -3599,6 +3690,64 @@ module ts {
                 grammarErrorAtPos(declarationStart, declarationFirstTokenLength, Diagnostics.A_declare_modifier_is_required_for_a_top_level_declaration_in_a_d_ts_file);
             }
             return flags;
+        }
+
+        function parseStructMemberDeclaration(): Declaration {
+            var pos = getNodePos();
+            var flags = parseAndCheckModifiers(ModifierContext.StructMembers);
+            if (parseContextualModifier(SyntaxKind.GetKeyword)) {
+                return parseAndCheckMemberAccessorDeclaration(SyntaxKind.GetAccessor, pos, flags);
+            }
+            if (parseContextualModifier(SyntaxKind.SetKeyword)) {
+                return parseAndCheckMemberAccessorDeclaration(SyntaxKind.SetAccessor, pos, flags);
+            }
+            if (token === SyntaxKind.ConstructorKeyword) {
+                return parseConstructorDeclaration(pos, flags);
+            }
+            if (token >= SyntaxKind.Identifier || token === SyntaxKind.StringLiteral || token === SyntaxKind.NumericLiteral) {
+                return parsePropertyMemberDeclaration(pos, flags);
+            }
+            if (token === SyntaxKind.OpenBracketToken) {
+                if (flags) {
+                    var start = getTokenPos(pos);
+                    var length = getNodePos() - start;
+                    errorAtPos(start, length, Diagnostics.Modifiers_not_permitted_on_index_signature_members);
+                }
+                return parseIndexSignatureMember();
+            }
+
+            // 'isStructMemberStart' should have hinted not to attempt parsing.
+            Debug.fail("Should not have attempted to parse struct member declaration.");
+        }
+
+        function parseStructDeclaration(pos: number, flags: NodeFlags): StructDeclaration {
+            var node = <StructDeclaration>createNode(SyntaxKind.StructDeclaration, pos);
+            node.flags = flags;
+            var errorCountBeforeStructDeclaration = file.syntacticErrors.length;
+            parseExpected(SyntaxKind.StructKeyword);
+            node.name = parseIdentifier();
+            node.typeParameters = parseTypeParameters();
+            // TODO(jfreeman): Parse arbitrary sequence of heritage clauses and error for order and duplicates
+            node.baseType = parseOptional(SyntaxKind.ExtendsKeyword) ? parseTypeReference() : undefined;
+            var implementsKeywordStart = scanner.getTokenPos();
+            var implementsKeywordLength: number;
+            if (parseOptional(SyntaxKind.ImplementsKeyword)) {
+                implementsKeywordLength = scanner.getStartPos() - implementsKeywordStart;
+                node.implementedTypes = parseDelimitedList(ParsingContext.BaseTypeReferences,
+                    parseTypeReference, /*allowTrailingComma*/ false);
+            }
+            var errorCountBeforeStructBody = file.syntacticErrors.length;
+            if (parseExpected(SyntaxKind.OpenBraceToken)) {
+                node.members = parseList(ParsingContext.StructMembers, /*checkForStrictMode*/ false, parseStructMemberDeclaration);
+                parseExpected(SyntaxKind.CloseBraceToken);
+            }
+            else {
+                node.members = createMissingList<Declaration>();
+            }
+            if (node.implementedTypes && !node.implementedTypes.length && errorCountBeforeStructBody === errorCountBeforeStructDeclaration) {
+                grammarErrorAtPos(implementsKeywordStart, implementsKeywordLength, Diagnostics._0_list_cannot_be_empty, "implements");
+            }
+            return finishNode(node);
         }
 
         function parseClassMemberDeclaration(): Declaration {
@@ -3837,6 +3986,7 @@ module ts {
                 case SyntaxKind.VarKeyword:
                 case SyntaxKind.FunctionKeyword:
                     return true;
+                case SyntaxKind.StructKeyword:
                 case SyntaxKind.ClassKeyword:
                 case SyntaxKind.InterfaceKeyword:
                 case SyntaxKind.EnumKeyword:
@@ -3889,6 +4039,9 @@ module ts {
                     break;
                 case SyntaxKind.FunctionKeyword:
                     result = parseFunctionDeclaration(pos, flags);
+                    break;
+                case SyntaxKind.StructKeyword:
+                    result = parseStructDeclaration(pos, flags);
                     break;
                 case SyntaxKind.ClassKeyword:
                     result = parseClassDeclaration(pos, flags);

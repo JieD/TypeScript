@@ -402,5 +402,8 @@ module ts {
         Function_implicitly_has_return_type_any_because_it_does_not_have_a_return_type_annotation_and_is_referenced_directly_or_indirectly_in_one_of_its_return_expressions: { code: 7024, category: DiagnosticCategory.Error, key: "Function implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions." },
         You_cannot_rename_this_element: { code: 8000, category: DiagnosticCategory.Error, key: "You cannot rename this element." },
         Primitive_type_declaration_0_cannot_be_optional: { code: 8001, category: DiagnosticCategory.Error, key: "Primitive type declaration '{0}' cannot be optional." },
+        Static_members_cannot_reference_struct_type_parameters: { code: 8002, category: DiagnosticCategory.Error, key: "Static members cannot reference struct type parameters." },
+        A_struct_may_only_extend_another_struct: { code: 8004, category: DiagnosticCategory.Error, key: "A struct may only extend another struct." },
+        _0_modifier_cannot_appear_on_a_struct_element: { code: 8005, category: DiagnosticCategory.Error, key: "'{0}' modifier cannot appear on a struct element." },
     };
 }

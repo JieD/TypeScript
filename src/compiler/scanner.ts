@@ -36,6 +36,7 @@ module ts {
         "break": SyntaxKind.BreakKeyword,
         "case": SyntaxKind.CaseKeyword,
         "catch": SyntaxKind.CatchKeyword,
+        "struct": SyntaxKind.StructKeyword,
         "class": SyntaxKind.ClassKeyword,
         "continue": SyntaxKind.ContinueKeyword,
         "const": SyntaxKind.ConstKeyword,

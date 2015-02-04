@@ -1604,5 +1604,21 @@
     "Primitive type declaration '{0}' cannot be optional.": {
         "category": "Error",
         "code": 8001
+    },
+    "Static members cannot reference struct type parameters.": {
+        "category": "Error",
+        "code": 8002
+    },
+    "A struct may only extend another struct.": {
+        "category": "Error",
+        "code": 8003
+    },
+    "A struct may only extend another struct.": {
+        "category": "Error",
+        "code": 8004
+    },
+    "'{0}' modifier cannot appear on a struct element.": {
+        "category": "Error",
+        "code": 8005
     }
 }

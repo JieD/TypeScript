@@ -211,6 +211,7 @@ module ts {
                 case SyntaxKind.ArrowFunction:
                     declareSymbol(container.locals, undefined, node, symbolKind, symbolExcludes);
                     break;
+                case SyntaxKind.StructDeclaration:
                 case SyntaxKind.ClassDeclaration:
                     if (node.flags & NodeFlags.Static) {
                         declareSymbol(container.symbol.exports, container.symbol, node, symbolKind, symbolExcludes);
@@ -319,6 +320,9 @@ module ts {
                     break;
                 case SyntaxKind.CatchBlock:
                     bindCatchVariableDeclaration(<CatchBlock>node);
+                    break;
+                case SyntaxKind.StructDeclaration:
+                    bindDeclaration(<Declaration>node, SymbolFlags.Struct, SymbolFlags.StructExcludes);
                     break;
                 case SyntaxKind.ClassDeclaration:
                     bindDeclaration(<Declaration>node, SymbolFlags.Class, SymbolFlags.ClassExcludes);

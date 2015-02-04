@@ -100,6 +100,7 @@ module ts {
         NewKeyword,
         NullKeyword,
         ReturnKeyword,
+        StructKeyword,
         SuperKeyword,
         SwitchKeyword,
         ThisKeyword,
@@ -210,6 +211,7 @@ module ts {
         VariableDeclaration,
         FunctionDeclaration,
         FunctionBlock,
+        StructDeclaration,
         ClassDeclaration,
         InterfaceDeclaration,
         EnumDeclaration,
@@ -513,6 +515,13 @@ module ts {
         variable: Identifier;
     }
 
+    export interface StructDeclaration extends Declaration {
+        typeParameters?: NodeArray<TypeParameterDeclaration>;
+        baseType?: TypeReferenceNode;
+        implementedTypes?: NodeArray<TypeReferenceNode>;
+        members: NodeArray<Node>;
+    }
+
     export interface ClassDeclaration extends Declaration {
         typeParameters?: NodeArray<TypeParameterDeclaration>;
         baseType?: TypeReferenceNode;
@@ -734,6 +743,7 @@ module ts {
         Property           = 0x00000002,  // Property or enum member
         EnumMember         = 0x00000004,  // Enum member
         Function           = 0x00000008,  // Function
+        Struct             = 0x10000000,  // Struct
         Class              = 0x00000010,  // Class
         Interface          = 0x00000020,  // Interface
         Enum               = 0x00000040,  // Enum
@@ -762,8 +772,8 @@ module ts {
         Transient          = 0x04000000,  // Transient symbol (created during type check)
         Prototype          = 0x08000000,  // Prototype property (no source representation)
 
-        Value     = Variable | Property | EnumMember | Function | Class | Enum | ValueModule | Method | GetAccessor | SetAccessor | UnionProperty,
-        Type      = Class | Interface | Enum | TypeLiteral | ObjectLiteral | TypeParameter,
+        Value     = Variable | Property | EnumMember | Function | Struct | Class | Enum | ValueModule | Method | GetAccessor | SetAccessor | UnionProperty,
+        Type      = Struct | Class | Interface | Enum | TypeLiteral | ObjectLiteral | TypeParameter,
         Namespace = ValueModule | NamespaceModule,
         Module    = ValueModule | NamespaceModule,
         Accessor  = GetAccessor | SetAccessor,
@@ -774,10 +784,11 @@ module ts {
         PropertyExcludes        = Value,
         EnumMemberExcludes      = Value,
         FunctionExcludes        = Value & ~(Function | ValueModule),
+        StructExcludes          = (Value | Type) & ~ValueModule,
         ClassExcludes           = (Value | Type) & ~ValueModule,
         InterfaceExcludes       = Type & ~Interface,
         EnumExcludes            = (Value | Type) & ~(Enum | ValueModule),
-        ValueModuleExcludes     = Value & ~(Function | Class | Enum | ValueModule),
+        ValueModuleExcludes     = Value & ~(Function | Struct | Class | Enum | ValueModule),
         NamespaceModuleExcludes = 0,
         MethodExcludes          = Value & ~Method,
         GetAccessorExcludes     = Value & ~SetAccessor,
@@ -787,13 +798,13 @@ module ts {
         // Imports collide with all other imports with the same name.
         ImportExcludes          = Import,
 
-        ModuleMember = Variable | Function | Class | Interface | Enum | Module | Import,
+        ModuleMember = Variable | Function | Struct | Class | Interface | Enum | Module | Import,
 
-        ExportHasLocal = Function | Class | Enum | ValueModule,
+        ExportHasLocal = Function | Struct | Class | Enum | ValueModule,
 
         HasLocals  = Function | Module | Method | Constructor | Accessor | Signature,
-        HasExports = Class | Enum | Module,
-        HasMembers = Class | Interface | TypeLiteral | ObjectLiteral,
+        HasExports = Struct | Class | Enum | Module,
+        HasMembers = Struct | Class | Interface | TypeLiteral | ObjectLiteral,
 
         IsContainer = HasLocals | HasExports | HasMembers,
         PropertyOrAccessor      = Property | Accessor,
@@ -807,7 +818,7 @@ module ts {
         mergeId?: number;              // Merge id (used to look up merged symbol)
         declarations?: Declaration[];  // Declarations associated with this symbol
         parent?: Symbol;               // Parent symbol
-        members?: SymbolTable;         // Class, interface or literal instance members
+        members?: SymbolTable;         // Struct, class, interface or literal instance members
         exports?: SymbolTable;         // Module exports
         exportSymbol?: Symbol;         // Exported symbol associated with this symbol
         valueDeclaration?: Declaration // First value declaration of the symbol
@@ -866,6 +877,7 @@ module ts {
         Enum               = 0x00000080,  // Enum type
         StringLiteral      = 0x00000100,  // String literal type
         TypeParameter      = 0x00000200,  // Type parameter
+        Struct             = 0x08000000,  // Struct
         Class              = 0x00000400,  // Class
         Interface          = 0x00000800,  // Interface
         Reference          = 0x00001000,  // Generic type reference
@@ -888,7 +900,7 @@ module ts {
         Intrinsic = Any | String | Number | Boolean | Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float | Double | Void | Undefined | Null,
         StringLike = String | StringLiteral,
         NumberLike = Number | Enum | Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float | Double,
-        ObjectType = Class | Interface | Reference | Tuple | Union | Anonymous,
+        ObjectType = Struct | Class | Interface | Reference | Tuple | Union | Anonymous,
         PrimitiveType = Int | Uint | I8 | U8 | I16 | U16 | I32 | U32 | Float,
         DoublePrecisionFloat = Number | Double,
         SinglePrecisionFloat = Float,
@@ -921,7 +933,7 @@ module ts {
         _apparentTypeBrand: any;
     }
 
-    // Class and interface types (TypeFlags.Class and TypeFlags.Interface)
+    // Struct, class and interface types (TypeFlags.Class and TypeFlags.Interface)
     export interface InterfaceType extends ObjectType {
         typeParameters: TypeParameter[];           // Type parameters (undefined if non-generic)
         baseTypes: ObjectType[];                   // Base types
@@ -938,7 +950,7 @@ module ts {
         typeArguments: Type[];  // Type reference type arguments
     }
 
-    // Generic class and interface types
+    // Generic struct, class and interface types
     export interface GenericType extends InterfaceType, TypeReference {
         instantiations: Map<TypeReference>;   // Generic instantiation cache
         openReferenceTargets: GenericType[];  // Open type reference targets
@@ -1254,6 +1266,7 @@ module ts {
 
     export enum SymbolDisplayPartKind {
         aliasName,
+        structName,
         className,
         enumName,
         fieldName,
