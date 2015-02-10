@@ -1,7 +1,3 @@
-/**
- * Created by jie on 2/4/15.
- */
-
 struct Person {
 	name: string;
 	age: number
