@@ -1,7 +1,5 @@
 struct Person {
-	name: string;
-	age: number
-	constructor(name: string, age: number) {};
+	constructor(public name: string, public age: number) {};
 }
 
 var test = function (person: Person) {}
