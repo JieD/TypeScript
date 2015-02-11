@@ -11,7 +11,7 @@ struct Derived extends Base {
 var r = new Derived(); // error
 var r2 = new Derived(1); 
 
-struct Base2<T> {
+/* struct Base2<T> {
     a: T;
     constructor(x: T) { this.a = x; }
 }

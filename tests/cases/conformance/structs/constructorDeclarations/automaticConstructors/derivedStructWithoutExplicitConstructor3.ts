@@ -22,7 +22,7 @@ var r = new Derived(); // error
 var r2 = new Derived2(1); // error
 var r3 = new Derived('', '');
 
-struct Base2<T> {
+/* struct Base2<T> {
     a: T;
     constructor(x: T) { this.a = x; }
 }
