@@ -14,7 +14,7 @@ module NonGeneric {
     var r2 = r.x;
     var r3 = r.y;
     r.y = 4;
-    var r6 = c.y(); // error
+    var r6 = c.y(); // error, should be c.y
 
 }
 
