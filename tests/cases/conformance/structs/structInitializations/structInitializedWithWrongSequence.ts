@@ -1,11 +1,11 @@
 struct Person {
 	constructor(public name: string, public age: number) {}
 }
-var john = new Person("John", 25); // correct
-var george = new Person(25, "George"); // wrong, sequence matters. comply with class syntax
-var jg = new Person("John", "George", 25); // wrong parameter number
+var john = new Person("John", 25); // ok
+var george = new Person(25, "George"); // error, sequence matters. comply with class syntax
+var jg = new Person("John", "George", 25); // error, parameter number. comply with class syntax
 
-var john1 = new Person({name: "John", age: 25}); // right sequence
-var george1 = new Person({age: 25, name: "George"}); // wrong, sequence matters. comply with class syntax
-var george1 = {age:25, name: "George"}; // wrong
+var john1 = new Person({name: "John", age: 25}); // error, cannot initialize this way. comply with class syntax
+var george1 = new Person({age: 25, name: "George"}); // error. comply with class syntax
+var george1 = {age:25, name: "George"}; // error, nominal typing, not structural typing.
 
