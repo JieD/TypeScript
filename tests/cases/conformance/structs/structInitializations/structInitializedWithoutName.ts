@@ -3,5 +3,6 @@ struct Person {
 }
 
 var test = function (person: Person) {}
-test(new Person("John", 25)); // correct
-test({ name: "John", age: 25 }); // wrong, need an explicit declaration
+test({ name: "John", age: 25 }); // error, need to name the type
+test(new Person({ name: "John", age: 25 })); // error, wrong call signature
+test(new Person("John", 25)); // ok
