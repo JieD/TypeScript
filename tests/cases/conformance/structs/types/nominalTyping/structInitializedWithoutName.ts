@@ -1,8 +1,9 @@
-struct Person {
+class Person {
 	constructor(public name: string, public age: number) {}
 }
 
 var test = function (person: Person) {}
 test({ name: "John", age: 25 }); // error, need to name the type
+test({name: "John", age: 25, birth: "1990"}); // error
 test(new Person({ name: "John", age: 25 })); // error, wrong call signature
 test(new Person("John", 25)); // ok

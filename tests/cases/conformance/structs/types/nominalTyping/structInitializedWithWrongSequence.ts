@@ -7,5 +7,4 @@ var jg = new Person("John", "George", 25); // error, wrong call signature. compl
 
 var john1 = new Person({name: "John", age: 25}); // error, wrong call signature. comply with class syntax
 var george1 = new Person({age: 25, name: "George"}); // error. wrong call signature. comply with class syntax
-var george1 = {age:25, name: "George", birth: "1980"}; // error, nominal typing, not structural typing.
 
