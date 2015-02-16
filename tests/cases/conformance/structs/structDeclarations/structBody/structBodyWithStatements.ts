@@ -1,9 +1,9 @@
 struct C {
-    var x = 1; // error
+    var x = 1; // error, variable statement
 }
 
 struct C2 {
-    function foo() {} // error
+    function foo() {} // error, function declaration
 }
 
 var x = 1;
