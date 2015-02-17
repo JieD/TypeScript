@@ -1,9 +1,9 @@
 interface I {
     foo: string;
 }
-struct C extends I { } // error
+struct C extends I { } // error, struct can only extend struct
 
-struct C2 extends { foo: string; } { } // error
+struct C2 extends { foo: string; } { } // error, type reference
 var x: { foo: string; }
 struct C3 extends x { } // error
 

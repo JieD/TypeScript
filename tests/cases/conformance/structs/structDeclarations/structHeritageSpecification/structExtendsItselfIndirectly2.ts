@@ -9,7 +9,7 @@ module N {
     export struct E extends M.D { baz: number; }
 }
 
-module O {
+/* module O {
     struct C2<T> extends Q.E2<T> { foo: T; } // error
 
     module P {

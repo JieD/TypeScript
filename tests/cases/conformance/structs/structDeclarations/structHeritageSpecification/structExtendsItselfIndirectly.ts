@@ -4,7 +4,7 @@ struct D extends C { bar: string; }
 
 struct E extends D { baz: number; }
 
-struct C2<T> extends E2<T> { foo: T; } // error
+/* struct C2<T> extends E2<T> { foo: T; } // error
 
 struct D2<T> extends C2<T> { bar: T; }
 
