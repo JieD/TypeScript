@@ -18,7 +18,7 @@ var o: {} = d; // ok
 d = 1; // error
 d = { foo: '' } // error
 d = () => { } // error
-d = c; // error, no inheritance
+d = c; // error?, no inheritance
 
 struct E {
 	foo: number;
