@@ -18,6 +18,7 @@ var o: {} = d; // error
 d = 1; // error
 d = { foo: '' } // error
 d = () => { } // error
+d = c; // ok
 
 struct E {
 	foo: number;
