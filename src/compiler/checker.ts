@@ -3246,15 +3246,20 @@ module ts {
                 }
                 else {
                     if (source === target) return true;
-                    if (target.flags & TypeFlags.Any) return true;
+	                if ( (target.flags & TypeFlags.Any) && !(source.flags & TypeFlags.Struct) ) {
+		                return true;
+	                }
                     if (source === undefinedType) return true;
                     if (source === nullType && target !== undefinedType) return true;
                     if (source.flags & TypeFlags.Enum && target === numberType) return true;
                     if (source.flags & TypeFlags.Number && target.flags & TypeFlags.Number
                         && !(target.flags & TypeFlags.Enum)) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
+	                // if (source.flags & TypeFlags.Struct && target.flags & TypeFlags.Struct) return true;
                     if (relation === assignableRelation) {
-                        if (source.flags & TypeFlags.Any) return true;
+                        if ( (source.flags & TypeFlags.Any) && !(target.flags & TypeFlags.Struct) ) {
+	                        return true;
+                        }
                         if (source === numberType && target.flags & TypeFlags.Enum) return true;
                     }
 
@@ -3393,6 +3398,9 @@ module ts {
                 var result: boolean;
                 var id = source.id + "," + target.id;
                 if ((result = relation[id]) !== undefined) return result;
+	            var classOrInterfaceFlag = TypeFlags.Class | TypeFlags.Interface;
+	            if (source.flags & TypeFlags.Struct && target.flags & classOrInterfaceFlag) return false;
+	            if (source.flags & classOrInterfaceFlag && target.flags & TypeFlags.Struct) return false;
                 if (depth > 0) {
                     for (var i = 0; i < depth; i++) {
                         if (source === sourceStack[i] && target === targetStack[i]) return true;
