@@ -11,7 +11,7 @@ struct S {
 var as: S;
 
 ac = a; // ok
-as = s; // error
+as = a; // error
 
 a = ac; // ok
 a = as; // error
