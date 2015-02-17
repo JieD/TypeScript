@@ -11,8 +11,10 @@ struct S {
 var as: S;
 
 ac = a; // ok
-as = <any>s; // error
+as = a; // error, cannot assign any to struct
+as = <S>a; // error
 
 
 a = ac; // ok
+a = as; // error, cannot assign sruct to any
 a = <any>as; // error
