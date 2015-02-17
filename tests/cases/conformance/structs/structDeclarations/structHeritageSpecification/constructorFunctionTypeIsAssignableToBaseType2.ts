@@ -1,6 +1,6 @@
 // the constructor function itself does not need to be a subtype of the base type constructor function
 
-class Base {
+struct Base {
     static foo: {
         bar: Object;
     }
@@ -8,7 +8,7 @@ class Base {
     }
 }
 
-class Derived extends Base {
+struct Derived extends Base {
     // ok
     static foo: {
         bar: number;
@@ -19,7 +19,7 @@ class Derived extends Base {
     }
 }
 
-class Derived2 extends Base {   
+struct Derived2 extends Base {   
     static foo: {
         bar: number;
     }
