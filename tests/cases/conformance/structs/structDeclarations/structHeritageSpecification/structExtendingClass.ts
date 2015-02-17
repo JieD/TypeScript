@@ -1,13 +1,9 @@
-/**
- * Created by jie on 2/4/15.
- */
-
 class C {
 	foo: string;
 	thing() { }
     static other() { }
 }
 
-struct D extends C {
+struct D extends C { // error, struct can only extend struct
 	bar: string;
 }

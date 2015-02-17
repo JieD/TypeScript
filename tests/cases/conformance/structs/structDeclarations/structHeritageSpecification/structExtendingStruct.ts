@@ -14,7 +14,7 @@ var r2 = d.bar;
 var r3 = d.thing();
 var r4 = D.other();
 
-struct C2<T> {
+/* struct C2<T> {
     foo: T;
     thing(x: T) { }
     static other<T>(x: T) { }
