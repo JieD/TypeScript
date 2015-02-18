@@ -321,7 +321,7 @@ module ts {
                 return child((<StructDeclaration>node).name) ||
                     children((<StructDeclaration>node).typeParameters) ||
                     child((<StructDeclaration>node).baseType) ||
-                    children((<StructDeclaration>node).implementedTypes) ||
+                    // children((<StructDeclaration>node).implementedTypes) ||
                     children((<StructDeclaration>node).members);
             case SyntaxKind.ClassDeclaration:
                 return child((<ClassDeclaration>node).name) ||
@@ -3733,8 +3733,8 @@ module ts {
             var implementsKeywordLength: number;
             if (parseOptional(SyntaxKind.ImplementsKeyword)) {
                 implementsKeywordLength = scanner.getStartPos() - implementsKeywordStart;
-                node.implementedTypes = parseDelimitedList(ParsingContext.BaseTypeReferences,
-                    parseTypeReference, /*allowTrailingComma*/ false);
+                parseDelimitedList(ParsingContext.BaseTypeReferences, parseTypeReference, /*allowTrailingComma*/ false);
+	            grammarErrorAtPos(implementsKeywordStart, implementsKeywordLength, Diagnostics.A_struct_can_not_implement_another_class_or_interface);
             }
             var errorCountBeforeStructBody = file.syntacticErrors.length;
             if (parseExpected(SyntaxKind.OpenBraceToken)) {
@@ -3743,9 +3743,6 @@ module ts {
             }
             else {
                 node.members = createMissingList<Declaration>();
-            }
-            if (node.implementedTypes && !node.implementedTypes.length && errorCountBeforeStructBody === errorCountBeforeStructDeclaration) {
-                grammarErrorAtPos(implementsKeywordStart, implementsKeywordLength, Diagnostics._0_list_cannot_be_empty, "implements");
             }
             return finishNode(node);
         }

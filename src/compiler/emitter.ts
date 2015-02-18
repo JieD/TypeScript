@@ -69,7 +69,7 @@ module ts {
             if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
                 var node = <StructDeclaration>nodeHolder;
             } else if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
-                var node = <ClassDeclaration>nodeHolder;
+                node = <ClassDeclaration>nodeHolder;
             }
             return forEach(node.members, member => {
                 if (member.kind === SyntaxKind.Constructor && (<ConstructorDeclaration>member).body) {
@@ -82,7 +82,7 @@ module ts {
             if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
                 var node = <StructDeclaration>nodeHolder;
             } else if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
-                var node = <ClassDeclaration>nodeHolder;
+                node = <ClassDeclaration>nodeHolder;
             }
 
             var firstAccessor: AccessorDeclaration;
@@ -1540,7 +1540,7 @@ module ts {
                 if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
                     var node = <ClassDeclaration>nodeHolder;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
-                    var node = <StructDeclaration>nodeHolder;
+                    node = <StructDeclaration>nodeHolder;
                 }
                 forEach(node.members, member => {
                     if (member.kind === SyntaxKind.Property && (member.flags & NodeFlags.Static) === staticFlag && (<PropertyDeclaration>member).initializer) {
@@ -1569,7 +1569,7 @@ module ts {
                 if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
                     var node = <ClassDeclaration>nodeHolder;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
-                    var node = <StructDeclaration>nodeHolder;
+                    node = <StructDeclaration>nodeHolder;
                 }
                 forEach(node.members, member => {
                     if (member.kind === SyntaxKind.Method) {
@@ -1658,7 +1658,7 @@ module ts {
                 if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
                     var node = <ClassDeclaration>nodeHolder;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
-                    var node = <StructDeclaration>nodeHolder;
+                    node = <StructDeclaration>nodeHolder;
                 }
 
                 emitLeadingComments(node);
@@ -2782,7 +2782,7 @@ module ts {
                     var node = <ClassDeclaration>nodeHolder;
                     type = "class ";
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
-                    var node = <StructDeclaration>nodeHolder;
+                    node = <StructDeclaration>nodeHolder;
                     type = "struct ";
                 }
 
