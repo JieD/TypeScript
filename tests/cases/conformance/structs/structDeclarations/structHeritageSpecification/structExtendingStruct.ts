@@ -28,4 +28,4 @@ var d2: D2<string>;
 var r5 = d2.foo;
 var r6 = d2.bar;
 var r7 = d2.thing('');
-var r8 = D2.other(1);
+var r8 = D2.other(1); */
