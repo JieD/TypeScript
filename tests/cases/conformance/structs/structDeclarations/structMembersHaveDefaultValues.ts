@@ -1,3 +1,4 @@
+// reference specification
 struct Person {
 	name: string;
 	age: number;
