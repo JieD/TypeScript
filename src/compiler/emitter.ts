@@ -1536,13 +1536,11 @@ module ts {
                 }
             }
 
-            function emitMemberAssignments(nodeHolder: Declaration, staticFlag: NodeFlags) {
+            function emitMemberAssignments(nodeHolder: ClassDeclaration, staticFlag: NodeFlags) {
                 if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
                     var node = <ClassDeclaration>nodeHolder;
-                    var isStruct = false;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
                     var node = <StructDeclaration>nodeHolder;
-                    var isStruct = true;
                 }
                 forEach(node.members, member => {
                     if (member.kind === SyntaxKind.Property && (member.flags & NodeFlags.Static) === staticFlag && (<PropertyDeclaration>member).initializer) {
@@ -1554,7 +1552,7 @@ module ts {
                             emitNode(node.name);
                         }
                         else {
-                            write(isStruct ? "_this" : "this");
+                            write("this");
                         }
                         emitMemberAccess((<PropertyDeclaration>member).name);
                         emitEnd((<PropertyDeclaration>member).name);
@@ -1567,30 +1565,11 @@ module ts {
                 });
             }
 
-            function emitStructProperties(node: StructDeclaration) {
-                for (var i = 0; i < node.members.length; i++) {
-                    if(node.members[i].kind == SyntaxKind.Property) {
-                        increaseIndent();
-
-                        resolver.writeStructProperty(node.members[i], writer);
-
-
-                        if (i < node.members.length - 1) {
-                            write(",");
-                        }
-                        writeLine();
-                        decreaseIndent();
-                    }
-                }
-            }
-
             function emitMemberFunctions(nodeHolder: ClassDeclaration) {
                 if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
                     var node = <ClassDeclaration>nodeHolder;
-                    var isStruct = false;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
                     var node = <StructDeclaration>nodeHolder;
-                    var isStruct = true;
                 }
                 forEach(node.members, member => {
                     if (member.kind === SyntaxKind.Method) {
@@ -1602,13 +1581,7 @@ module ts {
                         emitLeadingComments(member);
                         emitStart(member);
                         emitStart((<MethodDeclaration>member).name);
-
-                        if(isStruct) {
-                            write("_" + node.name.text);
-                        } else {
-                            emitNode(node.name);
-                        }
-
+                        emitNode(node.name);
                         if (!(member.flags & NodeFlags.Static)) {
                             write(".prototype");
                         }
@@ -1629,13 +1602,7 @@ module ts {
                             emitStart(member);
                             write("Object.defineProperty(");
                             emitStart((<AccessorDeclaration>member).name);
-
-                            if(isStruct) {
-                                write("_" + node.name.text);
-                            } else {
-                                emitNode(node.name);
-                            }
-
+                            emitNode(node.name);
                             if (!(member.flags & NodeFlags.Static)) {
                                 write(".prototype");
                             }
@@ -1680,115 +1647,7 @@ module ts {
             }
 
             function emitStructDeclaration(node: StructDeclaration) {
-                emitLeadingComments(node);
-                write("var ");
-                write("_" + node.name.text);
-                write(" = (function (");
-                write(") {");
-                writeLine();
-
-                increaseIndent();
-
-                write("var ");
-                write("_" + node.name.text);
-                write(" = new TypedObject.StructType({");
-                writeLine();
-
-                //scopeEmitStart(node);
-                emitStructProperties(node);
-
-                //decreaseIndent();
-                writeLine();
-                write("});");
-                writeLine();
-
-                emitMemberFunctions(node);
-                writeLine();
-
-                write("return ");
-                write("_" + node.name.text);
-
-                decreaseIndent();
-                writeLine();
-                write("})();");
-                writeLine();
-
-                emitConstructorOfStruct();
-
-                emitTrailingComments(node);
-
-                function emitConstructorOfStruct() {
-                    // Emit the constructor overload pinned comments
-                    forEach(node.members, member => {
-                        if (member.kind === SyntaxKind.Constructor && !(<ConstructorDeclaration>member).body) {
-                            emitPinnedOrTripleSlashComments(member);
-                        }
-                    });
-
-                    var ctor = getFirstConstructorWithBody(node);
-                    if (ctor) {
-                        emitLeadingComments(ctor);
-                    }
-                    emitStart(<Node>ctor || node);
-                    write("function ");
-                    emit(node.name);
-                    emitSignatureParameters(ctor);
-                    write(" {");
-                    scopeEmitStart(node, "constructor");
-                    increaseIndent();
-                    if (ctor) {
-                        emitDetachedComments((<Block>ctor.body).statements);
-                    }
-
-                    writeLine();
-                    write("var _this = new ");
-                    write("_" + node.name.text);
-                    write("();")
-                    writeLine();
-
-                    emitCaptureThisForNodeIfNecessary(node);
-                    if (ctor) {
-                        emitDefaultValueAssignments(ctor);
-                        emitRestParameter(ctor);
-                        if (node.baseType) {
-                            var superCall = findInitialSuperCall(ctor);
-                            if (superCall) {
-                                writeLine();
-                                emit(superCall);
-                            }
-                        }
-                        emitParameterPropertyAssignments(ctor);
-                    }
-                    else {
-                        if (node.baseType) {
-                            writeLine();
-                            emitStart(node.baseType);
-                            write("_super.apply(this, arguments);");
-                            emitEnd(node.baseType);
-                        }
-                    }
-                    emitMemberAssignments(node, /*nonstatic*/0);
-                    if (ctor) {
-                        var statements: Node[] = (<Block>ctor.body).statements;
-                        if (superCall) statements = statements.slice(1);
-                        emitLines(statements);
-                    }
-                    writeLine();
-                    if (ctor) {
-                        emitLeadingCommentsOfPosition((<Block>ctor.body).statements.end);
-                    }
-
-                    write("return _this;");
-                    writeLine();
-
-                    decreaseIndent();
-                    emitToken(SyntaxKind.CloseBraceToken, ctor ? (<Block>ctor.body).statements.end : node.members.end);
-                    scopeEmitEnd();
-                    emitEnd(<Node>ctor || node);
-                    if (ctor) {
-                        emitTrailingComments(ctor);
-                    }
-                }
+                emitStructOrClassDeclaration(node);
             }
 
             function emitClassDeclaration(node: ClassDeclaration) {

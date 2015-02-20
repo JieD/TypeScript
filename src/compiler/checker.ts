@@ -6436,10 +6436,6 @@ module ts {
             checkSignatureDeclaration(node);
             checkSourceElement(node.body);
 
-            if (node.parent.kind == SyntaxKind.StructDeclaration) {
-
-            }
-
             var symbol = getSymbolOfNode(node);
             var firstDeclaration = getDeclarationOfKind(symbol, node.kind);
             // Only type check the symbol once
@@ -8822,36 +8818,6 @@ module ts {
             trackSymbol: function (symbol: Symbol, declaration: Node, meaning: SymbolFlags) { this.writer.trackSymbol(symbol, declaration, meaning) }
         };
 
-        function writeStructProperty(node: VariableDeclaration, writer: TextWriter) {
-            writer.write(node.name.text);
-            writer.write(": ");
-
-            var type = getTypeOfVariableDeclaration(node);
-            if (type.flags & (TypeFlags.Int | TypeFlags.I32)) {
-                writer.write("TypedObject.int32");
-            } else if (type.flags & (TypeFlags.Uint | TypeFlags.U32)) {
-                writer.write("TypedObject.uint32");
-            } else if (type.flags & TypeFlags.U16) {
-                writer.write("TypedObject.uint16");
-            } else if (type.flags & TypeFlags.I16) {
-                writer.write("TypedObject.int16");
-            } else if (type.flags & TypeFlags.U8) {
-                writer.write("TypedObject.uint8");
-            } else if (type.flags & TypeFlags.I8) {
-                writer.write("TypedObject.int8");
-            } else if (type.flags & TypeFlags.Float) {
-                writer.write("TypedObject.float32");
-            } else if (type.flags & (TypeFlags.Double | TypeFlags.Number)) {
-                writer.write("TypedObject.float64");
-            } else if (type.flags & TypeFlags.String) {
-                writer.write("TypedObject.string");
-            } else if (type.flags & TypeFlags.Any) {
-                writer.write("TypedObject.Any");
-            } else {
-                writer.write("TypedObject.Object");
-            }
-        }
-
         function writeTypeAtLocation(location: Node, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: TextWriter) {
             // Get type of the symbol if this is the valid symbol otherwise get type at location
             var symbol = getSymbolOfNode(location);
@@ -8880,7 +8846,6 @@ module ts {
                 hasSemanticErrors: hasSemanticErrors,
                 isDeclarationVisible: isDeclarationVisible,
                 isImplementationOfOverload: isImplementationOfOverload,
-                writeStructProperty: writeStructProperty,
                 writeTypeAtLocation: writeTypeAtLocation,
                 writeReturnTypeOfSignatureDeclaration: writeReturnTypeOfSignatureDeclaration,
                 isSymbolAccessible: isSymbolAccessible,
