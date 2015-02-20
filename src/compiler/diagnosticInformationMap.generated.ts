@@ -403,7 +403,10 @@ module ts {
         You_cannot_rename_this_element: { code: 8000, category: DiagnosticCategory.Error, key: "You cannot rename this element." },
         Primitive_type_declaration_0_cannot_be_optional: { code: 8001, category: DiagnosticCategory.Error, key: "Primitive type declaration '{0}' cannot be optional." },
         Static_members_cannot_reference_struct_type_parameters: { code: 8002, category: DiagnosticCategory.Error, key: "Static members cannot reference struct type parameters." },
-        A_struct_may_only_extend_another_struct: { code: 8004, category: DiagnosticCategory.Error, key: "A struct may only extend another struct." },
-        _0_modifier_cannot_appear_on_a_struct_element: { code: 8005, category: DiagnosticCategory.Error, key: "'{0}' modifier cannot appear on a struct element." },
+        A_struct_may_only_extend_another_struct: { code: 8003, category: DiagnosticCategory.Error, key: "A struct may only extend another struct." },
+        _0_modifier_cannot_appear_on_a_struct_element: { code: 8004, category: DiagnosticCategory.Error, key: "'{0}' modifier cannot appear on a struct element." },
+	    Struct_0_incorrectly_extends_base_struct_1: { code: 8005, category: DiagnosticCategory.Error, key: "Struct '{0}' incorrectly extends base struct '{1}'." },
+	    Struct_0_incorrectly_extends_base_struct_1_Colon: { code: 8006, category: DiagnosticCategory.Error, key: "Struct '{0}' incorrectly extends base struct '{1}':" },
+	    A_struct_can_not_implement_another_class_or_interface: { code: 8007, category: DiagnosticCategory.Error, key: "A struct can not implement another class or interface." },
     };
 }

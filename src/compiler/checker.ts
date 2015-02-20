@@ -3246,15 +3246,20 @@ module ts {
                 }
                 else {
                     if (source === target) return true;
-                    if (target.flags & TypeFlags.Any) return true;
+	                if ( (target.flags & TypeFlags.Any) && !(source.flags & TypeFlags.Struct) ) {
+		                return true;
+	                }
                     if (source === undefinedType) return true;
                     if (source === nullType && target !== undefinedType) return true;
                     if (source.flags & TypeFlags.Enum && target === numberType) return true;
                     if (source.flags & TypeFlags.Number && target.flags & TypeFlags.Number
                         && !(target.flags & TypeFlags.Enum)) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
+	                // if (source.flags & TypeFlags.Struct && target.flags & TypeFlags.Struct) return true;
                     if (relation === assignableRelation) {
-                        if (source.flags & TypeFlags.Any) return true;
+                        if ( (source.flags & TypeFlags.Any) && !(target.flags & TypeFlags.Struct) ) {
+	                        return true;
+                        }
                         if (source === numberType && target.flags & TypeFlags.Enum) return true;
                     }
 
@@ -3393,6 +3398,9 @@ module ts {
                 var result: boolean;
                 var id = source.id + "," + target.id;
                 if ((result = relation[id]) !== undefined) return result;
+	            var classOrInterfaceFlag = TypeFlags.Class | TypeFlags.Interface;
+	            if (source.flags & TypeFlags.Struct && target.flags & classOrInterfaceFlag) return false;
+	            if (source.flags & classOrInterfaceFlag && target.flags & TypeFlags.Struct) return false;
                 if (depth > 0) {
                     for (var i = 0; i < depth; i++) {
                         if (source === sourceStack[i] && target === targetStack[i]) return true;
@@ -7508,7 +7516,7 @@ module ts {
             if (type.baseTypes.length) {
                 if (fullTypeCheck) {
                     var baseType = type.baseTypes[0];
-                    checkTypeAssignableTo(type, baseType, node.name, Diagnostics.Class_0_incorrectly_extends_base_class_1_Colon, Diagnostics.Class_0_incorrectly_extends_base_class_1);
+                    checkTypeAssignableTo(type, baseType, node.name, Diagnostics.Struct_0_incorrectly_extends_base_struct_1_Colon, Diagnostics.Struct_0_incorrectly_extends_base_struct_1);
                     var staticBaseType = getTypeOfSymbol(baseType.symbol);
                     checkTypeAssignableTo(staticType, getTypeWithoutConstructors(staticBaseType), node.name,
                         Diagnostics.Class_static_side_0_incorrectly_extends_base_class_static_side_1_Colon, Diagnostics.Class_static_side_0_incorrectly_extends_base_class_static_side_1);
@@ -7522,23 +7530,9 @@ module ts {
                 // Check that base type can be evaluated as expression
                 checkExpression(node.baseType.typeName);
             }
-            if (node.implementedTypes) {
-                forEach(node.implementedTypes, typeRefNode => {
-                    checkTypeReference(typeRefNode);
-                    if (fullTypeCheck) {
-                        var t = getTypeFromTypeReferenceNode(typeRefNode);
-                        if (t !== unknownType) {
-                            var declaredType = (t.flags & TypeFlags.Reference) ? (<TypeReference>t).target : t;
-                            if (declaredType.flags & TypeFlags.Struct ) {
-                                checkTypeAssignableTo(type, t, node.name, Diagnostics.Class_0_incorrectly_implements_interface_1_Colon, Diagnostics.Class_0_incorrectly_implements_interface_1);
-                            }
-                            else {
-                                error(typeRefNode, Diagnostics.A_class_may_only_implement_another_class_or_interface);
-                            }
-                        }
-                    }
-                });
-            }
+            /* if (node.implementedTypes) {
+	            error(, Diagnostics.A_struct_may_not_implement_another_class_or_interface);
+            } */
 
             forEach(node.members, checkSourceElement);
             if (fullTypeCheck) {
