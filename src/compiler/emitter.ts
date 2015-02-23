@@ -69,7 +69,7 @@ module ts {
             if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
                 var node = <StructDeclaration>nodeHolder;
             } else if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
-                var node = <ClassDeclaration>nodeHolder;
+                node = <ClassDeclaration>nodeHolder;
             }
             return forEach(node.members, member => {
                 if (member.kind === SyntaxKind.Constructor && (<ConstructorDeclaration>member).body) {
@@ -82,7 +82,7 @@ module ts {
             if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
                 var node = <StructDeclaration>nodeHolder;
             } else if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
-                var node = <ClassDeclaration>nodeHolder;
+                node = <ClassDeclaration>nodeHolder;
             }
 
             var firstAccessor: AccessorDeclaration;
@@ -1541,7 +1541,7 @@ module ts {
                     var node = <ClassDeclaration>nodeHolder;
                     var isStruct = false;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
-                    var node = <StructDeclaration>nodeHolder;
+                    node = <StructDeclaration>nodeHolder;
                     var isStruct = true;
                 }
                 forEach(node.members, member => {
@@ -1589,7 +1589,7 @@ module ts {
                     var node = <ClassDeclaration>nodeHolder;
                     var isStruct = false;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
-                    var node = <StructDeclaration>nodeHolder;
+                    node = <StructDeclaration>nodeHolder;
                     var isStruct = true;
                 }
                 forEach(node.members, member => {
@@ -1799,7 +1799,7 @@ module ts {
                 if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
                     var node = <ClassDeclaration>nodeHolder;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
-                    var node = <StructDeclaration>nodeHolder;
+                    node = <StructDeclaration>nodeHolder;
                 }
 
                 emitLeadingComments(node);
@@ -2923,7 +2923,7 @@ module ts {
                     var node = <ClassDeclaration>nodeHolder;
                     type = "class ";
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
-                    var node = <StructDeclaration>nodeHolder;
+                    node = <StructDeclaration>nodeHolder;
                     type = "struct ";
                 }
 
