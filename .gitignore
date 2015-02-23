@@ -38,3 +38,5 @@ scripts/debug.bat
 scripts/run.bat
 scripts/word2md.js
 coverage/
+**/.idea/workspace.xml 
+**/.idea/tasks.xml
