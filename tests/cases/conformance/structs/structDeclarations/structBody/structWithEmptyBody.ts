@@ -18,11 +18,11 @@ var o: {} = d; // ok
 d = 1; // error
 d = { foo: '' } // error
 d = () => { } // error
-d = c; // error?, no inheritance
+d = c; // error, no inheritance
 
 struct E {
 	foo: number;
 }
 
 var e: E;
-e = 1; // error, property missing (TS original behavior)
+e = 1; // error, Type 'number' is not assignable to type 'E'
