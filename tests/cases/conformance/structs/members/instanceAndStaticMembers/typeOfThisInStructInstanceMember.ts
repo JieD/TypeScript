@@ -1,3 +1,6 @@
+// Within constructors, instance member functions and instance member accessors, the type of this
+// is the instance type of the sturct.
+
 struct C {
     x = this;
     foo() {
@@ -7,7 +10,7 @@ struct C {
         var t = this;
         t.x;
         t.y;
-        t.z;
+        t.z; // error, z doesn't exist.
         var r = t.foo();
     }
 

@@ -1,3 +1,6 @@
+// Within static member functions and static member accessors, the type of this is
+// the constructor function type.
+
 struct C {
     constructor(x: number) { }
     static foo: number;
