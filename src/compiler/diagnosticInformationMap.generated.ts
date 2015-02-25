@@ -408,5 +408,6 @@ module ts {
 	    Struct_0_incorrectly_extends_base_struct_1: { code: 8005, category: DiagnosticCategory.Error, key: "Struct '{0}' incorrectly extends base struct '{1}'." },
 	    Struct_0_incorrectly_extends_base_struct_1_Colon: { code: 8006, category: DiagnosticCategory.Error, key: "Struct '{0}' incorrectly extends base struct '{1}':" },
 	    A_struct_can_not_implement_another_class_or_interface: { code: 8007, category: DiagnosticCategory.Error, key: "A struct can not implement another class or interface." },
+	    Struct_name_cannot_be_0: { code: 8008, category: DiagnosticCategory.Error, key: "Struct name cannot be '{0}'" },
     };
 }

@@ -7501,7 +7501,7 @@ module ts {
         }
 
         function checkStructDeclaration(node: StructDeclaration) {
-            checkTypeNameIsReserved(node.name, Diagnostics.Class_name_cannot_be_0);
+            checkTypeNameIsReserved(node.name, Diagnostics.Struct_name_cannot_be_0);
             checkTypeParameters(node.typeParameters);
             checkCollisionWithCapturedThisVariable(node, node.name);
             checkCollisionWithRequireExportsInGeneratedCode(node, node.name);
@@ -7530,9 +7530,13 @@ module ts {
                 // Check that base type can be evaluated as expression
                 checkExpression(node.baseType.typeName);
             }
-            /* if (node.implementedTypes) {
-	            error(, Diagnostics.A_struct_may_not_implement_another_class_or_interface);
-            } */
+
+            /*
+             * no need to check - syntax error, will be already flaged in parser
+             * if (node.implementedTypes) {
+	         *   error(, Diagnostics.A_struct_may_not_implement_another_class_or_interface);
+             * }
+             * */
 
             forEach(node.members, checkSourceElement);
             if (fullTypeCheck) {
