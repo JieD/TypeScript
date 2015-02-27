@@ -1,22 +1,22 @@
-class Base {
+struct Base {
     x: {
         foo: string;
     }
 }
 
-class Derived extends Base {
+struct Derived extends Base {
     x: {
-        foo: any;
+        foo: any; // correct
     }
 }
 
-class Base2 {
+struct Base2 {
     static y: {
         foo: string;
     }
 }
 
-class Derived2 extends Base2 {
+struct Derived2 extends Base2 {
     static y: {
         foo: any;
     }

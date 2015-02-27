@@ -1,6 +1,6 @@
 // @target: ES5
 
-class Base {
+struct Base {
     protected x: string;
     protected fn(): string {
         return '';
@@ -11,8 +11,8 @@ class Base {
 }
 
 // error, not a subtype
-class Derived extends Base {
-    private x: string; 
+struct Derived extends Base {
+    private x: string; // error: Property 'x' is private in type 'Derived' but not in type 'Base'.
     private fn(): string {
         return '';
     }

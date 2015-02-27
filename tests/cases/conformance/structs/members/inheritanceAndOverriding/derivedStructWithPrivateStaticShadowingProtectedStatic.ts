@@ -1,6 +1,6 @@
 // @target: ES5
 
-class Base {
+struct Base {
     protected static x: string;
     protected static fn(): string {
         return '';
@@ -11,7 +11,7 @@ class Base {
 }
 
 // should be error
-class Derived extends Base {
+struct Derived extends Base {
     private static x: string; 
     private static fn(): string {
         return '';

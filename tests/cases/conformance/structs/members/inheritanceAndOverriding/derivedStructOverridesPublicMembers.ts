@@ -1,7 +1,9 @@
+// @target: ES5
+
 var x: { foo: string; }
 var y: { foo: string; bar: string; }
 
-class Base {
+struct Base {
     a: typeof x;
     b(a: typeof x) { }
     get c() { return x; }
@@ -17,7 +19,7 @@ class Base {
     constructor(a: typeof x) { }
 }
 
-class Derived extends Base {
+struct Derived extends Base {
     a: typeof y;
     b(a: typeof y) { }
     get c() { return y; }
@@ -45,12 +47,12 @@ var r6 = Derived.t;
 var r6a = Derived.u;
 Derived.t = y;
 
-class Base2 {
+struct Base2 {
     [i: string]: Object;
     [i: number]: typeof x;
 }
 
-class Derived2 extends Base2 {
+struct Derived2 extends Base2 {
     [i: string]: typeof x;
     [i: number]: typeof y;
 }

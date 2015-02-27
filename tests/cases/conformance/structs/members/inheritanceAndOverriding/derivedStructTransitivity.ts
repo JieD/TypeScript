@@ -1,14 +1,14 @@
-// subclassing is not transitive when you can remove required parameters and add optional parameters
+// substructing is not transitive when you can remove required parameters and add optional parameters
 
-class C {
+struct C {
     foo(x: number) { }
 }
 
-class D extends C {
+struct D extends C {
     foo() { } // ok to drop parameters
 }
 
-class E extends D {
+struct E extends D {
     foo(x?: string) { } // ok to add optional parameters
 }
 

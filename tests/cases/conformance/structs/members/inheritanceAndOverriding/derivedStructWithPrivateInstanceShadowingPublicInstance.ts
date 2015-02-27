@@ -1,4 +1,6 @@
-class Base {
+// @target: ES5
+
+struct Base {
     public x: string;
     public fn(): string {
         return '';
@@ -9,7 +11,7 @@ class Base {
 }
 
 // error, not a subtype
-class Derived extends Base {
+struct Derived extends Base {
     private x: string; 
     private fn(): string {
         return '';
@@ -19,14 +21,16 @@ class Derived extends Base {
     private set a(v) { }
 }
 
-var r = Base.x; // ok
-var r2 = Derived.x; // error
+var b: Base;
+var d: Derived;
+var r = b.x; // ok
+var r2 = d.x; // error
 
-var r3 = Base.fn(); // ok
-var r4 = Derived.fn(); // error
+var r3 = b.fn(); // ok
+var r4 = d.fn(); // error
 
-var r5 = Base.a; // ok
-Base.a = 2; // ok
+var r5 = b.a; // ok
+b.a = 2; // ok
 
-var r6 = Derived.a; // error
-Derived.a = 2; // error
+var r6 = d.a; // error
+d.a = 2; // error

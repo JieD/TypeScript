@@ -1,4 +1,6 @@
-class C {
+// @target: ES5
+
+struct C {
     x: number;
     get X(): number { return 1; }
     foo(): number {
@@ -14,7 +16,7 @@ class C {
     }
 }
 
-class D extends C {
+struct D extends C {
     x: any;
     get X(): any {
         return null;
@@ -32,8 +34,8 @@ class D extends C {
     }
 }
 
-// if D is a valid class definition than E is now not safe tranisitively through C
-class E extends D {
+// if D is a valid struct definition than E is now not safe tranisitively through C
+struct E extends D {
     x: string;
     get X(): string{ return ''; }
     foo(): string {

@@ -1,4 +1,6 @@
-class Base {
+// @target: ES5
+
+struct Base {
     a: string;
     b() { }
     get c() { return ''; }
@@ -12,7 +14,7 @@ class Base {
     constructor(x) { }
 }
 
-class Derived extends Base {
+struct Derived extends Base {
 }
 
 var d: Derived = new Derived(1);
@@ -25,12 +27,12 @@ var r5 = Derived.s();
 var r6 = Derived.t;
 Derived.t = '';
 
-class Base2 {
+struct Base2 {
     [x: string]: Object;
     [x: number]: Date;
 }
 
-class Derived2 extends Base2 {
+struct Derived2 extends Base2 {
 }
 
 var d2: Derived2;

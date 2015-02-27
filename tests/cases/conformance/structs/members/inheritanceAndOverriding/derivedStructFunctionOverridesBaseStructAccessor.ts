@@ -1,5 +1,5 @@
 class Base {
-    get x() {
+    get x() { // instance member accessor
         return 1;
     }
     set x(v) {
@@ -8,7 +8,7 @@ class Base {
 
 // error
 class Derived extends Base {
-    x() {
+    x() { // error, instance member function -> wrong overriding
         return 1;
     }
 }
