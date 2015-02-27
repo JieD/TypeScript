@@ -5,7 +5,7 @@ struct C {
 }
 
 struct D extends C {
-    foo() { } // ok to drop parameters
+    foo() { } // ok to drop parameters, function override
 }
 
 struct E extends D {
@@ -15,6 +15,8 @@ struct E extends D {
 var c: C;
 var d: D;
 var e: E;
-c = e;
+c = e; // error, function signature are not compatible
 var r = c.foo(1);
-var r2 = e.foo('');
+var r2 = e.foo(''); // ok
+r2 = e.foo(); // ok
+r2 = e.foo(1); // error
