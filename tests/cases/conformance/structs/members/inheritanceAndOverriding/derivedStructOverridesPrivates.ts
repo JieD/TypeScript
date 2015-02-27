@@ -4,6 +4,7 @@ struct Base {
 
 struct Derived extends Base {
     private x: { foo: string; bar: string; }; // error, Types have separate declarations of a private property 'x'.
+	                                          // Cannot override member variables
 }
 
 struct Base2 {
@@ -12,4 +13,8 @@ struct Base2 {
 
 struct Derived2 extends Base2 {
     private static y: { foo: string; bar: string; }; // error, Types have separate declarations of a private property 'y'.
+}
+
+struct Derived3 extends Base2 {
+	private static y: { foo: any }; // error? Can override static member variable?
 }

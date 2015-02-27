@@ -6,7 +6,7 @@ struct Base {
 
 struct Derived extends Base {
     x: {
-        foo: any; // correct
+        foo: any; // correct?
     }
 }
 

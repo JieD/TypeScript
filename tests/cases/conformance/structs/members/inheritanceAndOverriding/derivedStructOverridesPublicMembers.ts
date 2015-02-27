@@ -20,13 +20,13 @@ struct Base {
 }
 
 struct Derived extends Base {
-    a: typeof y;
+    a: typeof y; // error
     b(a: typeof y) { }
     get c() { return y; }
     set c(v: typeof y) { }
     d: (a: typeof y) => void;
 
-    static r: typeof y;
+    static r: typeof y; // error
     static s(a: typeof y) { }
     static get t() { return y; }
     static set t(a: typeof y) { }
