@@ -1,5 +1,7 @@
+// @target: ES5
+
 module NonGeneric {
-    class C {
+    struct C {
         x: string;
         get y() {
             return 1;
@@ -9,17 +11,19 @@ module NonGeneric {
         constructor(public a: number, private b: number) { }
     }
 
-    var c = new C(1, 2);
-    var r = c.fn();
+    struct D extends C { e: string; }
+
+    var d = new D(1, 2);
+    var r = d.fn();
     var r2 = r.x;
     var r3 = r.y;
     r.y = 4;
-    var r6 = c.y(); // error, should be c.y
+    var r6 = d.y(); // error, should be d.y
 
 }
 
 module Generic {
-    class C<T,U> {
+    struct C<T, U> {
         x: T;
         get y() {
             return null;
@@ -29,10 +33,12 @@ module Generic {
         constructor(public a: T, private b: U) { }
     }
 
-    var c = new C(1, '');
-    var r = c.fn();
+    struct D<T, U> extends C<T, U> { e: T; }
+
+    var d = new D(1, '');
+    var r = d.fn();
     var r2 = r.x;
     var r3 = r.y;
     r.y = '';
-    var r6 = c.y(); // error
+    var r6 = d.y(); // error, should be d.y
 }
