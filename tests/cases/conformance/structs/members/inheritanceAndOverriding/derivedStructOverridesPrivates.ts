@@ -16,5 +16,5 @@ struct Derived2 extends Base2 {
 }
 
 struct Derived3 extends Base2 {
-	private static y: { foo: any }; // error? Can override static member variable?
+	private static y: { foo: any }; // error,  Types have separate declarations of a private property 'y'.
 }

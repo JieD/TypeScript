@@ -15,5 +15,5 @@ struct Base2 {
 }
 
 struct Derived2 extends Base2 {
-    static y: any; // ok?
+    static y: any; // ok
 }
