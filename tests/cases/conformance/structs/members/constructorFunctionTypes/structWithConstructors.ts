@@ -1,12 +1,12 @@
 module NonGeneric {
-    class C {
+    struct C {
         constructor(x: string) { }
     }
 
     var c = new C(); // error
     var c2 = new C(''); // ok
 
-    class C2 {
+    struct C2 {
         constructor(x: number);
         constructor(x: string);
         constructor(x: any) { }
@@ -16,7 +16,7 @@ module NonGeneric {
     var c4 = new C2(''); // ok
     var c5 = new C2(1); // ok
 
-    class D extends C2 { }
+    struct D extends C2 { }
 
     var d = new D(); // error
     var d2 = new D(1); // ok
@@ -24,14 +24,14 @@ module NonGeneric {
 }
 
 module Generics {
-    class C<T> {
+    struct C<T> {
         constructor(x: T) { }
     }
 
     var c = new C(); // error
     var c2 = new C(''); // ok
 
-    class C2<T,U> {
+    struct C2<T,U> {
         constructor(x: T);
         constructor(x: T, y: U);
         constructor(x: any) { }
@@ -41,7 +41,7 @@ module Generics {
     var c4 = new C2(''); // ok
     var c5 = new C2(1, 2); // ok
 
-    class D<T, U> extends C2<T, U> { }
+    struct D<T, U> extends C2<T, U> { }
 
     var d = new D(); // error
     var d2 = new D(1); // ok

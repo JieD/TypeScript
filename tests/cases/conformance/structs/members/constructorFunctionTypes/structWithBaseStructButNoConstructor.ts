@@ -14,7 +14,7 @@ class Base2<T,U> {
     constructor(x: T) { }
 }
 
-class D<T,U> extends Base2<T,U> {
+struct D<T,U> extends Base2<T,U> {
     foo: U;
 }
 

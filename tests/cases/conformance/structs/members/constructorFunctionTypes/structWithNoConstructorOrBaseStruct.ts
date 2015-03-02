@@ -1,11 +1,11 @@
-class C {
+struct C {
     x: string;
 }
 
 var c = new C();
 var r = C;
 
-class D<T,U> {
+struct D<T,U> {
     x: T;
     y: U;
 }
