@@ -3122,32 +3122,39 @@ module ts {
         var identityRelation: Map<boolean> = {};
 
         function isTypeIdenticalTo(source: Type, target: Type): boolean {
+	        log(source, target, "isTypeIdenticalTo");
             return checkTypeRelatedTo(source, target, identityRelation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function isTypeSubtypeOf(source: Type, target: Type): boolean {
-            return checkTypeSubtypeOf(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
+	        log(source, target, "isTypeSubtypeOf");
+	        return checkTypeSubtypeOf(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function checkTypeSubtypeOf(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
-            return checkTypeRelatedTo(source, target, subtypeRelation, errorNode, chainedMessage, terminalMessage);
+	        log(source, target, "checkTypeSubtypeOf");
+	        return checkTypeRelatedTo(source, target, subtypeRelation, errorNode, chainedMessage, terminalMessage);
         }
 
         function isTypeAssignableTo(source: Type, target: Type): boolean {
+	        log(source, target, "isTypeAssignableTo");
             return checkTypeAssignableTo(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function checkTypeAssignableTo(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
-            return checkTypeRelatedTo(source, target, assignableRelation, errorNode, chainedMessage, terminalMessage);
+            log(source, target, "checkTypeAssignableTo");
+	        return checkTypeRelatedTo(source, target, assignableRelation, errorNode, chainedMessage, terminalMessage);
         }
 
         function isTypeRelatedTo(source: Type, target: Type, relation: Map<boolean>): boolean {
+	        log(source, target, "isTypeRelatedTo");
             return checkTypeRelatedTo(source, target, relation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function isSignatureAssignableTo(source: Signature, target: Signature): boolean {
             var sourceType = getOrCreateTypeFromSignature(source);
             var targetType = getOrCreateTypeFromSignature(target);
+	        log(sourceType, targetType, "isTypeRelatedTo");
             return checkTypeRelatedTo(sourceType, targetType, assignableRelation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
@@ -3212,6 +3219,17 @@ module ts {
             }
         }
 
+	    function log(source: Type, target: Type, info: string): void {
+		    if ((source.flags & TypeFlags.Struct && !(target.flags & TypeFlags.Struct)) ||
+			    (target.flags & TypeFlags.Struct && !(source.flags & TypeFlags.Struct))) {
+			    write(info);
+		    }
+	    }
+
+	    function write(info: string): void {
+		    console.log(info);
+	    }
+
         function checkTypeRelatedTo(source: Type, target: Type, relation: Map<boolean>, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
             var errorInfo: DiagnosticMessageChain;
             var sourceStack: ObjectType[];
@@ -3222,11 +3240,15 @@ module ts {
 
             Debug.assert(relation !== identityRelation || !errorNode, "no error reporting in identity checking");
 
+	        log(source, target, "checkTypeRelatedTo");
+
             var result = isRelatedToWithCustomErrors(source, target, errorNode !== undefined, chainedMessage, terminalMessage);
             if (overflow) {
+	            write("in checkTypeRelatedTo-overflow")
                 error(errorNode, Diagnostics.Excessive_stack_depth_comparing_types_0_and_1, typeToString(source), typeToString(target));
             }
             else if (errorInfo) {
+	            write("in checkTypeRelatedTo-errorInfo\n");
                 addDiagnostic(createDiagnosticForNodeFromMessageChain(errorNode, errorInfo, program.getCompilerHost().getNewLine()));
             }
             return result;
@@ -3236,6 +3258,7 @@ module ts {
             }
 
             function isRelatedTo(source: Type, target: Type, reportErrors?: boolean): boolean {
+	            log(source, target, "in isRelatedTo");
                 return isRelatedToWithCustomErrors(source, target, reportErrors, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
             }
 
@@ -3255,7 +3278,12 @@ module ts {
                     if (source.flags & TypeFlags.Number && target.flags & TypeFlags.Number
                         && !(target.flags & TypeFlags.Enum)) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
-	                // if (source.flags & TypeFlags.Struct && target.flags & TypeFlags.Struct) return true;
+	                if ((source.flags & TypeFlags.Struct && !(target.flags & TypeFlags.Struct)) ||
+		                (target.flags & TypeFlags.Struct && !(source.flags & TypeFlags.Struct))) {
+		                console.log("flag: source is " + source.symbol.name + ", target is " + target.symbol.name);
+		                reportStructAssignabilityError(chainedMessage, terminalMessage);
+		                return false;
+	                }
                     if (relation === assignableRelation) {
                         if ( (source.flags & TypeFlags.Any) && !(target.flags & TypeFlags.Struct) ) {
 	                        return true;
@@ -3332,6 +3360,19 @@ module ts {
                 }
                 return false;
             }
+
+	        function reportStructAssignabilityError(chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): void {
+		        // The error should end in a period when this is the deepest error in the chain
+		        // (when errorInfo is undefined). Otherwise, it has a colon before the nested
+		        // error.
+
+		        chainedMessage = chainedMessage || Diagnostics.Type_0_is_not_assignable_to_type_1_Colon;
+		        terminalMessage = terminalMessage || Diagnostics.Type_0_is_not_assignable_to_type_1;
+		        var diagnosticKey = errorInfo ? chainedMessage : terminalMessage;
+		        Debug.assert(diagnosticKey);
+		        reportError(diagnosticKey, typeToString(source), typeToString(target));
+
+	        }
 
             function typeRelatedToUnionType(source: Type, target: UnionType, reportErrors: boolean): boolean {
                 var targetTypes = target.types;
@@ -6184,6 +6225,7 @@ module ts {
                     var ok = checkReferenceExpression(node.left, Diagnostics.Invalid_left_hand_side_of_assignment_expression);
                     // Use default messages
                     if (ok) {
+	                    log(valueType, leftType, "checkAssignmentOperator");
                         // to avoid cascading errors check assignability only if 'isReference' check succeeded and no errors were reported
                         checkTypeAssignableTo(valueType, leftType, node.left, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
                     }
