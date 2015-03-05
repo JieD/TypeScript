@@ -2,7 +2,7 @@ struct C {
 }
 
 var c: C;
-var o: {} = c; // ok?
+var o: {} = c; // error
 c = 1; // error
 c = { foo: '' } // error
 c = () => { } // error
@@ -14,7 +14,7 @@ struct D {
 }
 
 var d: D;
-var o: {} = d; // ok?
+var o: {} = d; // error
 d = 1; // error
 d = { foo: '' } // error
 d = () => { } // error
