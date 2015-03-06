@@ -3278,12 +3278,12 @@ module ts {
                     if (source.flags & TypeFlags.Number && target.flags & TypeFlags.Number
                         && !(target.flags & TypeFlags.Enum)) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
-	                if ((source.flags & TypeFlags.Struct && !(target.flags & TypeFlags.Struct)) ||
-		                (target.flags & TypeFlags.Struct && !(source.flags & TypeFlags.Struct))) {
-		                console.log("flag: source is " + source.symbol.name + ", target is " + target.symbol.name);
-		                reportStructAssignabilityError(chainedMessage, terminalMessage);
-		                return false;
-	                }
+	                // if ((source.flags & TypeFlags.Struct && !(target.flags & TypeFlags.Struct)) ||
+		                //(target.flags & TypeFlags.Struct && !(source.flags & TypeFlags.Struct))) {
+		                //console.log("flag: source is " + source.symbol.name + ", target is " + target.symbol.name);
+		                //reportStructAssignabilityError(chainedMessage, terminalMessage);
+		                //return false;
+	                //}
                     if (relation === assignableRelation) {
                         if ( (source.flags & TypeFlags.Any) && !(target.flags & TypeFlags.Struct) ) {
 	                        return true;
