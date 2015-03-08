@@ -3122,39 +3122,39 @@ module ts {
         var identityRelation: Map<boolean> = {};
 
         function isTypeIdenticalTo(source: Type, target: Type): boolean {
-	        log(source, target, "isTypeIdenticalTo");
+	        // log(source, target, "isTypeIdenticalTo");
             return checkTypeRelatedTo(source, target, identityRelation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function isTypeSubtypeOf(source: Type, target: Type): boolean {
-	        log(source, target, "isTypeSubtypeOf");
+	        // log(source, target, "isTypeSubtypeOf");
 	        return checkTypeSubtypeOf(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function checkTypeSubtypeOf(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
-	        log(source, target, "checkTypeSubtypeOf");
+	        // log(source, target, "checkTypeSubtypeOf");
 	        return checkTypeRelatedTo(source, target, subtypeRelation, errorNode, chainedMessage, terminalMessage);
         }
 
         function isTypeAssignableTo(source: Type, target: Type): boolean {
-	        log(source, target, "isTypeAssignableTo");
+	        // log(source, target, "isTypeAssignableTo");
             return checkTypeAssignableTo(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function checkTypeAssignableTo(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
-            log(source, target, "checkTypeAssignableTo");
+            // log(source, target, "checkTypeAssignableTo");
 	        return checkTypeRelatedTo(source, target, assignableRelation, errorNode, chainedMessage, terminalMessage);
         }
 
         function isTypeRelatedTo(source: Type, target: Type, relation: Map<boolean>): boolean {
-	        log(source, target, "isTypeRelatedTo");
+	        // log(source, target, "isTypeRelatedTo");
             return checkTypeRelatedTo(source, target, relation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function isSignatureAssignableTo(source: Signature, target: Signature): boolean {
             var sourceType = getOrCreateTypeFromSignature(source);
             var targetType = getOrCreateTypeFromSignature(target);
-	        log(sourceType, targetType, "isTypeRelatedTo");
+	        // log(sourceType, targetType, "isTypeRelatedTo");
             return checkTypeRelatedTo(sourceType, targetType, assignableRelation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
@@ -3219,9 +3219,16 @@ module ts {
             }
         }
 
+	    function isStructAssignedToOrFromStructType(source: Type, target: Type): number {
+		    return (source.flags & TypeFlags.Struct && (target.flags & TypeFlags.Struct))
+	    }
+
+	    function isStructAssignedToOrFromNonStructType(source: Type, target: Type): boolean {
+		    return (source.flags & TypeFlags.Struct && !(target.flags & TypeFlags.Struct)) ||
+			       (target.flags & TypeFlags.Struct && !(source.flags & TypeFlags.Struct))
+	    }
 	    function log(source: Type, target: Type, info: string): void {
-		    if ((source.flags & TypeFlags.Struct && !(target.flags & TypeFlags.Struct)) ||
-			    (target.flags & TypeFlags.Struct && !(source.flags & TypeFlags.Struct))) {
+		    if (isStructAssignedToOrFromNonStructType(source, target)) {
 			    write(info);
 		    }
 	    }
@@ -3240,7 +3247,7 @@ module ts {
 
             Debug.assert(relation !== identityRelation || !errorNode, "no error reporting in identity checking");
 
-	        log(source, target, "checkTypeRelatedTo");
+	        // log(source, target, "checkTypeRelatedTo");
 
             var result = isRelatedToWithCustomErrors(source, target, errorNode !== undefined, chainedMessage, terminalMessage);
             if (overflow) {
@@ -3278,12 +3285,11 @@ module ts {
                     if (source.flags & TypeFlags.Number && target.flags & TypeFlags.Number
                         && !(target.flags & TypeFlags.Enum)) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
-	                // if ((source.flags & TypeFlags.Struct && !(target.flags & TypeFlags.Struct)) ||
-		                //(target.flags & TypeFlags.Struct && !(source.flags & TypeFlags.Struct))) {
-		                //console.log("flag: source is " + source.symbol.name + ", target is " + target.symbol.name);
-		                //reportStructAssignabilityError(chainedMessage, terminalMessage);
-		                //return false;
-	                //}
+	                if (isStructAssignedToOrFromNonStructType(source, target)) {
+		                console.log("flag: source is " + typeToString(source) + ", target is " + typeToString(target));
+		                reportStructAssignabilityError(reportErrors, chainedMessage, terminalMessage);
+		                return false;
+	                }
                     if (relation === assignableRelation) {
                         if ( (source.flags & TypeFlags.Any) && !(target.flags & TypeFlags.Struct) ) {
 	                        return true;
@@ -3331,6 +3337,7 @@ module ts {
                     var saveErrorInfo = errorInfo;
                     if (source.flags & TypeFlags.Reference && target.flags & TypeFlags.Reference && (<TypeReference>source).target === (<TypeReference>target).target) {
                         // We have type references to same target type, see if relationship holds for all type arguments
+	                    if (isStructAssignedToOrFromStructType(source, target)) write('have type references to same target type');
                         if (typesRelatedTo((<TypeReference>source).typeArguments, (<TypeReference>target).typeArguments, reportErrors)) {
                             return true;
                         }
@@ -3342,6 +3349,7 @@ module ts {
                     var sourceOrApparentType = relation === identityRelation ? source : getApparentType(source);
                     if (sourceOrApparentType.flags & TypeFlags.ObjectType && target.flags & TypeFlags.ObjectType &&
                         objectTypeRelatedTo(sourceOrApparentType, <ObjectType>target, reportStructuralErrors)) {
+	                    if (isStructAssignedToOrFromStructType(source, target)) write('structural comparison holds');
                         errorInfo = saveErrorInfo;
                         return true;
                     }
@@ -3351,7 +3359,7 @@ module ts {
                     // The error should end in a period when this is the deepest error in the chain
                     // (when errorInfo is undefined). Otherwise, it has a colon before the nested
                     // error.
-
+	                write('report errors');
                     chainedMessage = chainedMessage || Diagnostics.Type_0_is_not_assignable_to_type_1_Colon;
                     terminalMessage = terminalMessage || Diagnostics.Type_0_is_not_assignable_to_type_1;
                     var diagnosticKey = errorInfo ? chainedMessage : terminalMessage;
@@ -3361,16 +3369,18 @@ module ts {
                 return false;
             }
 
-	        function reportStructAssignabilityError(chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): void {
+	        function reportStructAssignabilityError(reportErrors: boolean, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): void {
 		        // The error should end in a period when this is the deepest error in the chain
 		        // (when errorInfo is undefined). Otherwise, it has a colon before the nested
 		        // error.
 
-		        chainedMessage = chainedMessage || Diagnostics.Type_0_is_not_assignable_to_type_1_Colon;
-		        terminalMessage = terminalMessage || Diagnostics.Type_0_is_not_assignable_to_type_1;
-		        var diagnosticKey = errorInfo ? chainedMessage : terminalMessage;
-		        Debug.assert(diagnosticKey);
-		        reportError(diagnosticKey, typeToString(source), typeToString(target));
+		        if (reportErrors) {
+			        chainedMessage = chainedMessage || Diagnostics.Type_0_is_not_assignable_to_type_1_Colon;
+			        terminalMessage = terminalMessage || Diagnostics.Type_0_is_not_assignable_to_type_1;
+			        var diagnosticKey = errorInfo ? chainedMessage : terminalMessage;
+			        Debug.assert(diagnosticKey);
+			        reportError(diagnosticKey, typeToString(source), typeToString(target));
+		        }
 
 	        }
 
@@ -6225,7 +6235,7 @@ module ts {
                     var ok = checkReferenceExpression(node.left, Diagnostics.Invalid_left_hand_side_of_assignment_expression);
                     // Use default messages
                     if (ok) {
-	                    log(valueType, leftType, "checkAssignmentOperator");
+	                    // log(valueType, leftType, "checkAssignmentOperator");
                         // to avoid cascading errors check assignability only if 'isReference' check succeeded and no errors were reported
                         checkTypeAssignableTo(valueType, leftType, node.left, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
                     }
@@ -7388,15 +7398,25 @@ module ts {
                         var checkAssignability =
                             func.type ||
                             (func.kind === SyntaxKind.GetAccessor && getSetAccessorTypeAnnotationNode(<AccessorDeclaration>getDeclarationOfKind(func.symbol, SyntaxKind.SetAccessor)));
-                        if (checkAssignability) {
+                        // write('returnExpType: ' + typeToString(returnExpType) + ', returnType: ' + typeToString(returnType));
+	                    if (checkAssignability) {
                             checkTypeAssignableTo(returnExpType, returnType, node.expression, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
                         }
                         else if (func.kind == SyntaxKind.Constructor) {
                             // constructor doesn't have explicit return type annotation and yet its return type is known - declaring type
-                            // handle constructors and issue specialized error message for them.
-                            if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {
+                            // handle constructors and issue specialized error message for them
+		                    /** var source = checkExpression(node.expression);
+		                    if (returnType.flags & TypeFlags.Struct) {
+								write("checkReturnStatement/constructor");
+								error(node.expression, Diagnostics.Struct_constructor_cannot_have_return_expression);
+							} else { */
+								if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {
+									error(node.expression, Diagnostics.Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type_of_the_class);
+								}
+							//}
+                            /** if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {
                                 error(node.expression, Diagnostics.Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type_of_the_class);
-                            }
+                            } */
                         }
 
                         if (returnType.flags & TypeFlags.PrimitiveType) {
@@ -7573,19 +7593,19 @@ module ts {
                 checkExpression(node.baseType.typeName);
             }
 
-            /*
-             * no need to check - syntax error, will be already flaged in parser
-             * if (node.implementedTypes) {
-	         *   error(, Diagnostics.A_struct_may_not_implement_another_class_or_interface);
-             * }
-             * */
-
+            // debugging purpose
+	        forEach(node.members, printInfo);
             forEach(node.members, checkSourceElement);
+
             if (fullTypeCheck) {
                 checkIndexConstraints(type);
                 checkTypeForDuplicateIndexSignatures(node);
             }
         }
+
+	    function printInfo(node: Node): void {
+		    if(!node) write(symbolToString(node.symbol));
+	    }
 
         function checkClassDeclaration(node: ClassDeclaration) {
             checkTypeNameIsReserved(node.name, Diagnostics.Class_name_cannot_be_0);
@@ -7636,6 +7656,7 @@ module ts {
             }
 
             forEach(node.members, checkSourceElement);
+
             if (fullTypeCheck) {
                 checkIndexConstraints(type);
                 checkTypeForDuplicateIndexSignatures(node);
