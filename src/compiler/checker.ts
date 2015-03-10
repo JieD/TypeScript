@@ -3122,39 +3122,39 @@ module ts {
         var identityRelation: Map<boolean> = {};
 
         function isTypeIdenticalTo(source: Type, target: Type): boolean {
-	        log(source, target, "isTypeIdenticalTo");
+	        //log(source, target, "isTypeIdenticalTo");
             return checkTypeRelatedTo(source, target, identityRelation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function isTypeSubtypeOf(source: Type, target: Type): boolean {
-	        log(source, target, "isTypeSubtypeOf");
+	        //log(source, target, "isTypeSubtypeOf");
 	        return checkTypeSubtypeOf(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function checkTypeSubtypeOf(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
-	        log(source, target, "checkTypeSubtypeOf");
+	        //log(source, target, "checkTypeSubtypeOf");
 	        return checkTypeRelatedTo(source, target, subtypeRelation, errorNode, chainedMessage, terminalMessage);
         }
 
         function isTypeAssignableTo(source: Type, target: Type): boolean {
-	        log(source, target, "isTypeAssignableTo");
+	        //log(source, target, "isTypeAssignableTo");
             return checkTypeAssignableTo(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function checkTypeAssignableTo(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
-            log(source, target, "checkTypeAssignableTo");
+            //log(source, target, "checkTypeAssignableTo");
 	        return checkTypeRelatedTo(source, target, assignableRelation, errorNode, chainedMessage, terminalMessage);
         }
 
         function isTypeRelatedTo(source: Type, target: Type, relation: Map<boolean>): boolean {
-	        log(source, target, "isTypeRelatedTo");
+	        //log(source, target, "isTypeRelatedTo");
             return checkTypeRelatedTo(source, target, relation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function isSignatureAssignableTo(source: Signature, target: Signature): boolean {
             var sourceType = getOrCreateTypeFromSignature(source);
             var targetType = getOrCreateTypeFromSignature(target);
-	        log(sourceType, targetType, "isTypeRelatedTo");
+	        //log(sourceType, targetType, "isTypeRelatedTo");
             return checkTypeRelatedTo(sourceType, targetType, assignableRelation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
@@ -3240,15 +3240,15 @@ module ts {
 
             Debug.assert(relation !== identityRelation || !errorNode, "no error reporting in identity checking");
 
-	        log(source, target, "checkTypeRelatedTo");
+	        //log(source, target, "checkTypeRelatedTo");
 
             var result = isRelatedToWithCustomErrors(source, target, errorNode !== undefined, chainedMessage, terminalMessage);
             if (overflow) {
-	            write("in checkTypeRelatedTo-overflow")
+	            //write("in checkTypeRelatedTo-overflow")
                 error(errorNode, Diagnostics.Excessive_stack_depth_comparing_types_0_and_1, typeToString(source), typeToString(target));
             }
             else if (errorInfo) {
-	            write("in checkTypeRelatedTo-errorInfo\n");
+	            //write("in checkTypeRelatedTo-errorInfo\n");
                 addDiagnostic(createDiagnosticForNodeFromMessageChain(errorNode, errorInfo, program.getCompilerHost().getNewLine()));
             }
             return result;
@@ -3258,7 +3258,7 @@ module ts {
             }
 
             function isRelatedTo(source: Type, target: Type, reportErrors?: boolean): boolean {
-	            log(source, target, "in isRelatedTo");
+	            //log(source, target, "in isRelatedTo");
                 return isRelatedToWithCustomErrors(source, target, reportErrors, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
             }
 
@@ -6225,7 +6225,7 @@ module ts {
                     var ok = checkReferenceExpression(node.left, Diagnostics.Invalid_left_hand_side_of_assignment_expression);
                     // Use default messages
                     if (ok) {
-	                    log(valueType, leftType, "checkAssignmentOperator");
+	                    //log(valueType, leftType, "checkAssignmentOperator");
                         // to avoid cascading errors check assignability only if 'isReference' check succeeded and no errors were reported
                         checkTypeAssignableTo(valueType, leftType, node.left, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
                     }
