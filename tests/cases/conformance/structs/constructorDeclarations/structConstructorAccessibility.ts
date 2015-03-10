@@ -1,3 +1,5 @@
+// Only public constructors are supported. Private and protected constructors result in an error
+
 struct C {
     public constructor(public x: number) { }
 }

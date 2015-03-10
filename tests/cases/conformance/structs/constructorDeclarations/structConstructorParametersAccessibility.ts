@@ -17,6 +17,7 @@ struct C3 {
 }
 var c3: C3;
 c3.p // protected, error
+
 struct Derived extends C3 {
     constructor(p: number) {
         super(p);

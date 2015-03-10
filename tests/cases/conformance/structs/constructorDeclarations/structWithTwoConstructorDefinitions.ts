@@ -1,3 +1,4 @@
+// Multiple constructor implementations are not allowed
 struct C {
     constructor() { } // error
     constructor(x) { } // error

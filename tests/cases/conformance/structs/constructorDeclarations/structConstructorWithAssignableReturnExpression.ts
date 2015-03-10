@@ -20,7 +20,14 @@ struct E {
     }
 }
 
-struct F<T> {
+struct G {
+	x: number;
+	constructor() {
+		return new G { x: 1 }; // error
+	}
+}
+
+struct <T> {
     x: T;
     constructor() {
         return { x: 1 }; // error
