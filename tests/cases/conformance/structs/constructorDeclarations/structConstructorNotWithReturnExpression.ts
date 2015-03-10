@@ -23,7 +23,7 @@ struct E {
 struct G {
 	x: number;
 	constructor() {
-		return new G { x: 1 }; // error
+		return { x: 1 }; // error
 	}
 }
 
