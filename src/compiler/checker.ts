@@ -3246,7 +3246,6 @@ module ts {
             var overflow = false;
 
             Debug.assert(relation !== identityRelation || !errorNode, "no error reporting in identity checking");
-
 	        // log(source, target, "checkTypeRelatedTo");
 
             var result = isRelatedToWithCustomErrors(source, target, errorNode !== undefined, chainedMessage, terminalMessage);
