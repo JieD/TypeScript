@@ -20,14 +20,28 @@ struct E {
     }
 }
 
-struct G {
-	x: number;
+struct Base {
 	constructor() {
-		return { x: 1 }; // error
+		return new Derived1();  // ok
 	}
 }
 
-struct <T> {
+struct Derived1 extends Base {
+	x: number;
+	constructor() {
+		super();
+	}
+}
+
+struct Derived2 extends Base {
+	x: number;
+	constructor()
+		super();
+		return new Base(); // ok
+	}
+}
+
+struct F<T> {
     x: T;
     constructor() {
         return { x: 1 }; // error

@@ -3251,11 +3251,11 @@ module ts {
 
             var result = isRelatedToWithCustomErrors(source, target, errorNode !== undefined, chainedMessage, terminalMessage);
             if (overflow) {
-	            write("in checkTypeRelatedTo-overflow")
+	            //write("in checkTypeRelatedTo-overflow")
                 error(errorNode, Diagnostics.Excessive_stack_depth_comparing_types_0_and_1, typeToString(source), typeToString(target));
             }
             else if (errorInfo) {
-	            write("in checkTypeRelatedTo-errorInfo\n");
+	            //write("in checkTypeRelatedTo-errorInfo\n");
                 addDiagnostic(createDiagnosticForNodeFromMessageChain(errorNode, errorInfo, program.getCompilerHost().getNewLine()));
             }
             return result;
@@ -3265,7 +3265,7 @@ module ts {
             }
 
             function isRelatedTo(source: Type, target: Type, reportErrors?: boolean): boolean {
-	            log(source, target, "in isRelatedTo");
+	            // log(source, target, "in isRelatedTo");
                 return isRelatedToWithCustomErrors(source, target, reportErrors, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
             }
 
@@ -3286,7 +3286,7 @@ module ts {
                         && !(target.flags & TypeFlags.Enum)) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
 	                if (isStructAssignedToOrFromNonStructType(source, target)) {
-		                console.log("flag: source is " + typeToString(source) + ", target is " + typeToString(target));
+		                //console.log("flag: source is " + typeToString(source) + ", target is " + typeToString(target));
 		                reportStructAssignabilityError(reportErrors, chainedMessage, terminalMessage);
 		                return false;
 	                }
