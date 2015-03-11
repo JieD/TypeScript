@@ -27,6 +27,6 @@ struct Derived2 extends Base {
     // ok, not enforcing assignability relation on this
     constructor(x: any) {
         super(x);
-        return 1; // error: Return type of constructor signature must be assignable to the instance type of the class
+        return 1; // error: Return type of constructor signature must be assignable to the instance type
     }
 }

@@ -7404,18 +7404,9 @@ module ts {
                         else if (func.kind == SyntaxKind.Constructor) {
                             // constructor doesn't have explicit return type annotation and yet its return type is known - declaring type
                             // handle constructors and issue specialized error message for them
-		                    /** var source = checkExpression(node.expression);
-		                    if (returnType.flags & TypeFlags.Struct) {
-								write("checkReturnStatement/constructor");
-								error(node.expression, Diagnostics.Struct_constructor_cannot_have_return_expression);
-							} else { */
-								if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {
-									error(node.expression, Diagnostics.Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type_of_the_class);
-								}
-							//}
-                            /** if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {
-                                error(node.expression, Diagnostics.Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type_of_the_class);
-                            } */
+							if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {
+								error(node.expression, Diagnostics.Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type);
+							}
                         }
 
                         if (returnType.flags & TypeFlags.PrimitiveType) {

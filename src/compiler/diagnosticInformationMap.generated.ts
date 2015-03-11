@@ -221,7 +221,7 @@ module ts {
         Invalid_left_hand_side_in_for_in_statement: { code: 2406, category: DiagnosticCategory.Error, key: "Invalid left-hand side in 'for...in' statement." },
         The_right_hand_side_of_a_for_in_statement_must_be_of_type_any_an_object_type_or_a_type_parameter: { code: 2407, category: DiagnosticCategory.Error, key: "The right-hand side of a 'for...in' statement must be of type 'any', an object type or a type parameter." },
         Setters_cannot_return_a_value: { code: 2408, category: DiagnosticCategory.Error, key: "Setters cannot return a value." },
-        Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type_of_the_class: { code: 2409, category: DiagnosticCategory.Error, key: "Return type of constructor signature must be assignable to the instance type of the class" },
+        Return_type_of_constructor_signature_must_be_assignable_to_the_instance_type: { code: 2409, category: DiagnosticCategory.Error, key: "Return type of constructor signature must be assignable to the instance type" },
         All_symbols_within_a_with_block_will_be_resolved_to_any: { code: 2410, category: DiagnosticCategory.Error, key: "All symbols within a 'with' block will be resolved to 'any'." },
         Property_0_of_type_1_is_not_assignable_to_string_index_type_2: { code: 2411, category: DiagnosticCategory.Error, key: "Property '{0}' of type '{1}' is not assignable to string index type '{2}'." },
         Property_0_of_type_1_is_not_assignable_to_numeric_index_type_2: { code: 2412, category: DiagnosticCategory.Error, key: "Property '{0}' of type '{1}' is not assignable to numeric index type '{2}'." },
@@ -408,7 +408,6 @@ module ts {
 	    Struct_0_incorrectly_extends_base_struct_1: { code: 8005, category: DiagnosticCategory.Error, key: "Struct '{0}' incorrectly extends base struct '{1}'." },
 	    Struct_0_incorrectly_extends_base_struct_1_Colon: { code: 8006, category: DiagnosticCategory.Error, key: "Struct '{0}' incorrectly extends base struct '{1}':" },
 	    A_struct_can_not_implement_another_class_or_interface: { code: 8007, category: DiagnosticCategory.Error, key: "A struct can not implement interface." },
-	    Struct_name_cannot_be_0: { code: 8008, category: DiagnosticCategory.Error, key: "Struct name cannot be '{0}'" },
-	    Struct_constructor_cannot_have_return_expression: { code: 8009, category: DiagnosticCategory.Error, key: "Cannot have return expression in struct constructor."}
+	    Struct_name_cannot_be_0: { code: 8008, category: DiagnosticCategory.Error, key: "Struct name cannot be '{0}'" }
     };
 }
