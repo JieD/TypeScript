@@ -1,15 +1,18 @@
-var _Vector = (function () {
+var Vector = (function () {
     var _Vector = new TypedObject.StructType({
         x: TypedObject.float64,
         y: TypedObject.float64,
         z: TypedObject.float64
     });
-    return _Vector
+    function Vector() {
+        function _ctor() {
+        }
+        var obj = new _Vector();
+        //_ctor.bind(obj)();
+        return obj;
+    }
+    return Vector;
 })();
-function Vector() {
-    var _this = new _Vector();
-    return _this;
-}
 function new_vector(_x, _y, _z) {
     var ret = new Vector();
     ret.x = _x;
@@ -41,18 +44,21 @@ function vec_cross(v1, v2) {
     return new_vector(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-var _Color = (function () {
+var Color = (function () {
     var _Color = new TypedObject.StructType({
         r: TypedObject.float64,
         g: TypedObject.float64,
         b: TypedObject.float64
     });
-    return _Color
+    function Color() {
+        function _ctor() {
+        }
+        var obj = new _Color();
+        //_ctor.bind(obj)();
+        return obj;
+    }
+    return Color;
 })();
-function Color() {
-    var _this = new _Color();
-    return _this;
-}
 function new_color(_x, _y, _z) {
     var ret = new Color();
     ret.r = _x;
