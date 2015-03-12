@@ -1,3 +1,6 @@
+// optional parameters can exist in constructor overloads
+// no errors
+
 struct C {
     foo: string;
     constructor(x?, y?: any[]); 

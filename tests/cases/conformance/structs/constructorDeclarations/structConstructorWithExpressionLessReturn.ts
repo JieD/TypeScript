@@ -1,4 +1,4 @@
-// not found error text in baseline/reference
+// no error
 
 struct C {
     constructor() {
@@ -19,8 +19,8 @@ struct E {
     }
 }
 
-/** struct F<T> {
+struct F<T> {
     constructor(public x: T) {
         return;
-    } */
+    }
 }

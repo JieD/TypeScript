@@ -8,10 +8,10 @@ struct Derived extends Base {
     y = 'hello';
 }
 
-var r = new Derived(); // error
+var r = new Derived(); // error, Supplied parameters do not match any signature of call target
 var r2 = new Derived(1); 
 
-/* struct Base2<T> {
+struct Base2<T> {
     a: T;
     constructor(x: T) { this.a = x; }
 }
@@ -21,5 +21,5 @@ struct D<T extends Date> extends Base2<T> {
     y: T = null;
 }
 
-var d = new D(); // error
+var d = new D(); // error, Supplied parameters do not match any signature of call target
 var d2 = new D(new Date()); // ok

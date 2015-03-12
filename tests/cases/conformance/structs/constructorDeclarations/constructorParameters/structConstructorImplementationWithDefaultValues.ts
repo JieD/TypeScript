@@ -1,3 +1,4 @@
+// no errors
 struct C {
     constructor(x);
     constructor(x = 1) {

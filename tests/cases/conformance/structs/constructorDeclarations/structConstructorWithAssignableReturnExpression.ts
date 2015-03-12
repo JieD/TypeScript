@@ -2,7 +2,7 @@
 
 struct C {
     constructor() {
-        return 1;
+        return 1;  // error
     }
 }
 
@@ -16,8 +16,29 @@ struct D {
 struct E {
     x: number;
     constructor() {
-        return { x: 1 };
+        return { x: 1 }; // error
     }
+}
+
+struct Base {
+	constructor() {
+		return new Derived1();  // ok
+	}
+}
+
+struct Derived1 extends Base {
+	x: number;
+	constructor() {
+		super();
+	}
+}
+
+struct Derived2 extends Base {
+	x: number;
+	constructor()
+		super();
+		return new Base(); // ok
+	}
 }
 
 struct F<T> {
@@ -30,6 +51,6 @@ struct F<T> {
 struct G<T> {
     x: T;
     constructor() {
-        return { x: <T>null };
+        return { x: <T>null }; // error
     }
 }

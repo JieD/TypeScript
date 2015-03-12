@@ -8,7 +8,7 @@ var r = c.y;
 
 struct D {
     y: number;
-    constructor(public y: number) { } // error
+    constructor(public y: number) { } // error, Duplicate identifier 'y'
 }
 
 var d: D;
@@ -16,7 +16,7 @@ var r2 = d.y;
 
 struct E {
     y: number;
-    constructor(private y: number) { } // error
+    constructor(private y: number) { } // error, Duplicate identifier 'y'
 }
 
 var e: E;
@@ -24,7 +24,7 @@ var r3 = e.y; // error
 
 struct F {
     y: number;
-    constructor(protected y: number) { } // error
+    constructor(protected y: number) { } // error, Duplicate identifier 'y'
 }
 
 var f: F;

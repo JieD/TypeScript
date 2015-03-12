@@ -5,8 +5,8 @@ struct C {
 
 var c: C;
 var r = c.y;
-var r2 = c.x; // error
-var r3 = c.z; // error
+var r2 = c.x; // error, Property 'x' is private and only accessible within struct 'C'
+var r3 = c.z; // error, Property 'z' is protected and only accessible within struct 'C' and its substructes
 
 struct D<T> {
     y: T;
@@ -16,5 +16,5 @@ struct D<T> {
 var d: D<string>;
 var r = d.y;
 var r2 = d.x; // error
-var r3 = d.a; // error
+var r3 = d.a; // error, Property 'a' does not exist on type 'D<string>'
 var r4 = d.z; // error
