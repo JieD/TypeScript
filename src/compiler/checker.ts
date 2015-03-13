@@ -3348,7 +3348,10 @@ module ts {
                     var sourceOrApparentType = relation === identityRelation ? source : getApparentType(source);
                     if (sourceOrApparentType.flags & TypeFlags.ObjectType && target.flags & TypeFlags.ObjectType &&
                         objectTypeRelatedTo(sourceOrApparentType, <ObjectType>target, reportStructuralErrors)) {
-	                    if (isStructAssignedToOrFromStructType(source, target)) write('structural comparison holds');
+	                    if (isStructAssignedToOrFromStructType(source, target)) {
+
+		                    write('structural comparison holds');
+	                    }
                         errorInfo = saveErrorInfo;
                         return true;
                     }
@@ -3369,11 +3372,10 @@ module ts {
             }
 
 	        function reportStructAssignabilityError(reportErrors: boolean, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): void {
-		        // The error should end in a period when this is the deepest error in the chain
-		        // (when errorInfo is undefined). Otherwise, it has a colon before the nested
-		        // error.
-
 		        if (reportErrors) {
+			        // The error should end in a period when this is the deepest error in the chain
+			        // (when errorInfo is undefined). Otherwise, it has a colon before the nested
+			        // error.
 			        chainedMessage = chainedMessage || Diagnostics.Type_0_is_not_assignable_to_type_1_Colon;
 			        terminalMessage = terminalMessage || Diagnostics.Type_0_is_not_assignable_to_type_1;
 			        var diagnosticKey = errorInfo ? chainedMessage : terminalMessage;
