@@ -2,6 +2,39 @@ struct Vector {
     x: number;
     y: number;
     z: number;
+
+    constructor(x,y,z) {
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
+    }
+
+    static ZERO: Vector  = new Vector(0,0,0);
+    static ZERO2: Vector  = Vector.ZERO;
+	static sfunc(): Vector {
+    	return Vector.ZERO;
+    }
+}
+
+
+/*
+
+class Vector_class {
+    x: number;
+    y: number;
+    z: number;
+
+    constructor(x,y,z) {
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
+    }
+
+    static static_method() {
+    	return 1;
+    }
+
+    static ZERO : string = "asdf";
 }
 
 function new_vector(_x: number, _y: number, _z: number) {
@@ -59,7 +92,7 @@ class C {
 	}
 
 	private print_line(l: Line) {
-		var do_print = (line) => {
+		var do_print = (line: Line) => {
 			this.print_vec(line.pos0);
 			this.print_vec(line.pos1);
 		}
@@ -70,3 +103,4 @@ class C {
 //bar_boo(foo());
 
 new C().func();
+*/

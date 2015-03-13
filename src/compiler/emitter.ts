@@ -1550,12 +1550,14 @@ module ts {
                         emitLeadingComments(member);
                         emitStart(member);
                         emitStart((<PropertyDeclaration>member).name);
+
                         if (staticFlag) {
                             emitNode(node.name);
                         }
                         else {
-                            write(isStruct ? "_this" : "this");
+                            write("this");
                         }
+
                         emitMemberAccess((<PropertyDeclaration>member).name);
                         emitEnd((<PropertyDeclaration>member).name);
                         write(" = ");
@@ -1569,11 +1571,10 @@ module ts {
 
             function emitStructProperties(node: StructDeclaration) {
                 for (var i = 0; i < node.members.length; i++) {
-                    if(node.members[i].kind == SyntaxKind.Property) {
+                    if(node.members[i].kind == SyntaxKind.Property && !(node.members[i].flags & NodeFlags.Static)) {
                         increaseIndent();
 
                         resolver.writeStructProperty(node.members[i], writer);
-
 
                         if (i < node.members.length - 1) {
                             write(",");
@@ -1603,11 +1604,7 @@ module ts {
                         emitStart(member);
                         emitStart((<MethodDeclaration>member).name);
 
-                        if(isStruct) {
-                            write("_" + node.name.text);
-                        } else {
-                            emitNode(node.name);
-                        }
+                        emitNode(node.name);
 
                         if (!(member.flags & NodeFlags.Static)) {
                             write(".prototype");
@@ -1681,8 +1678,9 @@ module ts {
 
             function emitStructDeclaration(node: StructDeclaration) {
                 emitLeadingComments(node);
+
                 write("var ");
-                write("_" + node.name.text);
+                write(node.name.text);
                 write(" = (function (");
                 write(") {");
                 writeLine();
@@ -1693,27 +1691,22 @@ module ts {
                 write("_" + node.name.text);
                 write(" = new TypedObject.StructType({");
                 writeLine();
-
-                //scopeEmitStart(node);
                 emitStructProperties(node);
-
-                //decreaseIndent();
                 writeLine();
                 write("});");
                 writeLine();
 
+                emitConstructorOfStruct();
                 emitMemberFunctions(node);
-                writeLine();
+                emitMemberAssignments(node, NodeFlags.Static);
 
-                write("return ");
-                write("_" + node.name.text);
+                writeLine();
+                write("return " + node.name.text + ";");
 
                 decreaseIndent();
                 writeLine();
                 write("})();");
                 writeLine();
-
-                emitConstructorOfStruct();
 
                 emitTrailingComments(node);
 
@@ -1730,8 +1723,16 @@ module ts {
                         emitLeadingComments(ctor);
                     }
                     emitStart(<Node>ctor || node);
-                    write("function ");
-                    emit(node.name);
+
+                    write("function " + node.name.text);
+                    emitSignatureParameters(ctor);
+                    write(" {");
+                    writeLine();
+                    increaseIndent();
+
+                    writeLine();
+
+                    write("function _ctor");
                     emitSignatureParameters(ctor);
                     write(" {");
                     scopeEmitStart(node, "constructor");
@@ -1739,13 +1740,6 @@ module ts {
                     if (ctor) {
                         emitDetachedComments((<Block>ctor.body).statements);
                     }
-
-                    writeLine();
-                    write("var _this = new ");
-                    write("_" + node.name.text);
-                    write("();")
-                    writeLine();
-
                     emitCaptureThisForNodeIfNecessary(node);
                     if (ctor) {
                         emitDefaultValueAssignments(ctor);
@@ -1759,14 +1753,7 @@ module ts {
                         }
                         emitParameterPropertyAssignments(ctor);
                     }
-                    else {
-                        if (node.baseType) {
-                            writeLine();
-                            emitStart(node.baseType);
-                            write("_super.apply(this, arguments);");
-                            emitEnd(node.baseType);
-                        }
-                    }
+
                     emitMemberAssignments(node, /*nonstatic*/0);
                     if (ctor) {
                         var statements: Node[] = (<Block>ctor.body).statements;
@@ -1777,10 +1764,6 @@ module ts {
                     if (ctor) {
                         emitLeadingCommentsOfPosition((<Block>ctor.body).statements.end);
                     }
-
-                    write("return _this;");
-                    writeLine();
-
                     decreaseIndent();
                     emitToken(SyntaxKind.CloseBraceToken, ctor ? (<Block>ctor.body).statements.end : node.members.end);
                     scopeEmitEnd();
@@ -1788,6 +1771,19 @@ module ts {
                     if (ctor) {
                         emitTrailingComments(ctor);
                     }
+
+                    writeLine();
+                    write("var obj = new _");
+                    write(node.name.text + "();");
+                    writeLine();
+                    write("_ctor.bind(obj)");
+                    emitSignatureParameters(ctor);
+                    write(";");
+                    writeLine();
+                    write("return obj;");
+                    writeLine();
+                    decreaseIndent();
+                    write("}");
                 }
             }
 
