@@ -3736,7 +3736,6 @@ module ts {
                 parseDelimitedList(ParsingContext.BaseTypeReferences, parseTypeReference, /*allowTrailingComma*/ false);
 	            grammarErrorAtPos(implementsKeywordStart, implementsKeywordLength, Diagnostics.A_struct_can_not_implement_another_class_or_interface);
             }
-            var errorCountBeforeStructBody = file.syntacticErrors.length;
             if (parseExpected(SyntaxKind.OpenBraceToken)) {
                 node.members = parseList(ParsingContext.StructMembers, /*checkForStrictMode*/ false, parseStructMemberDeclaration);
                 parseExpected(SyntaxKind.CloseBraceToken);
