@@ -1,4 +1,4 @@
-// nested structes are not allowed
+// nested structs are not allowed
 
 struct C {
     x: string;

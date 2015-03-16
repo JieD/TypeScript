@@ -1,3 +1,5 @@
+// struct expression are not supported
+
 var x = struct C {
 }
 
