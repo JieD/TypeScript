@@ -3127,34 +3127,34 @@ module ts {
         }
 
         function isTypeSubtypeOf(source: Type, target: Type): boolean {
-	        // log(source, target, "isTypeSubtypeOf");
+	        log(source, target, "isTypeSubtypeOf");
 	        return checkTypeSubtypeOf(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function checkTypeSubtypeOf(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
-	        // log(source, target, "checkTypeSubtypeOf");
+	        log(source, target, "checkTypeSubtypeOf");
 	        return checkTypeRelatedTo(source, target, subtypeRelation, errorNode, chainedMessage, terminalMessage);
         }
 
         function isTypeAssignableTo(source: Type, target: Type): boolean {
-	        // log(source, target, "isTypeAssignableTo");
+	        log(source, target, "isTypeAssignableTo");
             return checkTypeAssignableTo(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function checkTypeAssignableTo(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
-            // log(source, target, "checkTypeAssignableTo");
+            log(source, target, "checkTypeAssignableTo");
 	        return checkTypeRelatedTo(source, target, assignableRelation, errorNode, chainedMessage, terminalMessage);
         }
 
         function isTypeRelatedTo(source: Type, target: Type, relation: Map<boolean>): boolean {
-	        // log(source, target, "isTypeRelatedTo");
+	        log(source, target, "isTypeRelatedTo");
             return checkTypeRelatedTo(source, target, relation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
         function isSignatureAssignableTo(source: Signature, target: Signature): boolean {
             var sourceType = getOrCreateTypeFromSignature(source);
             var targetType = getOrCreateTypeFromSignature(target);
-	        // log(sourceType, targetType, "isTypeRelatedTo");
+	        log(sourceType, targetType, "isTypeRelatedTo");
             return checkTypeRelatedTo(sourceType, targetType, assignableRelation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
@@ -3229,7 +3229,9 @@ module ts {
 	    }
 	    function log(source: Type, target: Type, info: string): void {
 		    if (isStructAssignedToOrFromNonStructType(source, target)) {
-			    write(info);
+			    write("non-struct & struct: " + info);
+		    } else if (isStructAssignedToOrFromStructType(source, target)) {
+			    write("struct & struct: " + info);
 		    }
 	    }
 
@@ -3246,7 +3248,7 @@ module ts {
             var overflow = false;
 
             Debug.assert(relation !== identityRelation || !errorNode, "no error reporting in identity checking");
-	        // log(source, target, "checkTypeRelatedTo");
+	        log(source, target, "checkTypeRelatedTo");
 
             var result = isRelatedToWithCustomErrors(source, target, errorNode !== undefined, chainedMessage, terminalMessage);
             if (overflow) {
@@ -3275,6 +3277,7 @@ module ts {
                 }
                 else {
                     if (source === target) return true;
+	                // cannot assign struct to any
 	                if ( (target.flags & TypeFlags.Any) && !(source.flags & TypeFlags.Struct) ) {
 		                return true;
 	                }
@@ -3284,12 +3287,16 @@ module ts {
                     if (source.flags & TypeFlags.Number && target.flags & TypeFlags.Number
                         && !(target.flags & TypeFlags.Enum)) return true;
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
+
+	                // assignability doesn't hold between struct and non-struct types
 	                if (isStructAssignedToOrFromNonStructType(source, target)) {
 		                //console.log("flag: source is " + typeToString(source) + ", target is " + typeToString(target));
 		                reportStructAssignabilityError(reportErrors, chainedMessage, terminalMessage);
 		                return false;
 	                }
+
                     if (relation === assignableRelation) {
+	                    // cannot assign any to struct
                         if ( (source.flags & TypeFlags.Any) && !(target.flags & TypeFlags.Struct) ) {
 	                        return true;
                         }
@@ -3346,15 +3353,34 @@ module ts {
                     var reportStructuralErrors = reportErrors && errorInfo === saveErrorInfo;
                     // identity relation does not use apparent type
                     var sourceOrApparentType = relation === identityRelation ? source : getApparentType(source);
-                    if (sourceOrApparentType.flags & TypeFlags.ObjectType && target.flags & TypeFlags.ObjectType &&
-                        objectTypeRelatedTo(sourceOrApparentType, <ObjectType>target, reportStructuralErrors)) {
-	                    if (isStructAssignedToOrFromStructType(source, target)) {
 
-		                    write('structural comparison holds');
-	                    }
-                        errorInfo = saveErrorInfo;
-                        return true;
-                    }
+	                if (sourceOrApparentType.flags & TypeFlags.ObjectType && target.flags & TypeFlags.ObjectType) {
+		                // for struct assignability, check its inheritance chain
+		                if (isStructAssignedToOrFromStructType(source, target)) {
+			                write('check inheritance chain');
+			                var baseTypes = (<InterfaceType>sourceOrApparentType).baseTypes;
+			                if (baseTypes) {
+				                if (baseTypes.indexOf(<ObjectType>target) > -1) { // target is on source's inheritance chain
+					                write('inheritance holds');
+					                errorInfo = saveErrorInfo;
+					                return true;
+				                }
+				                if (baseTypes.indexOf(<ObjectType>target) == 0) { // extends clause check assignability
+					                if (objectTypeRelatedTo(sourceOrApparentType, <ObjectType>target, reportStructuralErrors)) {
+						                errorInfo = saveErrorInfo;
+						                return true;
+					                }
+				                }
+			                }
+		                } else { // structural comparison
+			                if (objectTypeRelatedTo(sourceOrApparentType, <ObjectType>target, reportStructuralErrors)) {
+				                errorInfo = saveErrorInfo;
+				                return true;
+			                }
+		                }
+	                }
+
+
                 }
 
                 if (reportErrors) {
@@ -3450,9 +3476,6 @@ module ts {
                 var result: boolean;
                 var id = source.id + "," + target.id;
                 if ((result = relation[id]) !== undefined) return result;
-	            var classOrInterfaceFlag = TypeFlags.Class | TypeFlags.Interface;
-	            if (source.flags & TypeFlags.Struct && target.flags & classOrInterfaceFlag) return false;
-	            if (source.flags & classOrInterfaceFlag && target.flags & TypeFlags.Struct) return false;
                 if (depth > 0) {
                     for (var i = 0; i < depth; i++) {
                         if (source === sourceStack[i] && target === targetStack[i]) return true;
