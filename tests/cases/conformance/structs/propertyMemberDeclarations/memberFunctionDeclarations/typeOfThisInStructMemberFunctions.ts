@@ -1,4 +1,4 @@
-class C {
+struct C {
     foo() {
         var r = this;
     }
@@ -8,7 +8,7 @@ class C {
     }
 }
 
-class D<T> {
+struct D<T> {
     x: T;
     foo() {
         var r = this;
@@ -19,7 +19,7 @@ class D<T> {
     }
 }
 
-class E<T extends Date> {
+struct E<T extends Date> {
     x: T;
     foo() {
         var r = this;
