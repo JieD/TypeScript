@@ -1,8 +1,10 @@
-class C {
+// ok
+
+struct C {
     x = this;
 }
 
-class D<T> {
+struct D<T> {
     x = this;
     y: T;
 }

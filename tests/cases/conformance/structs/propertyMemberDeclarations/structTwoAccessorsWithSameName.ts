@@ -1,14 +1,16 @@
-class C {
+// @target: ES5
+
+struct C {
     get x() { return 1; }
-    get x() { return 1; } // error
+    get x() { return 1; } // error, Duplicate identifier 'x'.
 }
 
-class D {
+struct D {
     set x(v) {  }
-    set x(v) {  } // error
+    set x(v) {  } // error, Duplicate identifier 'x'.
 }
 
-class E {
+struct E {
     get x() {
         return 1;
     }
@@ -20,7 +22,7 @@ var x = {
         return 1;
     },
 
-    // error
+    // error, Duplicate identifier 'x'.
     get x() {
         return 1;
     }

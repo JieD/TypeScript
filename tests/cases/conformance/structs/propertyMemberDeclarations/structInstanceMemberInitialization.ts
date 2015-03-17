@@ -1,4 +1,5 @@
 // ok
+
 struct C {
     x = 1;
 }
