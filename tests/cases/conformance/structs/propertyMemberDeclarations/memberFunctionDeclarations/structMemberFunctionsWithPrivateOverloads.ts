@@ -1,4 +1,4 @@
-class C {
+struct C {
     private foo(x: number);
     private foo(x: number, y: string);
     private foo(x: any, y?: any) { }
@@ -18,7 +18,7 @@ class C {
     private static bar(x: any, y?: any) { }
 }
 
-class D<T> {
+struct D<T> {
     private foo(x: number);
     private foo(x: T, y: T);
     private foo(x: any, y?: any) { }

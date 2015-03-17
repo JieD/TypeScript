@@ -1,4 +1,4 @@
-class C {
+struct C {
     private foo(x: number);
     public foo(x: number, y: string); // error
     private foo(x: any, y?: any) { }
@@ -27,7 +27,7 @@ class C {
     protected static baz(x: any, y?: any) { }
 }
 
-class D<T> {
+struct D<T> {
     private foo(x: number); 
     public foo(x: T, y: T); // error
     private foo(x: any, y?: any) { }

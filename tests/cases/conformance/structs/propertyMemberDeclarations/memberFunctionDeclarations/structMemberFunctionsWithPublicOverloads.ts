@@ -1,4 +1,4 @@
-class C {
+struct C {
     public foo(x: number);
     public foo(x: number, y: string);
     public foo(x: any, y?: any) { }
@@ -18,7 +18,7 @@ class C {
     public static bar(x: any, y?: any) { }
 }
 
-class D<T> {
+struct D<T> {
     public foo(x: number);
     public foo(x: T, y: T);
     public foo(x: any, y?: any) { }
