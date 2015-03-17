@@ -1,9 +1,11 @@
-class C {
+// ok
+
+struct C {
     static f: number;
     f: number;
 }
 
-class D {
+struct D {
     static f: number;
     f() { }
 }

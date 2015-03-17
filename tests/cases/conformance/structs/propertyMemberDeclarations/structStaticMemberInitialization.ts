@@ -1,4 +1,6 @@
-class C {
+// ok
+
+struct C {
     static x = 1;
 }
 

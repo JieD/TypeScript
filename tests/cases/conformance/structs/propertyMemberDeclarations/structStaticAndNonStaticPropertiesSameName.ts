@@ -1,4 +1,5 @@
-class C {
+// ok
+struct C {
     x: number;
     static x: number;
 

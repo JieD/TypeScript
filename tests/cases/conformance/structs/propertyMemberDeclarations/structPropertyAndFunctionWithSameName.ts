@@ -1,11 +1,11 @@
-class C {
+struct C {
     x: number;
     x() { // error
         return 1;
     }
 }
 
-class D {
+struct D {
     x: number;
     x(v) { } // error
 }
