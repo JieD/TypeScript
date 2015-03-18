@@ -1,4 +1,6 @@
-class C {
+// @target: ES5
+
+struct C {
     get x() {
         var r = this; // C
         return 1;
@@ -10,7 +12,7 @@ class C {
     }
 }
 
-class D<T> {
+struct D<T> {
     a: T;
     get x() {
         var r = this; // D<T>

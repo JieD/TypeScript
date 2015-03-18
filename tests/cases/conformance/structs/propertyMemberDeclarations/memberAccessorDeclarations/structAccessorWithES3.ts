@@ -2,13 +2,13 @@
 
 // error to use accessors in ES3 mode
 
-class C {
+struct C {
     get x() {
         return 1;
     }
 }
 
-class D {
+struct D {
     set x(v) {
     }
 }

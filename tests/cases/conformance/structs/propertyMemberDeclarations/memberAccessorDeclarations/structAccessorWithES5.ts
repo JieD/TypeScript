@@ -1,12 +1,12 @@
 // @target: ES5
 
-class C {
+struct C {
     get x() {
         return 1;
     }
 }
 
-class D {
+struct D {
     set x(v) {
     }
 }
