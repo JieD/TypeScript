@@ -1,6 +1,6 @@
-// Initializer expressions for instance member variables are evaluated in the scope of the class constructor body but are not permitted to reference parameters or local variables of the constructor. 
+// Initializer expressions for instance member variables are evaluated in the scope of the struct constructor body but are not permitted to reference parameters or local variables of the constructor. 
 
-class C {
+struct C {
     a = z; // error
     b: typeof z; // error
     c = this.z; // error
@@ -10,7 +10,7 @@ class C {
     }
 }
 
-class D<T> {
+struct D<T> {
     a = z; // error
     b: typeof z; // error
     c = this.z; // error

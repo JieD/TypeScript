@@ -1,4 +1,4 @@
-class C {
+struct C {
     x = 1;
 }
 

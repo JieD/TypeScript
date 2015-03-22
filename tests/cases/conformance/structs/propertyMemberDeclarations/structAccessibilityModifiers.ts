@@ -1,7 +1,7 @@
 // @target: ES5
 
 // No errors
-class C {
+struct C {
     private static privateProperty;
     private static privateMethod() { }
     private static get privateGetter() { return 0; }
@@ -19,7 +19,7 @@ class C {
 }
 
 // Errors, accessibility modifiers must precede static
-class D {
+struct D {
     static private privateProperty;
     static private privateMethod() { }
     static private get privateGetter() { return 0; }
@@ -37,7 +37,7 @@ class D {
 }
 
 // Errors, multiple accessibility modifier
-class E {
+struct E {
     private public protected property;
     public protected method() { }
     private protected get getter() { return 0; }
