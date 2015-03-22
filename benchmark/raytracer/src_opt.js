@@ -1,14 +1,32 @@
+var TestVector = (function () {
+    var _TestVector = new TypedObject.StructType({
+        x: TypedObject.float64,
+        y: TypedObject.float64,
+        z: TypedObject.float64,
+    });
+    function _ctor(x, y, z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    function TestVector(x, y, z) {
+        var obj = new _TestVector();
+        _ctor.call(obj ,x, y, z);
+        return obj;
+    }
+    return TestVector;
+})();
 var Vector = (function () {
     var _Vector = new TypedObject.StructType({
         x: TypedObject.float64,
         y: TypedObject.float64,
         z: TypedObject.float64
     });
+    function _ctor() {
+    }
     function Vector() {
-        function _ctor() {
-        }
         var obj = new _Vector();
-        //_ctor.bind(obj)();
+        _ctor.call(obj);
         return obj;
     }
     return Vector;
@@ -50,11 +68,11 @@ var Color = (function () {
         g: TypedObject.float64,
         b: TypedObject.float64
     });
+    function _ctor() {
+    }
     function Color() {
-        function _ctor() {
-        }
         var obj = new _Color();
-        //_ctor.bind(obj)();
+        _ctor.call(obj);
         return obj;
     }
     return Color;

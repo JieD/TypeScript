@@ -1722,14 +1722,7 @@ module ts {
                     if (ctor) {
                         emitLeadingComments(ctor);
                     }
-                    emitStart(<Node>ctor || node);
-
-                    write("function " + node.name.text);
-                    emitSignatureParameters(ctor);
-                    write(" {");
-                    writeLine();
-                    increaseIndent();
-
+                    
                     writeLine();
 
                     write("function _ctor");
@@ -1771,14 +1764,29 @@ module ts {
                     if (ctor) {
                         emitTrailingComments(ctor);
                     }
+                    writeLine();
+
+                    emitStart(<Node>ctor || node);
+
+                    write("function " + node.name.text);
+                    emitSignatureParameters(ctor);
+                    write(" {");
+                    writeLine();
+                    increaseIndent();
 
                     writeLine();
                     write("var obj = new _");
                     write(node.name.text + "();");
                     writeLine();
-                    write("_ctor.bind(obj)");
-                    emitSignatureParameters(ctor);
-                    write(";");
+
+                    write("_ctor.call(obj");
+
+                    if (ctor) {
+                        if(ctor.parameters.length > 0) write(" ,");
+                        emitCommaList(ctor.parameters, false, ctor.parameters.length - (hasRestParameters(ctor) ? 1 : 0));
+                    }
+
+                    write(");");
                     writeLine();
                     write("return obj;");
                     writeLine();
