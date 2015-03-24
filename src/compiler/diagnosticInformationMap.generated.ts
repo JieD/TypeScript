@@ -156,7 +156,7 @@ module ts {
         Property_0_does_not_exist_on_type_1: { code: 2339, category: DiagnosticCategory.Error, key: "Property '{0}' does not exist on type '{1}'." },
         Only_public_and_protected_methods_of_the_base_class_are_accessible_via_the_super_keyword: { code: 2340, category: DiagnosticCategory.Error, key: "Only public and protected methods of the base class are accessible via the 'super' keyword" },
         Property_0_is_private_and_only_accessible_within_class_1: { code: 2341, category: DiagnosticCategory.Error, key: "Property '{0}' is private and only accessible within class '{1}'." },
-        An_index_expression_argument_must_be_of_type_string_number_or_any: { code: 2342, category: DiagnosticCategory.Error, key: "An index expression argument must be of type 'string', 'number', or 'any'." },
+	    An_index_expression_argument_must_be_of_type_string_number_or_any: { code: 2342, category: DiagnosticCategory.Error, key: "An index expression argument must be of type 'string', 'number', or 'any'." },
         Type_0_does_not_satisfy_the_constraint_1_Colon: { code: 2343, category: DiagnosticCategory.Error, key: "Type '{0}' does not satisfy the constraint '{1}':" },
         Type_0_does_not_satisfy_the_constraint_1: { code: 2344, category: DiagnosticCategory.Error, key: "Type '{0}' does not satisfy the constraint '{1}'." },
         Argument_of_type_0_is_not_assignable_to_parameter_of_type_1: { code: 2345, category: DiagnosticCategory.Error, key: "Argument of type '{0}' is not assignable to parameter of type '{1}'." },
@@ -409,6 +409,11 @@ module ts {
 	    Struct_0_incorrectly_extends_base_struct_1_Colon: { code: 8006, category: DiagnosticCategory.Error, key: "Struct '{0}' incorrectly extends base struct '{1}':" },
 	    A_struct_can_not_implement_another_class_or_interface: { code: 8007, category: DiagnosticCategory.Error, key: "A struct can not implement interface." },
 	    Struct_name_cannot_be_0: { code: 8008, category: DiagnosticCategory.Error, key: "Struct name cannot be '{0}'" },
-	    Struct_constructor_cannot_have_return_expression: { code: 8009, category: DiagnosticCategory.Error, key: "Cannot have return expression in struct constructor."}
+	    Struct_constructor_cannot_have_return_expression: { code: 8009, category: DiagnosticCategory.Error, key: "Cannot have return expression in struct constructor."},
+	    Property_0_is_private_and_only_accessible_within_struct_1: { code: 8010, category: DiagnosticCategory.Error, key: "Property '{0}' is private and only accessible within struct '{1}'." },
+	    Property_0_is_protected_and_only_accessible_within_struct_1_and_its_substructs: { code: 8011, category: DiagnosticCategory.Error, key: "Property '{0}' is protected and only accessible within struct '{1}' and its substructs." },
+	    Property_0_is_protected_and_only_accessible_through_an_instance_of_struct_1: { code: 8012, category: DiagnosticCategory.Error, key: "Property '{0}' is protected and only accessible through an instance of struct '{1}'." },
+
+
     };
 }

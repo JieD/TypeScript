@@ -4871,12 +4871,18 @@ module ts {
             // Get the declaring and enclosing class instance types
             var enclosingClassDeclaration = getAncestor(node, SyntaxKind.ClassDeclaration);
             var enclosingClass = enclosingClassDeclaration ? <InterfaceType>getDeclaredTypeOfSymbol(getSymbolOfNode(enclosingClassDeclaration)) : undefined;
-            if (!enclosingClassDeclaration) enclosingClassDeclaration = getAncestor(node, SyntaxKind.StructDeclaration);
+            var isClassDeclaration = true;
+	        if (!enclosingClassDeclaration) {
+		        isClassDeclaration = false;
+		        enclosingClassDeclaration = getAncestor(node, SyntaxKind.StructDeclaration);
+	        }
             var declaringClass = <InterfaceType>getDeclaredTypeOfSymbol(prop.parent);
             // Private property is accessible if declaring and enclosing class are the same
             if (flags & NodeFlags.Private) {
                 if (declaringClass !== enclosingClass) {
-                    error(node, Diagnostics.Property_0_is_private_and_only_accessible_within_class_1, symbolToString(prop), typeToString(declaringClass));
+	                isClassDeclaration?
+		                error(node, Diagnostics.Property_0_is_private_and_only_accessible_within_class_1, symbolToString(prop), typeToString(declaringClass)) :
+		                error(node, Diagnostics.Property_0_is_private_and_only_accessible_within_struct_1, symbolToString(prop), typeToString(declaringClass))
                 }
                 return;
             }
@@ -4887,7 +4893,9 @@ module ts {
             }
             // A protected property is accessible in the declaring class and classes derived from it
             if (!enclosingClass || !hasBaseType(enclosingClass, declaringClass)) {
-                error(node, Diagnostics.Property_0_is_protected_and_only_accessible_within_class_1_and_its_subclasses, symbolToString(prop), typeToString(declaringClass));
+	            isClassDeclaration?
+		            error(node, Diagnostics.Property_0_is_protected_and_only_accessible_within_class_1_and_its_subclasses, symbolToString(prop), typeToString(declaringClass)) :
+		            error(node, Diagnostics.Property_0_is_protected_and_only_accessible_within_struct_1_and_its_substructs, symbolToString(prop), typeToString(declaringClass));
                 return;
             }
             // No further restrictions for static properties
@@ -4896,7 +4904,9 @@ module ts {
             }
             // An instance property must be accessed through an instance of the enclosing class
             if (!(getTargetType(type).flags & (TypeFlags.Struct | TypeFlags.Class | TypeFlags.Interface) && hasBaseType(<InterfaceType>type, enclosingClass))) {
-                error(node, Diagnostics.Property_0_is_protected_and_only_accessible_through_an_instance_of_class_1, symbolToString(prop), typeToString(enclosingClass));
+	            isClassDeclaration?
+	                error(node, Diagnostics.Property_0_is_protected_and_only_accessible_through_an_instance_of_class_1, symbolToString(prop), typeToString(enclosingClass)) :
+		            error(node, Diagnostics.Property_0_is_protected_and_only_accessible_through_an_instance_of_struct_1, symbolToString(prop), typeToString(enclosingClass))
             }
         }
 
