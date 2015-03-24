@@ -9,26 +9,27 @@ struct C {
     constructor(x: number) {
         var t = this;
         t.x;
-        t.y;
+        //t.y;
         t.z; // error, z doesn't exist.
         var r = t.foo();
     }
 
-    get y() {
+    /* get y() {
         return this;
-    }
+    } */
 }
 
 var c: C;
 // all ok
 var r = c.x;
 var ra = c.x.x.x;
-var r2 = c.y;
+// var r2 = c.y;
 var r3 = c.foo();
-var rs = [r, r2, r3];
+var rs = [r, r3];
+// var rs = [r, r2, r3];
 
 rs.forEach(x => {
     x.foo;
     x.x;
-    x.y;
+    //x.y;
 });

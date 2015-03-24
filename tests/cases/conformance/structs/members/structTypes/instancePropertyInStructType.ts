@@ -1,12 +1,13 @@
 // @target: ES5
+// ok
 
 module NonGeneric {
     struct C {
         x: string;
-        get y() {
+        /* get y() {
             return 1;
         }
-        set y(v) { }
+        set y(v) { } */
         fn() { return this; }
         constructor(public a: number, private b: number) { }
     }
@@ -14,19 +15,19 @@ module NonGeneric {
     var c = new C(1, 2);
     var r = c.fn();
     var r2 = r.x;
-    var r3 = r.y;
-    r.y = 4;
-    var r6 = c.y(); // error, should be c.y
+    // var r3 = r.y;
+    // r.y = 4;
+    // var r6 = c.y(); // error, should be c.y
 
 }
 
 module Generic {
     struct C<T,U> {
         x: T;
-        get y() {
+        /* get y() {
             return null;
         }
-        set y(v: U) { }
+        set y(v: U) { } */
         fn() { return this; }
         constructor(public a: T, private b: U) { }
     }
@@ -34,7 +35,7 @@ module Generic {
     var c = new C(1, '');
     var r = c.fn();
     var r2 = r.x;
-    var r3 = r.y;
-    r.y = '';
-    var r6 = c.y(); // error
+    // var r3 = r.y;
+    // r.y = '';
+    // var r6 = c.y(); // error
 }

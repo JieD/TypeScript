@@ -7,9 +7,9 @@ interface I {
 }
 
 class C {
-	x?: number; // error
+	x?: number; // error, cannot be declared optional
 }
 
 struct S {
-	x?: number; // error
+	x?: number; // error, cannot be declared optional
 }
