@@ -12,10 +12,3 @@ struct D<T, U> {
         var z = x;
     }
 }
-
-struct E<T extends Date> {
-    constructor(x);
-    constructor(x: T = new Date()) { // error, Type 'Date' is not assignable to type 'T'
-        var y = x;
-    }
-}

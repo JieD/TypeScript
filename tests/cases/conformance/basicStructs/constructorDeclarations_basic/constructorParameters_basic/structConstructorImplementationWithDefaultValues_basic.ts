@@ -12,10 +12,3 @@ struct D<T> {
         var y = x;
     }
 }
-
-struct E<T extends Date> {
-    constructor(x);
-    constructor(x: T = null) {
-        var y = x;
-    }
-}
