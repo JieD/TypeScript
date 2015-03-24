@@ -413,6 +413,9 @@ module ts {
 	    Property_0_is_private_and_only_accessible_within_struct_1: { code: 8010, category: DiagnosticCategory.Error, key: "Property '{0}' is private and only accessible within struct '{1}'." },
 	    Property_0_is_protected_and_only_accessible_within_struct_1_and_its_substructs: { code: 8011, category: DiagnosticCategory.Error, key: "Property '{0}' is protected and only accessible within struct '{1}' and its substructs." },
 	    Property_0_is_protected_and_only_accessible_through_an_instance_of_struct_1: { code: 8012, category: DiagnosticCategory.Error, key: "Property '{0}' is protected and only accessible through an instance of struct '{1}'." },
+	    A_super_call_must_be_the_first_statement_in_the_constructor_when_a_struct_contains_initialized_properties_or_has_parameter_properties: { code: 8013, category: DiagnosticCategory.Error, key: "A 'super' call must be the first statement in the constructor when a struct contains initialized properties or has parameter properties." },
+	    Constructors_for_derived_structs_must_contain_a_super_call: { code: 8014, category: DiagnosticCategory.Error, key: "Constructors for derived structs must contain a 'super' call." },
+	    super_can_only_be_referenced_in_a_derived_struct: { code: 8015, category: DiagnosticCategory.Error, key: "'super' can only be referenced in a derived struct." },
 
 
     };

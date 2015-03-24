@@ -4494,8 +4494,12 @@ module ts {
 
         function checkSuperExpression(node: Node): Type {
             var isCallExpression = node.parent.kind === SyntaxKind.CallExpression && (<CallExpression>node.parent).func === node;
-            var enclosingClass = <ClassDeclaration>getAncestor(node, SyntaxKind.ClassDeclaration);
-            if (!enclosingClass) enclosingClass = <StructDeclaration>getAncestor(node, SyntaxKind.StructDeclaration);
+            var isInClassDeclaration = true;
+	        var enclosingClass = <ClassDeclaration>getAncestor(node, SyntaxKind.ClassDeclaration);
+            if (!enclosingClass) {
+	            isInClassDeclaration = false;
+	            enclosingClass = <StructDeclaration>getAncestor(node, SyntaxKind.StructDeclaration);
+            }
             var baseClass: Type;
             if (enclosingClass && enclosingClass.baseType) {
                 var classType = <InterfaceType>getDeclaredTypeOfSymbol(getSymbolOfNode(enclosingClass));
@@ -4503,8 +4507,10 @@ module ts {
             }
 
             if (!baseClass) {
-                error(node, Diagnostics.super_can_only_be_referenced_in_a_derived_class);
-                return unknownType;
+	            isInClassDeclaration?
+		            error(node, Diagnostics.super_can_only_be_referenced_in_a_derived_class) :
+		            error(node, Diagnostics.super_can_only_be_referenced_in_a_derived_struct);
+	            return unknownType;
             }
 
             var container = getSuperContainer(node);
@@ -4871,18 +4877,18 @@ module ts {
             // Get the declaring and enclosing class instance types
             var enclosingClassDeclaration = getAncestor(node, SyntaxKind.ClassDeclaration);
             var enclosingClass = enclosingClassDeclaration ? <InterfaceType>getDeclaredTypeOfSymbol(getSymbolOfNode(enclosingClassDeclaration)) : undefined;
-            var isClassDeclaration = true;
+            var isInClassDeclaration = true;
 	        if (!enclosingClassDeclaration) {
-		        isClassDeclaration = false;
+		        isInClassDeclaration = false;
 		        enclosingClassDeclaration = getAncestor(node, SyntaxKind.StructDeclaration);
 	        }
             var declaringClass = <InterfaceType>getDeclaredTypeOfSymbol(prop.parent);
             // Private property is accessible if declaring and enclosing class are the same
             if (flags & NodeFlags.Private) {
                 if (declaringClass !== enclosingClass) {
-	                isClassDeclaration?
+	                isInClassDeclaration?
 		                error(node, Diagnostics.Property_0_is_private_and_only_accessible_within_class_1, symbolToString(prop), typeToString(declaringClass)) :
-		                error(node, Diagnostics.Property_0_is_private_and_only_accessible_within_struct_1, symbolToString(prop), typeToString(declaringClass))
+		                error(node, Diagnostics.Property_0_is_private_and_only_accessible_within_struct_1, symbolToString(prop), typeToString(declaringClass));
                 }
                 return;
             }
@@ -4893,7 +4899,7 @@ module ts {
             }
             // A protected property is accessible in the declaring class and classes derived from it
             if (!enclosingClass || !hasBaseType(enclosingClass, declaringClass)) {
-	            isClassDeclaration?
+	            isInClassDeclaration?
 		            error(node, Diagnostics.Property_0_is_protected_and_only_accessible_within_class_1_and_its_subclasses, symbolToString(prop), typeToString(declaringClass)) :
 		            error(node, Diagnostics.Property_0_is_protected_and_only_accessible_within_struct_1_and_its_substructs, symbolToString(prop), typeToString(declaringClass));
                 return;
@@ -4904,9 +4910,9 @@ module ts {
             }
             // An instance property must be accessed through an instance of the enclosing class
             if (!(getTargetType(type).flags & (TypeFlags.Struct | TypeFlags.Class | TypeFlags.Interface) && hasBaseType(<InterfaceType>type, enclosingClass))) {
-	            isClassDeclaration?
+	            isInClassDeclaration?
 	                error(node, Diagnostics.Property_0_is_protected_and_only_accessible_through_an_instance_of_class_1, symbolToString(prop), typeToString(enclosingClass)) :
-		            error(node, Diagnostics.Property_0_is_protected_and_only_accessible_through_an_instance_of_struct_1, symbolToString(prop), typeToString(enclosingClass))
+		            error(node, Diagnostics.Property_0_is_protected_and_only_accessible_through_an_instance_of_struct_1, symbolToString(prop), typeToString(enclosingClass));
             }
         }
 
@@ -6530,8 +6536,9 @@ module ts {
             checkSignatureDeclaration(node);
             checkSourceElement(node.body);
 
+	        var isInClassDeclaraion = true;
             if (node.parent.kind == SyntaxKind.StructDeclaration) {
-
+	            isInClassDeclaraion = false;
             }
 
             var symbol = getSymbolOfNode(node);
@@ -6605,7 +6612,9 @@ module ts {
                     if (superCallShouldBeFirst) {
                         var statements = (<Block>node.body).statements;
                         if (!statements.length || statements[0].kind !== SyntaxKind.ExpressionStatement || !isSuperCallExpression((<ExpressionStatement>statements[0]).expression)) {
-                            error(node, Diagnostics.A_super_call_must_be_the_first_statement_in_the_constructor_when_a_class_contains_initialized_properties_or_has_parameter_properties);
+	                        isInClassDeclaraion?
+		                        error(node, Diagnostics.A_super_call_must_be_the_first_statement_in_the_constructor_when_a_class_contains_initialized_properties_or_has_parameter_properties) :
+		                        error(node, Diagnostics.A_super_call_must_be_the_first_statement_in_the_constructor_when_a_struct_contains_initialized_properties_or_has_parameter_properties);
                         }
                         else {
                             // In such a required super call, it is a compile-time error for argument expressions to reference this.
@@ -6614,7 +6623,9 @@ module ts {
                     }
                 }
                 else {
-                    error(node, Diagnostics.Constructors_for_derived_classes_must_contain_a_super_call);
+	                isInClassDeclaraion?
+		                error(node, Diagnostics.Constructors_for_derived_classes_must_contain_a_super_call) :
+		                error(node, Diagnostics.Constructors_for_derived_structs_must_contain_a_super_call);
                 }
             }
         }
