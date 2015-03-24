@@ -3337,7 +3337,7 @@ module ts {
 
             var questionStart = scanner.getTokenPos();
             if (parseOptional(SyntaxKind.QuestionToken)) {
-                errorAtPos(questionStart, scanner.getStartPos() - questionStart, Diagnostics.A_class_member_cannot_be_declared_optional);
+                errorAtPos(questionStart, scanner.getStartPos() - questionStart, Diagnostics.A_class_or_struct_member_cannot_be_declared_optional);
             }
 
             if (token === SyntaxKind.OpenParenToken || token === SyntaxKind.LessThanToken) {
