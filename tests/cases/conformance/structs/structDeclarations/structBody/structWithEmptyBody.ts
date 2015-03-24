@@ -6,10 +6,11 @@ var o: {} = c; // error
 c = 1; // error
 c = { foo: '' }; // error
 c = () => { }; // error
+c = new C(); // ok
 
 struct D {
     constructor() {
-        return 1;
+        return 1; // error
     }
 }
 
