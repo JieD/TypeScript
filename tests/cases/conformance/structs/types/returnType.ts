@@ -1,4 +1,4 @@
-class Person {
+struct Person {
 	constructor(public name: string, public age: number) {}
 }
 
