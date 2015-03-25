@@ -1722,7 +1722,7 @@ module ts {
                     if (ctor) {
                         emitLeadingComments(ctor);
                     }
-                    
+
                     writeLine();
 
                     write("function _ctor");
