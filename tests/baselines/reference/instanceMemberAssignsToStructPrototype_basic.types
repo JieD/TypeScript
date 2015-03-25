@@ -1,0 +1,54 @@
+=== tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberFunctionDeclarations_basic/instanceMemberAssignsToStructPrototype_basic.ts ===
+struct C {
+>C : C
+
+    foo() {
+>foo : () => void
+
+        C.prototype.foo = () => { }
+>C.prototype.foo = () => { } : () => void
+>C.prototype.foo : any
+>C.prototype : any
+>C : typeof C
+>prototype : any
+>foo : any
+>() => { } : () => void
+    }
+
+    bar(x: number): number {
+>bar : (x: number) => number
+>x : number
+
+        C.prototype.bar = () => { } // error, Type '() => void' is not assignable to type '(x: number) => number'
+>C.prototype.bar = () => { } : () => void
+>C.prototype.bar : any
+>C.prototype : any
+>C : typeof C
+>prototype : any
+>bar : any
+>() => { } : () => void
+
+        C.prototype.bar = (x) => x; // ok
+>C.prototype.bar = (x) => x : (x: any) => any
+>C.prototype.bar : any
+>C.prototype : any
+>C : typeof C
+>prototype : any
+>bar : any
+>(x) => x : (x: any) => any
+>x : any
+>x : any
+
+        C.prototype.bar = (x: number) => 1; // ok
+>C.prototype.bar = (x: number) => 1 : (x: number) => number
+>C.prototype.bar : any
+>C.prototype : any
+>C : typeof C
+>prototype : any
+>bar : any
+>(x: number) => 1 : (x: number) => number
+>x : number
+
+        return 1;
+    }
+}

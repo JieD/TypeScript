@@ -1,0 +1,98 @@
+=== tests/cases/conformance/basicStructs/members_basic/structTypes_basic/instancePropertyInStructType_basic.ts ===
+// ok
+
+module NonGeneric {
+>NonGeneric : typeof NonGeneric
+
+    struct C {
+>C : C
+
+        x: string;
+>x : string
+
+        /* get y() {
+            return 1;
+        }
+        set y(v) { } */
+        fn() { return this; }
+>fn : () => C
+>this : C
+
+        constructor(public a: number, private b: number) { }
+>a : number
+>b : number
+    }
+
+    var c = new C(1, 2);
+>c : C
+>new C(1, 2) : C
+>C : typeof C
+
+    var r = c.fn();
+>r : C
+>c.fn() : C
+>c.fn : () => C
+>c : C
+>fn : () => C
+
+    var r2 = r.x;
+>r2 : string
+>r.x : string
+>r : C
+>x : string
+
+    // var r3 = r.y;
+    // r.y = 4;
+    // var r6 = c.y(); // error, should be c.y
+
+}
+
+module Generic {
+>Generic : typeof Generic
+
+    struct C<T,U> {
+>C : C<T, U>
+>T : T
+>U : U
+
+        x: T;
+>x : T
+>T : T
+
+        /* get y() {
+            return null;
+        }
+        set y(v: U) { } */
+        fn() { return this; }
+>fn : () => C<T, U>
+>this : C<T, U>
+
+        constructor(public a: T, private b: U) { }
+>a : T
+>T : T
+>b : U
+>U : U
+    }
+
+    var c = new C(1, '');
+>c : C<number, string>
+>new C(1, '') : C<number, string>
+>C : typeof C
+
+    var r = c.fn();
+>r : C<number, string>
+>c.fn() : C<number, string>
+>c.fn : () => C<number, string>
+>c : C<number, string>
+>fn : () => C<number, string>
+
+    var r2 = r.x;
+>r2 : number
+>r.x : number
+>r : C<number, string>
+>x : number
+
+    // var r3 = r.y;
+    // r.y = '';
+    // var r6 = c.y(); // error
+}

@@ -1,0 +1,32 @@
+tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenClassAndStruct_basic.ts(21,1): error TS2323: Type 'Point2' is not assignable to type 'Point'.
+tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenClassAndStruct_basic.ts(22,1): error TS2323: Type 'Point' is not assignable to type 'Point2'.
+
+
+==== tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenClassAndStruct_basic.ts (2 errors) ====
+    class Point {
+    	x: number;
+    	y: number;
+    	constructor(x: number, y: number) {
+    		this.x = x;
+    		this.y = y
+    	}
+    }
+    var cp: Point = new Point(1,1);
+    
+    struct Point2 {
+    	x: number;
+    	y: number;
+    	constructor(x: number, y: number) {
+    		this.x = x;
+    		this.y = y
+    	}
+    }
+    var sp: Point2 = new Point2(2,2);
+    
+    cp = sp; // error, cannot assign struct to class
+    ~~
+!!! error TS2323: Type 'Point2' is not assignable to type 'Point'.
+    sp = cp; // error, cannot assign class to struct
+    ~~
+!!! error TS2323: Type 'Point' is not assignable to type 'Point2'.
+    

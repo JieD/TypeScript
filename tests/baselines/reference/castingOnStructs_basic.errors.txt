@@ -1,0 +1,25 @@
+tests/cases/conformance/basicStructs/types_basic/castingOnStructs_basic.ts(14,1): error TS2323: Type 'P3' is not assignable to type 'P1'.
+tests/cases/conformance/basicStructs/types_basic/castingOnStructs_basic.ts(15,6): error TS2352: Neither type 'P3' nor type 'P1' is assignable to the other.
+
+
+==== tests/cases/conformance/basicStructs/types_basic/castingOnStructs_basic.ts (2 errors) ====
+    struct P1 {
+    	x: number;
+    }
+    
+    struct P3 {
+    	x: number;
+    	y: number;
+    	z: number;
+    }
+    
+    var p1: P1;
+    var p3: P3;
+    
+    p1 = p3; // error, no inheritance
+    ~~
+!!! error TS2323: Type 'P3' is not assignable to type 'P1'.
+    p1 = <P1>p3; // ?
+         ~~~~~~
+!!! error TS2352: Neither type 'P3' nor type 'P1' is assignable to the other.
+    

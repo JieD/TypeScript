@@ -1,0 +1,22 @@
+=== tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structStaticPropertyAndFunctionWithSameName_basic.ts ===
+// ok
+
+struct C {
+>C : C
+
+    static f: number;
+>f : number
+
+    f: number;
+>f : number
+}
+
+struct D {
+>D : D
+
+    static f: number;
+>f : number
+
+    f() { }
+>f : () => void
+}

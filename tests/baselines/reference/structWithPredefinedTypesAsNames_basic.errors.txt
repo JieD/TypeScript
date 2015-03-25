@@ -1,0 +1,21 @@
+tests/cases/conformance/basicStructs/structDeclarations_basic/structWithPredefinedTypesAsNames_basic.ts(3,8): error TS8008: Struct name cannot be 'any'
+tests/cases/conformance/basicStructs/structDeclarations_basic/structWithPredefinedTypesAsNames_basic.ts(4,8): error TS8008: Struct name cannot be 'number'
+tests/cases/conformance/basicStructs/structDeclarations_basic/structWithPredefinedTypesAsNames_basic.ts(5,8): error TS8008: Struct name cannot be 'boolean'
+tests/cases/conformance/basicStructs/structDeclarations_basic/structWithPredefinedTypesAsNames_basic.ts(6,8): error TS8008: Struct name cannot be 'string'
+
+
+==== tests/cases/conformance/basicStructs/structDeclarations_basic/structWithPredefinedTypesAsNames_basic.ts (4 errors) ====
+    // structes cannot use predefined types as names
+    
+    struct any { }
+           ~~~
+!!! error TS8008: Struct name cannot be 'any'
+    struct number { }
+           ~~~~~~
+!!! error TS8008: Struct name cannot be 'number'
+    struct boolean { }
+           ~~~~~~~
+!!! error TS8008: Struct name cannot be 'boolean'
+    struct string { }
+           ~~~~~~
+!!! error TS8008: Struct name cannot be 'string'

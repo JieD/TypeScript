@@ -1,0 +1,28 @@
+tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenInterfaceAndStruct_basic.ts(17,1): error TS2323: Type 'Point2' is not assignable to type 'P'.
+tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenInterfaceAndStruct_basic.ts(18,1): error TS2323: Type 'P' is not assignable to type 'Point2'.
+
+
+==== tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenInterfaceAndStruct_basic.ts (2 errors) ====
+    interface P {
+    	x: number;
+    	y: number;
+    }
+    var ip: P;
+    
+    struct Point2 {
+    	x: number;
+    	y: number;
+    	constructor(x: number, y: number) {
+    		this.x = x;
+    		this.y = y
+    	}
+    }
+    var sp: Point2 = new Point2(2,2);
+    
+    ip = sp; // error, cannot assign struct to interface
+    ~~
+!!! error TS2323: Type 'Point2' is not assignable to type 'P'.
+    sp = ip; // error, cannot assign interface to struct
+    ~~
+!!! error TS2323: Type 'P' is not assignable to type 'Point2'.
+    

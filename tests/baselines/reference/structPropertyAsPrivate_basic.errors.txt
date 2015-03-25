@@ -1,0 +1,38 @@
+tests/cases/conformance/basicStructs/members_basic/accessibility_basic/structPropertyAsPrivate_basic.ts(15,1): error TS8010: Property 'x' is private and only accessible within struct 'C'.
+tests/cases/conformance/basicStructs/members_basic/accessibility_basic/structPropertyAsPrivate_basic.ts(18,1): error TS8010: Property 'foo' is private and only accessible within struct 'C'.
+tests/cases/conformance/basicStructs/members_basic/accessibility_basic/structPropertyAsPrivate_basic.ts(20,1): error TS8010: Property 'a' is private and only accessible within struct 'C'.
+tests/cases/conformance/basicStructs/members_basic/accessibility_basic/structPropertyAsPrivate_basic.ts(23,1): error TS8010: Property 'foo' is private and only accessible within struct 'C'.
+
+
+==== tests/cases/conformance/basicStructs/members_basic/accessibility_basic/structPropertyAsPrivate_basic.ts (4 errors) ====
+    struct C {
+        private x: string;
+        //private get y() { return null; }
+        //private set y(x) { }
+        private foo() { }
+    
+        private static a: string;
+       // private static get b() { return null; }
+        //private static set b(x) { }
+        private static foo() { }
+    }
+    
+    var c: C;
+    // all errors
+    c.x;
+    ~~~
+!!! error TS8010: Property 'x' is private and only accessible within struct 'C'.
+    //c.y;
+    //c.y = 1;
+    c.foo();
+    ~~~~~
+!!! error TS8010: Property 'foo' is private and only accessible within struct 'C'.
+    
+    C.a;
+    ~~~
+!!! error TS8010: Property 'a' is private and only accessible within struct 'C'.
+    //C.b();
+    //C.b = 1;
+    C.foo();
+    ~~~~~
+!!! error TS8010: Property 'foo' is private and only accessible within struct 'C'.

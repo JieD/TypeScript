@@ -1,0 +1,11 @@
+=== tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structPropertyNamedPrototype_basic.ts ===
+struct C {
+>C : C
+
+    prototype: number; // ok
+>prototype : number
+
+    static prototype: C; // error
+>prototype : C
+>C : C
+}

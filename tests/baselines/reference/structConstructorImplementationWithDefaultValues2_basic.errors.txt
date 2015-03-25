@@ -1,0 +1,26 @@
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorImplementationWithDefaultValues2_basic.ts(3,17): error TS2323: Type 'number' is not assignable to type 'string'.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorImplementationWithDefaultValues2_basic.ts(10,17): error TS2323: Type 'number' is not assignable to type 'T'.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorImplementationWithDefaultValues2_basic.ts(10,27): error TS2323: Type 'T' is not assignable to type 'U'.
+
+
+==== tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorImplementationWithDefaultValues2_basic.ts (3 errors) ====
+    struct C {
+        constructor(x);
+        constructor(public x: string = 1) { // error, Type 'number' is not assignable to type 'string'
+                    ~~~~~~~~~~~~~~~~~~~~
+!!! error TS2323: Type 'number' is not assignable to type 'string'.
+            var y = x;
+        }
+    }
+    
+    struct D<T, U> {
+        constructor(x: T, y: U);
+        constructor(x: T = 1, public y: U = x) { // error, Type 'number' is not assignable to type 'T'.
+                    ~~~~~~~~
+!!! error TS2323: Type 'number' is not assignable to type 'T'.
+                              ~~~~~~~~~~~~~~~
+!!! error TS2323: Type 'T' is not assignable to type 'U'.
+    											//  Type 'T' is not assignable to type 'U'
+            var z = x;
+        }
+    }

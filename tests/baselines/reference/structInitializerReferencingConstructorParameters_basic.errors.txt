@@ -1,0 +1,46 @@
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberVariableDeclarations_basic/structInitializerReferencingConstructorParameters_basic.ts(17,15): error TS1003: Identifier expected.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberVariableDeclarations_basic/structInitializerReferencingConstructorParameters_basic.ts(4,9): error TS2304: Cannot find name 'x'.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberVariableDeclarations_basic/structInitializerReferencingConstructorParameters_basic.ts(5,15): error TS2304: Cannot find name 'x'.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberVariableDeclarations_basic/structInitializerReferencingConstructorParameters_basic.ts(10,9): error TS2304: Cannot find name 'x'.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberVariableDeclarations_basic/structInitializerReferencingConstructorParameters_basic.ts(11,15): error TS2304: Cannot find name 'x'.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberVariableDeclarations_basic/structInitializerReferencingConstructorParameters_basic.ts(23,9): error TS2304: Cannot find name 'x'.
+
+
+==== tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberVariableDeclarations_basic/structInitializerReferencingConstructorParameters_basic.ts (6 errors) ====
+    // Initializer expressions for instance member variables are evaluated in the scope of the struct constructor body but are not permitted to reference parameters or local variables of the constructor. 
+    
+    struct C {
+        a = x; // error
+            ~
+!!! error TS2304: Cannot find name 'x'.
+        b: typeof x; // error
+                  ~
+!!! error TS2304: Cannot find name 'x'.
+        constructor(x) { }
+    }
+    
+    struct D {
+        a = x; // error
+            ~
+!!! error TS2304: Cannot find name 'x'.
+        b: typeof x; // error
+                  ~
+!!! error TS2304: Cannot find name 'x'.
+        constructor(public x) { }
+    }
+    
+    struct E {
+        a = this.x; // ok
+        b: typeof this.x; // error
+                  ~~~~
+!!! error TS1003: Identifier expected.
+        constructor(public x) { }
+    }
+    
+    struct F<T> {
+        a = this.x; // ok
+        b = x; // error
+            ~
+!!! error TS2304: Cannot find name 'x'.
+        constructor(public x: T) { }
+    }

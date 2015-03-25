@@ -1,0 +1,23 @@
+=== tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/memberVariableDeclarations_basic/structThisInInstanceMemberInitializer_basic.ts ===
+// ok
+
+struct C {
+>C : C
+
+    x = this;
+>x : C
+>this : C
+}
+
+struct D<T> {
+>D : D<T>
+>T : T
+
+    x = this;
+>x : D<T>
+>this : D<T>
+
+    y: T;
+>y : T
+>T : T
+}

@@ -1,0 +1,65 @@
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstructorWithAssignableReturnExpression_basic.ts(5,16): error TS8009: Cannot have return expression in struct constructor.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstructorWithAssignableReturnExpression_basic.ts(12,16): error TS8009: Cannot have return expression in struct constructor.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstructorWithAssignableReturnExpression_basic.ts(19,16): error TS8009: Cannot have return expression in struct constructor.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstructorWithAssignableReturnExpression_basic.ts(25,10): error TS8009: Cannot have return expression in struct constructor.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstructorWithAssignableReturnExpression_basic.ts(25,14): error TS2304: Cannot find name 'Derived1'.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstructorWithAssignableReturnExpression_basic.ts(32,16): error TS8009: Cannot have return expression in struct constructor.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstructorWithAssignableReturnExpression_basic.ts(39,16): error TS8009: Cannot have return expression in struct constructor.
+
+
+==== tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstructorWithAssignableReturnExpression_basic.ts (7 errors) ====
+    // a struct constructor may return an expression, it must be assignable to the struct instance type to be valid
+    
+    struct C {
+        constructor() {
+            return 1;  // error
+                   ~
+!!! error TS8009: Cannot have return expression in struct constructor.
+        }
+    }
+    
+    struct D {
+        x: number;
+        constructor() {
+            return 1; // error
+                   ~
+!!! error TS8009: Cannot have return expression in struct constructor.
+        }
+    }
+    
+    struct E {
+        x: number;
+        constructor() {
+            return { x: 1 }; // error
+                   ~~~~~~~~
+!!! error TS8009: Cannot have return expression in struct constructor.
+        }
+    }
+    
+    struct Base {
+    	constructor() {
+    		return new Derived1();  // ok
+    		       ~~~~~~~~~~~~~~
+!!! error TS8009: Cannot have return expression in struct constructor.
+    		           ~~~~~~~~
+!!! error TS2304: Cannot find name 'Derived1'.
+    	}
+    }
+    
+    struct F<T> {
+        x: T;
+        constructor() {
+            return { x: 1 }; // error
+                   ~~~~~~~~
+!!! error TS8009: Cannot have return expression in struct constructor.
+        }
+    }
+    
+    struct G<T> {
+        x: T;
+        constructor() {
+            return { x: <T>null }; // error
+                   ~~~~~~~~~~~~~~
+!!! error TS8009: Cannot have return expression in struct constructor.
+        }
+    }

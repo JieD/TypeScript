@@ -1,0 +1,16 @@
+tests/cases/conformance/basicStructs/members_basic/accessibility_basic/structPrivateStaticNotAccessibleInModule_basic.ts(9,20): error TS8010: Property 'bar' is private and only accessible within struct 'C'.
+
+
+==== tests/cases/conformance/basicStructs/members_basic/accessibility_basic/structPrivateStaticNotAccessibleInModule_basic.ts (1 errors) ====
+    // Any attempt to access a private property member outside the struct body that contains its declaration results in a compile-time error.
+    
+    struct C {
+        private foo: string;
+        private static bar: string;
+    }
+    
+    module C {
+        export var y = C.bar; // error
+                       ~~~~~
+!!! error TS8010: Property 'bar' is private and only accessible within struct 'C'.
+    }

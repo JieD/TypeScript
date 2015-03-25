@@ -1,0 +1,13 @@
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/automaticConstructors_basic/structWithoutExplicitConstructor_basic.ts(7,10): error TS2346: Supplied parameters do not match any signature of call target.
+
+
+==== tests/cases/conformance/basicStructs/constructorDeclarations_basic/automaticConstructors_basic/structWithoutExplicitConstructor_basic.ts (1 errors) ====
+    struct C {
+        x = 1
+        y = 'hello';
+    }
+    
+    var c = new C();
+    var c2 = new C(null); // error, Supplied parameters do not match any signature of call target
+             ~~~~~~~~~~~
+!!! error TS2346: Supplied parameters do not match any signature of call target.

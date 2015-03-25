@@ -1,0 +1,32 @@
+=== tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorOverloadsWithOptionalParameters_basic.ts ===
+// optional parameters can exist in constructor overloads
+// no errors
+
+struct C {
+>C : C
+
+    foo: string;
+>foo : string
+
+    constructor(x?, y?: any[]); 
+>x : any
+>y : any[]
+
+    constructor() {
+    }
+}
+
+struct D<T> {
+>D : D<T>
+>T : T
+
+    foo: string;
+>foo : string
+
+    constructor(x?, y?: any[]); 
+>x : any
+>y : any[]
+
+    constructor() {
+    }
+}

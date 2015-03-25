@@ -1,0 +1,26 @@
+tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenStructsWithoutInheritance_basic.ts(14,1): error TS2323: Type 'Size' is not assignable to type 'Animal'.
+tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenStructsWithoutInheritance_basic.ts(15,1): error TS2323: Type 'Animal' is not assignable to type 'Size'.
+
+
+==== tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenStructsWithoutInheritance_basic.ts (2 errors) ====
+    struct Animal {
+    	feet: number;
+    	constructor(name: string, numFeet: number) { }
+    }
+    
+    struct Size {
+    	feet: number;
+    	constructor(numFeet: number) { }
+    }
+    
+    var a: Animal;
+    var s: Size;
+    
+    a = s;  //error
+    ~
+!!! error TS2323: Type 'Size' is not assignable to type 'Animal'.
+    s = a;  //error
+    ~
+!!! error TS2323: Type 'Animal' is not assignable to type 'Size'.
+    
+    

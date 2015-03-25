@@ -1,0 +1,36 @@
+tests/cases/conformance/basicStructs/types_basic/CastingInvolvedAny_basic.ts(14,1): error TS2323: Type 'any' is not assignable to type 'S'.
+tests/cases/conformance/basicStructs/types_basic/CastingInvolvedAny_basic.ts(15,6): error TS2352: Neither type 'any' nor type 'S' is assignable to the other.
+tests/cases/conformance/basicStructs/types_basic/CastingInvolvedAny_basic.ts(19,1): error TS2323: Type 'S' is not assignable to type 'any'.
+tests/cases/conformance/basicStructs/types_basic/CastingInvolvedAny_basic.ts(20,5): error TS2352: Neither type 'S' nor type 'any' is assignable to the other.
+
+
+==== tests/cases/conformance/basicStructs/types_basic/CastingInvolvedAny_basic.ts (4 errors) ====
+    var a: any;
+    
+    class C {
+    	foo: string;
+    }
+    var ac: C;
+    
+    struct S {
+    	foo: string;
+    }
+    var as: S;
+    
+    ac = a; // ok
+    as = a; // error, cannot assign any to struct
+    ~~
+!!! error TS2323: Type 'any' is not assignable to type 'S'.
+    as = <S>a; // error
+         ~~~~
+!!! error TS2352: Neither type 'any' nor type 'S' is assignable to the other.
+    
+    
+    a = ac; // ok
+    a = as; // error, cannot assign sruct to any
+    ~
+!!! error TS2323: Type 'S' is not assignable to type 'any'.
+    a = <any>as; // error
+        ~~~~~~~
+!!! error TS2352: Neither type 'S' nor type 'any' is assignable to the other.
+    

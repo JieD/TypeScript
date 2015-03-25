@@ -1,0 +1,33 @@
+=== tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorImplementationWithDefaultValues_basic.ts ===
+// no errors
+struct C {
+>C : C
+
+    constructor(x);
+>x : any
+
+    constructor(x = 1) {
+>x : number
+
+        var y = x;
+>y : number
+>x : number
+    }
+}
+
+struct D<T> {
+>D : D<T>
+>T : T
+
+    constructor(x);
+>x : any
+
+    constructor(x:T = null) {
+>x : T
+>T : T
+
+        var y = x;
+>y : T
+>x : T
+    }
+}

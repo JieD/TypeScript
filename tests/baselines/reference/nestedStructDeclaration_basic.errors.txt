@@ -1,0 +1,45 @@
+tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts(5,5): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts(7,1): error TS1128: Declaration or statement expected.
+tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts(10,5): error TS1129: Statement expected.
+tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts(12,1): error TS1128: Declaration or statement expected.
+tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts(15,12): error TS1005: ':' expected.
+tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts(15,15): error TS1005: ',' expected.
+tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts(17,1): error TS1128: Declaration or statement expected.
+tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts(15,12): error TS2304: Cannot find name 'C4'.
+
+
+==== tests/cases/conformance/basicStructs/nestedStructDeclaration_basic.ts (8 errors) ====
+    // nested structs are not allowed
+    
+    struct C {
+        x: string;
+        struct C2 {
+        ~~~~~~
+!!! error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+        }
+    }
+    ~
+!!! error TS1128: Declaration or statement expected.
+    
+    function foo() {
+        struct C3 {
+        ~~~~~~
+!!! error TS1129: Statement expected.
+        }
+    }
+    ~
+!!! error TS1128: Declaration or statement expected.
+    
+    var x = {
+        struct C4 {
+               ~~
+!!! error TS1005: ':' expected.
+                  ~
+!!! error TS1005: ',' expected.
+               ~~
+!!! error TS2304: Cannot find name 'C4'.
+        }
+    }
+    ~
+!!! error TS1128: Declaration or statement expected.
+    

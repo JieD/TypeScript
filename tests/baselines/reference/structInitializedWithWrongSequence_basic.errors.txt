@@ -1,0 +1,26 @@
+tests/cases/conformance/basicStructs/types_basic/structInitializedWithWrongSequence_basic.ts(5,25): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+tests/cases/conformance/basicStructs/types_basic/structInitializedWithWrongSequence_basic.ts(6,10): error TS2346: Supplied parameters do not match any signature of call target.
+tests/cases/conformance/basicStructs/types_basic/structInitializedWithWrongSequence_basic.ts(8,13): error TS2346: Supplied parameters do not match any signature of call target.
+tests/cases/conformance/basicStructs/types_basic/structInitializedWithWrongSequence_basic.ts(9,15): error TS2346: Supplied parameters do not match any signature of call target.
+
+
+==== tests/cases/conformance/basicStructs/types_basic/structInitializedWithWrongSequence_basic.ts (4 errors) ====
+    struct Person {
+    	constructor(public name: string, public age: number) {}
+    }
+    var john = new Person("John", 25); // ok
+    var george = new Person(25, "George"); // error, sequence matters. comply with class syntax
+                            ~~
+!!! error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+    var jg = new Person("John", "George", 25); // error, wrong call signature. comply with class syntax
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2346: Supplied parameters do not match any signature of call target.
+    
+    var john1 = new Person({name: "John", age: 25}); // error, wrong call signature. comply with class syntax
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2346: Supplied parameters do not match any signature of call target.
+    var george1 = new Person({age: 25, name: "George"}); // error. wrong call signature. comply with class syntax
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2346: Supplied parameters do not match any signature of call target.
+    
+    

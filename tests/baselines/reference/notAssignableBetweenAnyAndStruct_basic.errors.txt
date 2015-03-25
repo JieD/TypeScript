@@ -1,0 +1,27 @@
+tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenAnyAndStruct_basic.ts(14,1): error TS2323: Type 'any' is not assignable to type 'S'.
+tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenAnyAndStruct_basic.ts(17,1): error TS2323: Type 'S' is not assignable to type 'any'.
+
+
+==== tests/cases/conformance/basicStructs/types_basic/notAssignableBetweenAnyAndStruct_basic.ts (2 errors) ====
+    var a: any;
+    
+    class C {
+    	foo: string;
+    }
+    var ac: C;
+    
+    struct S {
+    	foo: string;
+    }
+    var as: S;
+    
+    ac = a; // ok
+    as = a; // error
+    ~~
+!!! error TS2323: Type 'any' is not assignable to type 'S'.
+    
+    a = ac; // ok
+    a = as; // error
+    ~
+!!! error TS2323: Type 'S' is not assignable to type 'any'.
+    

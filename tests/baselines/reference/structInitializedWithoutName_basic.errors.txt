@@ -1,0 +1,25 @@
+tests/cases/conformance/basicStructs/types_basic/structInitializedWithoutName_basic.ts(6,6): error TS2345: Argument of type '{ name: string; age: number; }' is not assignable to parameter of type 'Person'.
+tests/cases/conformance/basicStructs/types_basic/structInitializedWithoutName_basic.ts(7,6): error TS2345: Argument of type '{ name: string; birth: string; }' is not assignable to parameter of type 'Person'.
+tests/cases/conformance/basicStructs/types_basic/structInitializedWithoutName_basic.ts(8,6): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Person'.
+tests/cases/conformance/basicStructs/types_basic/structInitializedWithoutName_basic.ts(8,6): error TS2346: Supplied parameters do not match any signature of call target.
+
+
+==== tests/cases/conformance/basicStructs/types_basic/structInitializedWithoutName_basic.ts (4 errors) ====
+    struct Person {
+    	constructor(public name: string, public age: number) {}
+    }
+    
+    var test = function (person: Person) {}
+    test({ name: "John", age: 25 }); // error, need to name the type
+         ~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2345: Argument of type '{ name: string; age: number; }' is not assignable to parameter of type 'Person'.
+    test({name: "John", birth: "1990"}); // error
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2345: Argument of type '{ name: string; birth: string; }' is not assignable to parameter of type 'Person'.
+    test(new Person({ name: "John", age: 25 })); // error, wrong call signature
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Person'.
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2346: Supplied parameters do not match any signature of call target.
+    test(new Person("John", 25)); // ok
+    

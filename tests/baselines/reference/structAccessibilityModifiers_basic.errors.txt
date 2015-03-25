@@ -1,0 +1,75 @@
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(22,12): error TS1029: 'private' modifier must precede 'static' modifier.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(23,12): error TS1029: 'private' modifier must precede 'static' modifier.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(27,12): error TS1029: 'protected' modifier must precede 'static' modifier.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(28,12): error TS1029: 'protected' modifier must precede 'static' modifier.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(32,12): error TS1029: 'public' modifier must precede 'static' modifier.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(33,12): error TS1029: 'public' modifier must precede 'static' modifier.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(40,13): error TS1028: Accessibility modifier already seen.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(40,20): error TS1028: Accessibility modifier already seen.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts(41,12): error TS1028: Accessibility modifier already seen.
+
+
+==== tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structAccessibilityModifiers_basic.ts (9 errors) ====
+    
+    // No errors
+    struct C {
+        private static privateProperty;
+        private static privateMethod() { }
+        //private static get privateGetter() { return 0; }
+        //private static set privateSetter(a: number) { }
+    
+        protected static protectedProperty;
+        protected static protectedMethod() { }
+        //protected static get protectedGetter() { return 0; }
+        //protected static set protectedSetter(a: number) { }
+    
+        public static publicProperty;
+        public static publicMethod() { }
+        //public static get publicGetter() { return 0; }
+        //public static set publicSetter(a: number) { }
+    }
+    
+    // Errors, accessibility modifiers must precede static
+    struct D {
+        static private privateProperty;
+               ~~~~~~~
+!!! error TS1029: 'private' modifier must precede 'static' modifier.
+        static private privateMethod() { }
+               ~~~~~~~
+!!! error TS1029: 'private' modifier must precede 'static' modifier.
+        //static private get privateGetter() { return 0; }
+        //static private set privateSetter(a: number) { }
+    
+        static protected protectedProperty;
+               ~~~~~~~~~
+!!! error TS1029: 'protected' modifier must precede 'static' modifier.
+        static protected protectedMethod() { }
+               ~~~~~~~~~
+!!! error TS1029: 'protected' modifier must precede 'static' modifier.
+        //static protected get protectedGetter() { return 0; }
+        //static protected set protectedSetter(a: number) { }
+    
+        static public publicProperty;
+               ~~~~~~
+!!! error TS1029: 'public' modifier must precede 'static' modifier.
+        static public publicMethod() { }
+               ~~~~~~
+!!! error TS1029: 'public' modifier must precede 'static' modifier.
+        //static public get publicGetter() { return 0; }
+        //static public set publicSetter(a: number) { }
+    }
+    
+    // Errors, multiple accessibility modifier
+    struct E {
+        private public protected property;
+                ~~~~~~
+!!! error TS1028: Accessibility modifier already seen.
+                       ~~~~~~~~~
+!!! error TS1028: Accessibility modifier already seen.
+        public protected method() { }
+               ~~~~~~~~~
+!!! error TS1028: Accessibility modifier already seen.
+        //private protected get getter() { return 0; }
+        //public public set setter(a: number) { }
+    }
+    

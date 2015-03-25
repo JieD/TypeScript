@@ -1,7 +1,7 @@
-tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(4,6): error TS1112: A class member cannot be declared optional.
-tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(5,6): error TS1112: A class member cannot be declared optional.
-tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(9,6): error TS1112: A class member cannot be declared optional.
-tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(10,6): error TS1112: A class member cannot be declared optional.
+tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(4,6): error TS1112: A class/struct member cannot be declared optional.
+tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(5,6): error TS1112: A class/struct member cannot be declared optional.
+tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(9,6): error TS1112: A class/struct member cannot be declared optional.
+tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(10,6): error TS1112: A class/struct member cannot be declared optional.
 
 
 ==== tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts (4 errors) ====
@@ -10,17 +10,17 @@ tests/cases/conformance/types/namedTypes/classWithOptionalParameter.ts(10,6): er
     class C {
         x?: string;
          ~
-!!! error TS1112: A class member cannot be declared optional.
+!!! error TS1112: A class/struct member cannot be declared optional.
         f?() {}
          ~
-!!! error TS1112: A class member cannot be declared optional.
+!!! error TS1112: A class/struct member cannot be declared optional.
     }
     
     class C2<T> {
         x?: T;
          ~
-!!! error TS1112: A class member cannot be declared optional.
+!!! error TS1112: A class/struct member cannot be declared optional.
         f?(x: T) {}
          ~
-!!! error TS1112: A class member cannot be declared optional.
+!!! error TS1112: A class/struct member cannot be declared optional.
     }

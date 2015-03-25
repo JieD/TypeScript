@@ -1,0 +1,26 @@
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structPropertyAndFunctionWithSameName_basic.ts(2,5): error TS2300: Duplicate identifier 'x'.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structPropertyAndFunctionWithSameName_basic.ts(3,5): error TS2300: Duplicate identifier 'x'.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structPropertyAndFunctionWithSameName_basic.ts(9,5): error TS2300: Duplicate identifier 'x'.
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structPropertyAndFunctionWithSameName_basic.ts(10,5): error TS2300: Duplicate identifier 'x'.
+
+
+==== tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structPropertyAndFunctionWithSameName_basic.ts (4 errors) ====
+    struct C {
+        x: number;
+        ~
+!!! error TS2300: Duplicate identifier 'x'.
+        x() { // error
+        ~
+!!! error TS2300: Duplicate identifier 'x'.
+            return 1;
+        }
+    }
+    
+    struct D {
+        x: number;
+        ~
+!!! error TS2300: Duplicate identifier 'x'.
+        x(v) { } // error
+        ~
+!!! error TS2300: Duplicate identifier 'x'.
+    }

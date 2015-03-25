@@ -1,0 +1,25 @@
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorDefaultValuesReferencingThis_basic.ts(4,21): error TS2333: 'this' cannot be referenced in constructor arguments.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorDefaultValuesReferencingThis_basic.ts(8,21): error TS2333: 'this' cannot be referenced in constructor arguments.
+tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorDefaultValuesReferencingThis_basic.ts(12,28): error TS2333: 'this' cannot be referenced in constructor arguments.
+
+
+==== tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorDefaultValuesReferencingThis_basic.ts (3 errors) ====
+    // 'this' cannot be referenced in constructor arguments
+    
+    struct C {
+        constructor(x = this) { } // error
+                        ~~~~
+!!! error TS2333: 'this' cannot be referenced in constructor arguments.
+    }
+    
+    struct D<T> {
+        constructor(x = this) { } // error
+                        ~~~~
+!!! error TS2333: 'this' cannot be referenced in constructor arguments.
+    }
+    
+    struct E<T> {
+        constructor(public x = this) { } // error
+                               ~~~~
+!!! error TS2333: 'this' cannot be referenced in constructor arguments.
+    }

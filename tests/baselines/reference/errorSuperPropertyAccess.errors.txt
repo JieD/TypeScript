@@ -34,8 +34,8 @@ tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess
 tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess.ts(120,15): error TS2340: Only public and protected methods of the base class are accessible via the 'super' keyword
 tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess.ts(121,15): error TS2340: Only public and protected methods of the base class are accessible via the 'super' keyword
 tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess.ts(122,9): error TS2341: Property 'privateStaticFunc' is private and only accessible within class 'SomeBase'.
-tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess.ts(127,16): error TS2335: 'super' can only be referenced in a derived class.
-tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess.ts(127,30): error TS2335: 'super' can only be referenced in a derived class.
+tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess.ts(127,16): error TS8015: 'super' can only be referenced in a derived struct.
+tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess.ts(127,30): error TS8015: 'super' can only be referenced in a derived struct.
 
 
 ==== tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess.ts (38 errors) ====
@@ -239,7 +239,7 @@ tests/cases/conformance/expressions/superPropertyAccess/errorSuperPropertyAccess
     // In object literal
     var obj = { n: super.wat, p: super.foo() };
                    ~~~~~
-!!! error TS2335: 'super' can only be referenced in a derived class.
+!!! error TS8015: 'super' can only be referenced in a derived struct.
                                  ~~~~~
-!!! error TS2335: 'super' can only be referenced in a derived class.
+!!! error TS8015: 'super' can only be referenced in a derived struct.
     
