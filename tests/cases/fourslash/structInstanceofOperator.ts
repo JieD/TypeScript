@@ -38,6 +38,7 @@
 ////p1 = new P(1);
 ////p2 = new P2(2,2);
 ////p3 = new P3(3,3,3);
+////p4 = new P4(4,4,4,4);
 ////
 ////var r1: boolean = p1 instanceof P;
 ////var r2: boolean = p2 instanceof P2;
@@ -45,7 +46,7 @@
 ////var r4: boolean = p4 instanceof P4;
 ////var r5: boolean = p1 instanceof P2;
 ////var r6: boolean = p2 instanceof P3;
-////var r7: boolean = p4 instanceof P1;
+////var r7: boolean = p4 instanceof P;
 ////var r8: boolean = p4 instanceof P3;
 
 verify.eval('r1', true);
