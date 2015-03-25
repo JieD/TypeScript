@@ -2370,8 +2370,15 @@ module ts {
                 var classType: InterfaceType;
                 if (declaration.kind === SyntaxKind.Constructor) {
                     var parentNode = declaration.parent;
-                    var node = parentNode.kind === SyntaxKind.ClassDeclaration ? <ClassDeclaration>parentNode : <StructDeclaration>parentNode;
-                    classType = getDeclaredTypeOfClass(node.symbol);
+	                if (parentNode.kind === SyntaxKind.ClassDeclaration) {
+		                var node = <ClassDeclaration>parentNode;
+		                classType = getDeclaredTypeOfClass(node.symbol);
+	                } else {
+		                node = <StructDeclaration>parentNode;
+		                classType = getDeclaredTypeOfStruct(node.symbol);
+	                }
+                    // var node = parentNode.kind === SyntaxKind.ClassDeclaration ? <ClassDeclaration>parentNode : <StructDeclaration>parentNode;
+                    // classType = getDeclaredTypeOfClass(node.symbol);
                 } else {
                     classType = undefined;
                 }
