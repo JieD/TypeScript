@@ -100,7 +100,7 @@ module ts {
             addDeclarationToSymbol(symbol, node, includes);
             symbol.parent = parent;
 
-            if (node.kind === SyntaxKind.ClassDeclaration && symbol.exports) {
+            if ((node.kind === SyntaxKind.ClassDeclaration || node.kind === SyntaxKind.StructDeclaration) && symbol.exports) {
                 // TypeScript 1.0 spec (April 2014): 8.4
                 // Every class automatically contains a static property member named 'prototype', 
                 // the type of which is an instantiation of the class type with type Any supplied as a type argument for each type parameter.
