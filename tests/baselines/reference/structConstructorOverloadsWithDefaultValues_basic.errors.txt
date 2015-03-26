@@ -1,15 +1,11 @@
-tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorOverloadsWithDefaultValues_basic.ts(3,8): error TS2300: Duplicate identifier 'C'.
 tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorOverloadsWithDefaultValues_basic.ts(5,17): error TS2371: A parameter initializer is only allowed in a function or constructor implementation.
-tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorOverloadsWithDefaultValues_basic.ts(10,8): error TS2300: Duplicate identifier 'C'.
 tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorOverloadsWithDefaultValues_basic.ts(19,17): error TS2371: A parameter initializer is only allowed in a function or constructor implementation.
 
 
-==== tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorOverloadsWithDefaultValues_basic.ts (4 errors) ====
+==== tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorParameters_basic/structConstructorOverloadsWithDefaultValues_basic.ts (2 errors) ====
     // A parameter initializer is only allowed in a function or constructor implementation
     
     struct C {
-           ~
-!!! error TS2300: Duplicate identifier 'C'.
         foo: string;
         constructor(x = 1); // error
                     ~~~~~
@@ -18,9 +14,7 @@ tests/cases/conformance/basicStructs/constructorDeclarations_basic/constructorPa
         }
     }
     
-    struct C {
-           ~
-!!! error TS2300: Duplicate identifier 'C'.
+    struct C1 {
     	foo: string;
     	constructor();
     	constructor(x = 1) { // ok

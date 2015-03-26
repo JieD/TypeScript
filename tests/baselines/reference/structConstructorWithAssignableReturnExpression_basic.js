@@ -23,7 +23,7 @@ struct E {
 
 struct Base {
 	constructor() {
-		return new Derived1();  // ok
+		return new Derived1();  // error
 	}
 }
 
@@ -88,7 +88,7 @@ var Base = (function () {
     var _Base = new TypedObject.StructType({
     });
     function _ctor() {
-        return new Derived1(); // ok
+        return new Derived1(); // error
     }
     function Base() {
         var obj = new _Base();

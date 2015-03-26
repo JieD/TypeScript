@@ -8,7 +8,7 @@ struct C {
     }
 }
 
-struct C {
+struct C1 {
 	foo: string;
 	constructor();
 	constructor(x = 1) { // ok
@@ -37,19 +37,19 @@ var C = (function () {
     }
     return C;
 })();
-var C = (function () {
-    var _C = new TypedObject.StructType({
+var C1 = (function () {
+    var _C1 = new TypedObject.StructType({
         foo: TypedObject.string,
     });
     function _ctor(x) {
         if (x === void 0) { x = 1; }
     }
-    function C(x) {
-        var obj = new _C();
+    function C1(x) {
+        var obj = new _C1();
         _ctor.call(obj ,x);
         return obj;
     }
-    return C;
+    return C1;
 })();
 var D = (function () {
     var _D = new TypedObject.StructType({

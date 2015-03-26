@@ -1,0 +1,10 @@
+tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structPropertyNamedPrototype_basic.ts(3,12): error TS2300: Duplicate identifier 'prototype'.
+
+
+==== tests/cases/conformance/basicStructs/propertyMemberDeclarations_basic/structPropertyNamedPrototype_basic.ts (1 errors) ====
+    struct C {
+        prototype: number; // ok
+        static prototype: C; // error
+               ~~~~~~~~~
+!!! error TS2300: Duplicate identifier 'prototype'.
+    }
