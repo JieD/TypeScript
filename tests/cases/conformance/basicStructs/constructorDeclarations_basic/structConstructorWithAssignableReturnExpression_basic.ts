@@ -22,7 +22,7 @@ struct E {
 
 struct Base {
 	constructor() {
-		return new Derived1();  // ok
+		return new Derived1();  // error
 	}
 }
 

@@ -7,7 +7,7 @@ struct C {
     }
 }
 
-struct C {
+struct C1 {
 	foo: string;
 	constructor();
 	constructor(x = 1) { // ok

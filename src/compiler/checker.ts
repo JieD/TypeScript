@@ -3229,9 +3229,9 @@ module ts {
 	    }
 	    function log(source: Type, target: Type, info: string): void {
 		    if (isStructAssignedToOrFromNonStructType(source, target)) {
-			    write("non-struct & struct: " + info);
+			    //write("non-struct & struct: " + info);
 		    } else if (isStructAssignedToOrFromStructType(source, target)) {
-			    write("struct & struct: " + info);
+			    //write("struct & struct: " + info);
 		    }
 	    }
 
@@ -3357,11 +3357,11 @@ module ts {
 	                if (sourceOrApparentType.flags & TypeFlags.ObjectType && target.flags & TypeFlags.ObjectType) {
 		                // for struct assignability, check its inheritance chain
 		                if (isStructAssignedToOrFromStructType(source, target)) {
-			                write('check inheritance chain');
+			                //write('check inheritance chain');
 			                var baseTypes = (<InterfaceType>sourceOrApparentType).baseTypes;
 			                if (baseTypes) {
 				                if (baseTypes.indexOf(<ObjectType>target) > -1) { // target is on source's inheritance chain
-					                write('inheritance holds');
+					                //write('inheritance holds');
 					                errorInfo = saveErrorInfo;
 					                return true;
 				                }
@@ -3387,7 +3387,6 @@ module ts {
                     // The error should end in a period when this is the deepest error in the chain
                     // (when errorInfo is undefined). Otherwise, it has a colon before the nested
                     // error.
-	                write('report errors');
                     chainedMessage = chainedMessage || Diagnostics.Type_0_is_not_assignable_to_type_1_Colon;
                     terminalMessage = terminalMessage || Diagnostics.Type_0_is_not_assignable_to_type_1;
                     var diagnosticKey = errorInfo ? chainedMessage : terminalMessage;
@@ -7451,7 +7450,7 @@ module ts {
                             // constructor doesn't have explicit return type annotation and yet its return type is known - declaring type
                             // handle constructors and issue specialized error message for them
 		                    if (returnType.flags & TypeFlags.Struct) { // struct constructor cannot have return expression
-								write("checkReturnStatement/constructor");
+								//write("checkReturnStatement/constructor");
 								error(node.expression, Diagnostics.Struct_constructor_cannot_have_return_expression);
 							} else {
 								if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {

@@ -38,7 +38,7 @@ tests/cases/conformance/basicStructs/constructorDeclarations_basic/structConstru
     
     struct Base {
     	constructor() {
-    		return new Derived1();  // ok
+    		return new Derived1();  // error
     		       ~~~~~~~~~~~~~~
 !!! error TS8009: Cannot have return expression in struct constructor.
     		           ~~~~~~~~
