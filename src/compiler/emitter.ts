@@ -1586,12 +1586,12 @@ module ts {
             }
 
             function emitMemberFunctions(nodeHolder: ClassDeclaration) {
+	            var isStruct = false;
                 if (nodeHolder.kind === SyntaxKind.ClassDeclaration) {
                     var node = <ClassDeclaration>nodeHolder;
-                    var isStruct = false;
                 } else if (nodeHolder.kind === SyntaxKind.StructDeclaration) {
                     node = <StructDeclaration>nodeHolder;
-                    var isStruct = true;
+                    isStruct = true;
                 }
                 forEach(node.members, member => {
                     if (member.kind === SyntaxKind.Method) {
@@ -1627,11 +1627,13 @@ module ts {
                             write("Object.defineProperty(");
                             emitStart((<AccessorDeclaration>member).name);
 
-                            if(isStruct) {
+                            /* if(isStruct) {
                                 write("_" + node.name.text);
                             } else {
-                                emitNode(node.name);
-                            }
+
+                            } */
+
+	                        emitNode(node.name);
 
                             if (!(member.flags & NodeFlags.Static)) {
                                 write(".prototype");
