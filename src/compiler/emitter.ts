@@ -1604,6 +1604,9 @@ module ts {
                         emitStart(member);
                         emitStart((<MethodDeclaration>member).name);
 
+                        if (isStruct) {
+                            write("_");
+                        }
                         emitNode(node.name);
 
                         if (!(member.flags & NodeFlags.Static)) {
