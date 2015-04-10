@@ -1915,6 +1915,7 @@ module ts {
                 }
                 type.baseTypes = [];
                 var declaration = <ClassDeclaration>getDeclarationOfKind(symbol, SyntaxKind.ClassDeclaration);
+            }
                 if (declaration.baseType) {
                     var baseType = getTypeFromTypeReferenceNode(declaration.baseType);
                     if (baseType !== unknownType) {
