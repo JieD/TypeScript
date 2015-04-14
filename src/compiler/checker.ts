@@ -3394,7 +3394,7 @@ module ts {
                     // The error should end in a period when this is the deepest error in the chain
                     // (when errorInfo is undefined). Otherwise, it has a colon before the nested
                     // error.
-	                write('report errors');
+	                // write('report errors');
                     chainedMessage = chainedMessage || Diagnostics.Type_0_is_not_assignable_to_type_1_Colon;
                     terminalMessage = terminalMessage || Diagnostics.Type_0_is_not_assignable_to_type_1;
                     var diagnosticKey = errorInfo ? chainedMessage : terminalMessage;
@@ -4880,15 +4880,18 @@ module ts {
             if (!(flags & (NodeFlags.Private | NodeFlags.Protected))) {
                 return;
             }
+
+	        // check struct or class
+	        var isInClassDeclaration = true;
+	        if (prop.parent.flags & SymbolFlags.Struct) isInClassDeclaration = false;
+
             // Property is known to be private or protected at this point
+	        // Accessing struct property or class property is known
             // Get the declaring and enclosing class instance types
-            var enclosingClassDeclaration = getAncestor(node, SyntaxKind.ClassDeclaration);
+	        if (isInClassDeclaration) var enclosingClassDeclaration = getAncestor(node, SyntaxKind.ClassDeclaration);
+	        else var enclosingClassDeclaration = getAncestor(node, SyntaxKind.StructDeclaration);
             var enclosingClass = enclosingClassDeclaration ? <InterfaceType>getDeclaredTypeOfSymbol(getSymbolOfNode(enclosingClassDeclaration)) : undefined;
-            var isInClassDeclaration = true;
-	        if (!enclosingClassDeclaration) {
-		        isInClassDeclaration = false;
-		        enclosingClassDeclaration = getAncestor(node, SyntaxKind.StructDeclaration);
-	        }
+
             var declaringClass = <InterfaceType>getDeclaredTypeOfSymbol(prop.parent);
             // Private property is accessible if declaring and enclosing class are the same
             if (flags & NodeFlags.Private) {
