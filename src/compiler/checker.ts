@@ -4872,15 +4872,18 @@ module ts {
             if (!(flags & (NodeFlags.Private | NodeFlags.Protected))) {
                 return;
             }
+
+	        // check struct or class
+	        var isInClassDeclaration = true;
+	        if (prop.parent.flags & SymbolFlags.Struct) isInClassDeclaration = false;
+
             // Property is known to be private or protected at this point
+	        // Accessing class or struct property is known
             // Get the declaring and enclosing class instance types
-            var enclosingClassDeclaration = getAncestor(node, SyntaxKind.ClassDeclaration);
+	        if (isInClassDeclaration) var enclosingClassDeclaration = getAncestor(node, SyntaxKind.ClassDeclaration);
+	        else var enclosingClassDeclaration = getAncestor(node, SyntaxKind.StructDeclaration);
             var enclosingClass = enclosingClassDeclaration ? <InterfaceType>getDeclaredTypeOfSymbol(getSymbolOfNode(enclosingClassDeclaration)) : undefined;
-            var isInClassDeclaration = true;
-	        if (!enclosingClassDeclaration) {
-		        isInClassDeclaration = false;
-		        enclosingClassDeclaration = getAncestor(node, SyntaxKind.StructDeclaration);
-	        }
+
             var declaringClass = <InterfaceType>getDeclaredTypeOfSymbol(prop.parent);
             // Private property is accessible if declaring and enclosing class are the same
             if (flags & NodeFlags.Private) {
