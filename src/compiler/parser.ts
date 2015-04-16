@@ -3708,14 +3708,17 @@ module ts {
                 return parsePropertyMemberDeclaration(pos, flags);
             }
             if (token === SyntaxKind.OpenBracketToken) {
-                //if (flags) {
-                //    var start = getTokenPos(pos);
-                //    var length = getNodePos() - start;
-                //    errorAtPos(start, length, Diagnostics.Modifiers_not_permitted_on_index_signature_members);
-                //}
-                //return parseIndexSignatureMember();
-	            var start = getTokenPos(pos);
-	            var length = 2;
+	            var start = 0;
+	            var length = 0;
+                if (flags) {
+                    start = getTokenPos(pos);
+                    length = getNodePos() - start;
+                    errorAtPos(start, length, Diagnostics.Modifiers_not_permitted_on_index_signature_members);
+	                start += length + 1;
+                } else {
+	                start = getTokenPos(pos);
+                }
+	            length = 1;
 	            errorAtPos(start, length, Diagnostics.index_member_not_allowed_for_struct);
 	            return parseIndexSignatureMember();
             }
