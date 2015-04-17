@@ -411,6 +411,7 @@ module ts {
     export interface IndexedAccess extends Expression {
         object: Expression;
         index: Expression;
+        isStructArray?: boolean;
     }
 
     export interface CallExpression extends Expression {

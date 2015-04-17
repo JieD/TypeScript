@@ -4976,6 +4976,11 @@ module ts {
 
         function checkIndexedAccess(node: IndexedAccess): Type {
             var objectType = checkExpression(node.object);
+
+            if (objectType.symbol && (objectType.symbol.flags & SymbolFlags.Struct)) {
+                node.isStructArray = true;
+            }
+
             var indexType = checkExpression(node.index);
             if (objectType === unknownType) return unknownType;
 

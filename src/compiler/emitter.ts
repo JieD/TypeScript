@@ -954,10 +954,18 @@ module ts {
             }
 
             function emitIndexedAccess(node: IndexedAccess) {
-                emit(node.object);
-                write("[");
-                emit(node.index);
-                write("]");
+                if(node.isStructArray) {
+                    write("(");
+                    emit(node.object);
+                    write("._TO.array(")
+                    emit(node.index);
+                    write("))()");
+                } else {
+                    emit(node.object);
+                    write("[");
+                    emit(node.index);
+                    write("]");
+                }
             }
 
             function emitCallExpression(node: CallExpression) {
@@ -1795,6 +1803,9 @@ module ts {
                     writeLine();
                     decreaseIndent();
                     write("}");
+
+                    writeLine();
+                    write(node.name.text + "._TO = _" + node.name.text + ";");
                 }
             }
 

@@ -1,18 +1,32 @@
-var Vec3 = (function () {
+var Vec3 = (function () {    
     var _Vec3 = new TypedObject.StructType({
         x: TypedObject.float64,
         y: TypedObject.float64,
         z: TypedObject.float64
     });
-    function _ctor() {
-    }
     function Vec3() {
-        var obj = new _Vec3();
-        _ctor.call(obj);
-        return obj;
+        return new _Vec3();
     }
+    Vec3._TO_TYPE_ = _Vec3;
     return Vec3;
 })();
+
+var Vec3_arr2 = (function () {    
+    var _Vec3_arr2 = Vec3._TO_TYPE_.array(2);
+    function Vec3_arr2() {
+        return new _Vec3_arr2();
+    }
+    return Vec3_arr2;
+})();
+
+var Vec3_arr3 = (function () {    
+    var _Vec3_arr3 = Vec3._TO_TYPE_.array(2);
+    function Vec3_arr3() {
+        return new _Vec3_arr3();
+    }
+    return Vec3_arr3;
+})();
+
 function vec3_new(_x, _y, _z) {
     var v = new Vec3();
     v.x = _x;
@@ -85,6 +99,7 @@ function quat_set_from_axis_angle(q, axis, angle) {
 }
 ////////////////////////////////////////////////////////////////////////
 // benchmark
+
 var start = new Date().getTime();
 for (var i = 0; i < 5000000; ++i) {
     var axis0 = vec3_new(5, i / 100.0, 7.0 - i % 100);
@@ -99,7 +114,13 @@ for (var i = 0; i < 5000000; ++i) {
     var q1 = quat_new();
     quat_set_from_axis_angle(q1, axis1, angle1);
     quat_normalize(q1);
+
+    var array_test0 = new Vec3_arr2();
+    var array_test1 = new Vec3_arr3();
+    array_test0[0].x += 1;
+    array_test1[0].z -= 1;
 }
+
 var end = new Date().getTime();
 var time = end - start;
 var ret = 'Execution time (ms): ' + time;

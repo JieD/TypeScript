@@ -78,6 +78,11 @@ for (var i = 0; i < 5000000; ++i) {
     var q1 = quat_new();
     quat_set_from_axis_angle(q1, axis1, angle1);
     quat_normalize(q1);
+
+    var array_test0 = [new Vec3(), new Vec3()];
+    var array_test1 = [new Vec3(), new Vec3(), new Vec3()];
+    array_test0[0].x += 1;
+    array_test1[0].z -= 1;
 }
 var end = new Date().getTime();
 var time = end - start;
