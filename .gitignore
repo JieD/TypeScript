@@ -47,3 +47,9 @@ src/compiler/*.js.map
 tem.ts
 tem.js
 tem.js.map
+src/harness/*.js
+src/harness/*.js.map
+src/services/*.js
+src/services/*.js.map
+src/services/*/*.js
+src/services/*/*.js.map
