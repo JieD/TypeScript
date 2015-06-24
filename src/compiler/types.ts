@@ -347,6 +347,10 @@ module ts {
         elementType: TypeNode;
     }
 
+    export interface StructArrayTypeNode extends ArrayTypeNode {
+        numElements: number;
+    }
+
     export interface TupleTypeNode extends TypeNode {
         elementTypes: NodeArray<TypeNode>;
     }
