@@ -42,3 +42,8 @@ coverage/
 src/.idea/*
 src/compiler/.idea/*
 tests/.idea/*
+src/compiler/*.js
+src/compiler/*.js.map
+tem.ts
+tem.js
+tem.js.map
