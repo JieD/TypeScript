@@ -291,7 +291,7 @@
         "category": "Error",
         "code": 1111
     },
-    "A class member cannot be declared optional.": {
+    "A class or struct member cannot be declared optional.": {
         "category": "Error",
         "code": 1112
     },
@@ -1613,12 +1613,56 @@
         "category": "Error",
         "code": 8003
     },
-    "A struct may only extend another struct.": {
+    "'{0}' modifier cannot appear on a struct element.": {
         "category": "Error",
         "code": 8004
     },
-    "'{0}' modifier cannot appear on a struct element.": {
+    "Struct '{0}' incorrectly extends base struct '{1}'.": {
         "category": "Error",
         "code": 8005
+    },
+    "Struct '{0}' incorrectly extends base struct '{1}' Colon.": {
+        "category": "Error",
+        "code": 8006
+    },
+    "A struct can not implement another class or interface.": {
+        "category": "Error",
+        "code": 8007  
+    },
+    "Struct name cannot be '{0}'.": {
+        "category": "Error",
+        "code": 8008  
+    },
+    "Struct constructor cannot have return expression.": {
+        "category": "Error",
+        "code": 8009  
+    },
+    "Property '{0}' is private and only accessible within struct '{1}'.": {
+        "category": "Error",
+        "code": 8010    
+    },
+    "Property '{0}' is protected and only accessible within struct '{1}' and its substructs.": {
+        "category": "Error",
+        "code": 8011    
+    },
+    "Property '{0}' is protected and only accessible through an instance of struct '{1}'.": {
+        "category": "Error",
+        "code": 8012    
+    },
+    "A super call must be the first statement in the constructor when a struct contains initialized properties or has parameter properties.": {
+        "category": "Error",
+        "code": 8013    
+    },
+    "Constructors for derived structs must contain a super call.": {
+        "category": "Error",
+        "code": 8014    
+    },
+    "super can only be referenced in a derived struct.": {
+        "category": "Error",
+        "code": 8015    
+    },
+    "index member not allowed for struct.": {
+        "category": "Error",
+        "code": 8016    
     }
 }

@@ -88,7 +88,7 @@ var ts;
         Expression_expected: { code: 1109, category: 1 /* Error */, key: "Expression expected." },
         Type_expected: { code: 1110, category: 1 /* Error */, key: "Type expected." },
         A_constructor_implementation_cannot_be_declared_in_an_ambient_context: { code: 1111, category: 1 /* Error */, key: "A constructor implementation cannot be declared in an ambient context." },
-        A_class_member_cannot_be_declared_optional: { code: 1112, category: 1 /* Error */, key: "A class member cannot be declared optional." },
+        A_class_or_struct_member_cannot_be_declared_optional: { code: 1112, category: 1 /* Error */, key: "A class member cannot be declared optional." },
         A_default_clause_cannot_appear_more_than_once_in_a_switch_statement: { code: 1113, category: 1 /* Error */, key: "A 'default' clause cannot appear more than once in a 'switch' statement." },
         Duplicate_label_0: { code: 1114, category: 1 /* Error */, key: "Duplicate label '{0}'" },
         A_continue_statement_can_only_jump_to_a_label_of_an_enclosing_iteration_statement: { code: 1115, category: 1 /* Error */, key: "A 'continue' statement can only jump to a label of an enclosing iteration statement." },
@@ -415,6 +415,22 @@ var ts;
         _0_implicitly_has_return_type_any_because_it_does_not_have_a_return_type_annotation_and_is_referenced_directly_or_indirectly_in_one_of_its_return_expressions: { code: 7023, category: 1 /* Error */, key: "'{0}' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions." },
         Function_implicitly_has_return_type_any_because_it_does_not_have_a_return_type_annotation_and_is_referenced_directly_or_indirectly_in_one_of_its_return_expressions: { code: 7024, category: 1 /* Error */, key: "Function implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions." },
         You_cannot_rename_this_element: { code: 8000, category: 1 /* Error */, key: "You cannot rename this element." }
+        Primitive_type_declaration_0_cannot_be_optional: { code: 8001, category: 1 /* Error */, key: "Primitive type declaration '{0}' cannot be optional." },
+        Static_members_cannot_reference_struct_type_parameters: { code: 8002, category: 1 /* Error */, key: "Static members cannot reference struct type parameters." },
+        A_struct_may_only_extend_another_struct: { code: 8003, category: 1 /* Error */, key: "A struct may only extend another struct." },
+        _0_modifier_cannot_appear_on_a_struct_element: { code: 8004, category: 1 /* Error */, key: "'{0}' modifier cannot appear on a struct element." },
+        Struct_0_incorrectly_extends_base_struct_1: { code: 8005, category: 1 /* Error */, key: "Struct '{0}' incorrectly extends base struct '{1}'." },
+        Struct_0_incorrectly_extends_base_struct_1_Colon: { code: 8006, category: 1 /* Error */, key: "Struct '{0}' incorrectly extends base struct '{1}':" },
+        A_struct_can_not_implement_another_class_or_interface: { code: 8007, category: 1 /* Error */, key: "A struct can not implement interface." },
+        Struct_name_cannot_be_0: { code: 8008, category: 1 /* Error */, key: "Struct name cannot be '{0}'" },
+        Struct_constructor_cannot_have_return_expression: { code: 8009, category: 1 /* Error */, key: "Cannot have return expression in struct constructor." },
+        Property_0_is_private_and_only_accessible_within_struct_1: { code: 8010, category: 1 /* Error */, key: "Property '{0}' is private and only accessible within struct '{1}'." },
+        Property_0_is_protected_and_only_accessible_within_struct_1_and_its_substructs: { code: 8011, category: 1 /* Error */, key: "Property '{0}' is protected and only accessible within struct '{1}' and its substructs." },
+        Property_0_is_protected_and_only_accessible_through_an_instance_of_struct_1: { code: 8012, category: 1 /* Error */, key: "Property '{0}' is protected and only accessible through an instance of struct '{1}'." },
+        A_super_call_must_be_the_first_statement_in_the_constructor_when_a_struct_contains_initialized_properties_or_has_parameter_properties: { code: 8013, category: 1 /* Error */, key: "A 'super' call must be the first statement in the constructor when a struct contains initialized properties or has parameter properties." },
+        Constructors_for_derived_structs_must_contain_a_super_call: { code: 8014, category: 1 /* Error */, key: "Constructors for derived structs must contain a 'super' call." },
+        super_can_only_be_referenced_in_a_derived_struct: { code: 8015, category: 1 /* Error */, key: "'super' can only be referenced in a derived struct." },
+        index_member_not_allowed_for_struct: { code: 8016, category: 1 /* Error */, key: "A struct cannot have index members." }
     };
 })(ts || (ts = {}));
 var ts;
@@ -4844,7 +4860,7 @@ var ts;
             var name = parsePropertyName();
             var questionStart = scanner.getTokenPos();
             if (parseOptional(45 /* QuestionToken */)) {
-                errorAtPos(questionStart, scanner.getStartPos() - questionStart, ts.Diagnostics.A_class_member_cannot_be_declared_optional);
+                errorAtPos(questionStart, scanner.getStartPos() - questionStart, ts.Diagnostics.A_class_or_struct_member_cannot_be_declared_optional);
             }
             if (token === 11 /* OpenParenToken */ || token === 19 /* LessThanToken */) {
                 var method = createNode(120 /* Method */, pos);
