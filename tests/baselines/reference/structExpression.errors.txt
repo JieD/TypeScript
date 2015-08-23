@@ -1,0 +1,38 @@
+tests/cases/conformance/structs/structExpression.ts(3,9): error TS1109: Expression expected.
+tests/cases/conformance/structs/structExpression.ts(7,10): error TS1109: Expression expected.
+tests/cases/conformance/structs/structExpression.ts(7,17): error TS1005: ':' expected.
+tests/cases/conformance/structs/structExpression.ts(7,20): error TS1005: ',' expected.
+tests/cases/conformance/structs/structExpression.ts(9,1): error TS1128: Declaration or statement expected.
+tests/cases/conformance/structs/structExpression.ts(12,13): error TS1109: Expression expected.
+tests/cases/conformance/structs/structExpression.ts(7,17): error TS2304: Cannot find name 'C2'.
+
+
+==== tests/cases/conformance/structs/structExpression.ts (7 errors) ====
+    // struct expression are not supported
+    
+    var x = struct C {
+            ~~~~~~
+!!! error TS1109: Expression expected.
+    }
+    
+    var y = {
+        foo: struct C2 {
+             ~~~~~~
+!!! error TS1109: Expression expected.
+                    ~~
+!!! error TS1005: ':' expected.
+                       ~
+!!! error TS1005: ',' expected.
+                    ~~
+!!! error TS2304: Cannot find name 'C2'.
+        }
+    }
+    ~
+!!! error TS1128: Declaration or statement expected.
+    
+    module M {
+        var z = struct C4 {
+                ~~~~~~
+!!! error TS1109: Expression expected.
+        }
+    }
