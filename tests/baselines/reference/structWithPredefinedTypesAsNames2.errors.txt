@@ -2,7 +2,7 @@ tests/cases/conformance/structs/structDeclarations/structWithPredefinedTypesAsNa
 
 
 ==== tests/cases/conformance/structs/structDeclarations/structWithPredefinedTypesAsNames2.ts (1 errors) ====
-    // classes cannot use predefined types as names
+    // structs cannot use predefined types as names
     
     struct void {}
            ~~~~

@@ -1,5 +1,5 @@
 //// [structWithPredefinedTypesAsNames.ts]
-// structes cannot use predefined types as names
+// structs cannot use predefined types as names
 
 struct any { }
 struct number { }
@@ -7,40 +7,24 @@ struct boolean { }
 struct string { }
 
 //// [structWithPredefinedTypesAsNames.js]
-// structes cannot use predefined types as names
-var _any = (function () {
-    var _any = new TypedObject.StructType({
-    });
-    return _any
+// structs cannot use predefined types as names
+var any = (function () {
+    function any() {
+    }
+    return any;
 })();
-function any() {
-    var _this = new _any();
-    return _this;
-}
-var _number = (function () {
-    var _number = new TypedObject.StructType({
-    });
-    return _number
+var number = (function () {
+    function number() {
+    }
+    return number;
 })();
-function number() {
-    var _this = new _number();
-    return _this;
-}
-var _boolean = (function () {
-    var _boolean = new TypedObject.StructType({
-    });
-    return _boolean
+var boolean = (function () {
+    function boolean() {
+    }
+    return boolean;
 })();
-function boolean() {
-    var _this = new _boolean();
-    return _this;
-}
-var _string = (function () {
-    var _string = new TypedObject.StructType({
-    });
-    return _string
+var string = (function () {
+    function string() {
+    }
+    return string;
 })();
-function string() {
-    var _this = new _string();
-    return _this;
-}
