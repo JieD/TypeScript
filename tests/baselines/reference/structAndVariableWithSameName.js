@@ -11,28 +11,18 @@ module M {
 }
 
 //// [structAndVariableWithSameName.js]
-var _C = (function () {
-    var _C = new TypedObject.StructType({
-        foo: TypedObject.string
-    });
-    return _C
-})();
-function C() {
-    var _this = new _C();
-    return _this;
-} // error
+var C = (function () {
+    function C() {
+    }
+    return C;
+})(); // error
 var C = ''; // error
 var M;
 (function (M) {
-    var _D = (function () {
-        var _D = new TypedObject.StructType({
-            bar: TypedObject.string
-        });
-        return _D
+    var D = (function () {
+        function D() {
+        }
+        return D;
     })();
-    function D() {
-        var _this = new _D();
-        return _this;
-    }
     var D = 1; // error
 })(M || (M = {}));

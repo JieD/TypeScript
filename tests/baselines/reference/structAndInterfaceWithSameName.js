@@ -13,26 +13,16 @@ module M {
 }
 
 //// [structAndInterfaceWithSameName.js]
-var _C = (function () {
-    var _C = new TypedObject.StructType({
-        foo: TypedObject.string
-    });
-    return _C
+var C = (function () {
+    function C() {
+    }
+    return C;
 })();
-function C() {
-    var _this = new _C();
-    return _this;
-}
 var M;
 (function (M) {
-    var _D = (function () {
-        var _D = new TypedObject.StructType({
-            bar: TypedObject.string
-        });
-        return _D
+    var D = (function () {
+        function D() {
+        }
+        return D;
     })();
-    function D() {
-        var _this = new _D();
-        return _this;
-    }
 })(M || (M = {}));
