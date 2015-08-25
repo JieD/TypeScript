@@ -1,0 +1,40 @@
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsEveryObjectType.ts(6,19): error TS1003: Identifier expected.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsEveryObjectType.ts(16,19): error TS1003: Identifier expected.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsEveryObjectType.ts(16,21): error TS1005: ';' expected.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsEveryObjectType.ts(4,18): error TS8003: A struct may only extend another struct.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsEveryObjectType.ts(8,19): error TS2304: Cannot find name 'x'.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsEveryObjectType.ts(11,19): error TS2304: Cannot find name 'M'.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsEveryObjectType.ts(14,19): error TS2304: Cannot find name 'foo'.
+
+
+==== tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsEveryObjectType.ts (7 errors) ====
+    interface I {
+        foo: string;
+    }
+    struct C extends I { } // error, struct can only extend struct
+                     ~
+!!! error TS8003: A struct may only extend another struct.
+    
+    struct C2 extends { foo: string; } { } // error, type reference
+                      ~
+!!! error TS1003: Identifier expected.
+    var x: { foo: string; }
+    struct C3 extends x { } // error
+                      ~
+!!! error TS2304: Cannot find name 'x'.
+    
+    module M { export var x = 1; }
+    struct C4 extends M { } // error
+                      ~
+!!! error TS2304: Cannot find name 'M'.
+    
+    function foo() { }
+    struct C5 extends foo { } // error
+                      ~~~
+!!! error TS2304: Cannot find name 'foo'.
+    
+    struct C6 extends []{ } // error
+                      ~
+!!! error TS1003: Identifier expected.
+                        ~
+!!! error TS1005: ';' expected.

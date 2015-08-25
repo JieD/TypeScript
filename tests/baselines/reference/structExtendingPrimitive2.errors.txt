@@ -1,0 +1,16 @@
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendingPrimitive2.ts(3,20): error TS1003: Identifier expected.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendingPrimitive2.ts(4,20): error TS1003: Identifier expected.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendingPrimitive2.ts(4,25): error TS1005: ';' expected.
+
+
+==== tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendingPrimitive2.ts (3 errors) ====
+    // structes cannot extend primitives
+    
+    struct C4a extends void {}
+                       ~~~~
+!!! error TS1003: Identifier expected.
+    struct C5a extends null { }
+                       ~~~~
+!!! error TS1003: Identifier expected.
+                            ~
+!!! error TS1005: ';' expected.

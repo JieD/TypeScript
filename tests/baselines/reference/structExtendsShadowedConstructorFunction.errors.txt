@@ -1,0 +1,14 @@
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsShadowedConstructorFunction.ts(5,22): error TS2419: Type name 'C' in extends clause does not reference constructor function for 'C'.
+
+
+==== tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsShadowedConstructorFunction.ts (1 errors) ====
+    struct C { foo: string; }
+    
+    module M {
+        var C = 1;
+        struct D extends C { // error, C must evaluate to constructor function
+                         ~
+!!! error TS2419: Type name 'C' in extends clause does not reference constructor function for 'C'.
+            bar: string;
+        }
+    }

@@ -1,0 +1,20 @@
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsItselfIndirectly.ts(11,39): error TS1010: '*/' expected.
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsItselfIndirectly.ts(1,8): error TS2310: Type 'C' recursively references itself as a base type.
+
+
+==== tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structExtendsItselfIndirectly.ts (2 errors) ====
+    struct C extends E { foo: string; } // error
+           ~
+!!! error TS2310: Type 'C' recursively references itself as a base type.
+    
+    struct D extends C { bar: string; }
+    
+    struct E extends D { baz: number; }
+    
+    /* struct C2<T> extends E2<T> { foo: T; } // error
+    
+    struct D2<T> extends C2<T> { bar: T; }
+    
+    struct E2<T> extends D2<T> { baz: T; }
+                                          
+!!! error TS1010: '*/' expected.

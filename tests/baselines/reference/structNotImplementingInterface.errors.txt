@@ -1,0 +1,14 @@
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structNotImplementingInterface.ts(5,10): error TS8007: A struct can not implement interface.
+
+
+==== tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structNotImplementingInterface.ts (1 errors) ====
+    interface C {
+    	foo: string;
+    }
+    
+    struct D implements C { // error. struct cannot implement interface
+             ~~~~~~~~~~
+!!! error TS8007: A struct can not implement interface.
+    	foo: string;
+    }
+    
