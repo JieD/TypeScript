@@ -715,7 +715,7 @@ module ts {
             case ParsingContext.SwitchClauses:          return Diagnostics.case_or_default_expected;
             case ParsingContext.SwitchClauseStatements: return Diagnostics.Statement_expected;
             case ParsingContext.TypeMembers:            return Diagnostics.Property_or_signature_expected;
-            case ParsingContext.StructMembers:          return Diagnostics.Unexpected_token_A_constructor_method_accessor_or_property_was_expected;
+            case ParsingContext.StructMembers:          return Diagnostics.Unexpected_token_A_constructor_method_or_property_was_expected;
             case ParsingContext.ClassMembers:           return Diagnostics.Unexpected_token_A_constructor_method_accessor_or_property_was_expected;
             case ParsingContext.EnumMembers:            return Diagnostics.Enum_member_expected;
             case ParsingContext.BaseTypeReferences:     return Diagnostics.Type_reference_expected;
@@ -3450,15 +3450,17 @@ module ts {
                 nextToken();
             }
 
-            // Index signatures are struct members; we can parse.
+            // Index like signatures are actually struct array, they are members of struct; we can parse.
             if (token === SyntaxKind.OpenBracketToken) {
                 return true;
             }
 
             // If we were able to get any potential identifier...
             if (idToken !== undefined) {
-                // If we have a non-keyword identifier, or if we have an accessor, then it's safe to parse.
-                if (!isKeyword(idToken) || idToken === SyntaxKind.SetKeyword || idToken === SyntaxKind.GetKeyword) {
+                // If we have a non-keyword identifier, then it's safe to parse.
+	            // accessors are not allowed in struct.
+                // if (!isKeyword(idToken) || idToken === SyntaxKind.SetKeyword || idToken === SyntaxKind.GetKeyword) {
+                if (!isKeyword(idToken)) {
                     return true;
                 }
 
