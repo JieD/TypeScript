@@ -9,5 +9,5 @@ struct C2 {
 var x = 1;
 var y = 2;
 struct C3 {
-    x: number = y + 1; // ok, need a var in the statement production
+    x: number = y + 1; // ok, not a statement (need var in the statement production).
 }

@@ -6,7 +6,7 @@ tests/cases/conformance/structs/structDeclarations/structBody/structBodyWithStat
 
 ==== tests/cases/conformance/structs/structDeclarations/structBody/structBodyWithStatements.ts (4 errors) ====
     struct C {
-        var x = 1; // error
+        var x = 1; // error, variable statement
         ~~~
 !!! error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
     }
@@ -14,7 +14,7 @@ tests/cases/conformance/structs/structDeclarations/structBody/structBodyWithStat
 !!! error TS1128: Declaration or statement expected.
     
     struct C2 {
-        function foo() {} // error
+        function foo() {} // error, function declaration
         ~~~~~~~~
 !!! error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
     }
@@ -24,5 +24,5 @@ tests/cases/conformance/structs/structDeclarations/structBody/structBodyWithStat
     var x = 1;
     var y = 2;
     struct C3 {
-        x: number = y + 1; // ok, need a var in the statement production
+        x: number = y + 1; // ok, not a statement (need var in the statement production).
     }
