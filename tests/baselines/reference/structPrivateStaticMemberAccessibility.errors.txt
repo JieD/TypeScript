@@ -1,0 +1,20 @@
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structPrivateStaticMemberAccessibility.ts(9,18): error TS8010: Property 'foo' is private and only accessible within struct 'Base'.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structPrivateStaticMemberAccessibility.ts(10,18): error TS8010: Property 'foo' is private and only accessible within struct 'Base'.
+
+
+==== tests/cases/conformance/structs/members/accessibilityAndAccessor/structPrivateStaticMemberAccessibility.ts (2 errors) ====
+    // doc 2.2
+    // private property members can be accessed only within the struct body that contains their declaration
+    
+    struct Base {
+        private static foo: string;
+    }
+    
+    struct Derived extends Base {
+        static bar = Base.foo; // error
+                     ~~~~~~~~
+!!! error TS8010: Property 'foo' is private and only accessible within struct 'Base'.
+        bing = () => Base.foo; // error
+                     ~~~~~~~~
+!!! error TS8010: Property 'foo' is private and only accessible within struct 'Base'.
+    }

@@ -768,6 +768,19 @@ module ts {
         return SyntaxKind.FirstTriviaToken <= token && token <= SyntaxKind.LastTriviaToken;
     }
 
+	// struct does not allow protected as a modifier
+    export function isStructModifier(token: SyntaxKind): boolean {
+        switch (token) {
+            case SyntaxKind.PublicKeyword:
+            case SyntaxKind.PrivateKeyword:
+            case SyntaxKind.StaticKeyword:
+            case SyntaxKind.ExportKeyword:
+            case SyntaxKind.DeclareKeyword:
+                return true;
+        }
+        return false;
+    }
+
     export function isModifier(token: SyntaxKind): boolean {
         switch (token) {
             case SyntaxKind.PublicKeyword:
@@ -3438,7 +3451,7 @@ module ts {
             var idToken: SyntaxKind;
 
             // Eat up all modifiers, but hold on to the last one in case it is actually an identifier.
-            while (isModifier(token)) {
+            while (isStructModifier(token)) {
                 idToken = token;
                 nextToken();
             }
