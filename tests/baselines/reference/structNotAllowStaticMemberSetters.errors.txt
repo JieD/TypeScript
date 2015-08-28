@@ -1,0 +1,46 @@
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,2): error TS8017: Unexpected token. A constructor, method, or property was expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,9): error TS8017: Unexpected token. A constructor, method, or property was expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,13): error TS1005: ';' expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,24): error TS1005: ',' expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,34): error TS1005: ';' expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(10,1): error TS1128: Declaration or statement expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,9): error TS2304: Cannot find name 'set'.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,13): error TS2304: Cannot find name 'bar'.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,17): error TS2304: Cannot find name 'new_bar'.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(7,26): error TS2304: Cannot find name 'number'.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts(8,12): error TS2304: Cannot find name 'new_bar'.
+
+
+==== tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberSetters.ts (11 errors) ====
+    // doc 2.2
+    // Due to Typed Objects being nonextensible and non-configurable, accessors are not allowed.
+    
+    struct C {
+        static _bar: number;
+    
+    	static set bar(new_bar: number) { // error, setters are not allowed in struct
+    	~~~~~~
+!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+    	       ~~~
+!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+    	           ~~~
+!!! error TS1005: ';' expected.
+    	                      ~
+!!! error TS1005: ',' expected.
+    	                                ~
+!!! error TS1005: ';' expected.
+    	       ~~~
+!!! error TS2304: Cannot find name 'set'.
+    	           ~~~
+!!! error TS2304: Cannot find name 'bar'.
+    	               ~~~~~~~
+!!! error TS2304: Cannot find name 'new_bar'.
+    	                        ~~~~~~
+!!! error TS2304: Cannot find name 'number'.
+    		C._bar = new_bar;
+    		         ~~~~~~~
+!!! error TS2304: Cannot find name 'new_bar'.
+    	}
+    }
+    ~
+!!! error TS1128: Declaration or statement expected.

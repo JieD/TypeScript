@@ -4,7 +4,7 @@
 struct C {
     private _foo: string;
 
-    set foo(new_foo: string) { // error, getters and setters are not allowed in strcut
+    set foo(new_foo: string) { // error, setters are not allowed in struct
         this._foo = new_foo;
     }
 }

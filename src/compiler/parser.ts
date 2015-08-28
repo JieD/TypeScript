@@ -3444,7 +3444,7 @@ module ts {
             }
 
             // Try to get the first property-like token following all modifiers.
-            // This can either be an identifier or the 'get' or 'set' keywords.
+            // This has to be an identifier, and the 'get' or 'set' keywords are not allowed in struct.
             if (isPropertyName()) {
                 idToken = token;
                 nextToken();
@@ -3459,7 +3459,6 @@ module ts {
             if (idToken !== undefined) {
                 // If we have a non-keyword identifier, then it's safe to parse.
 	            // accessors are not allowed in struct.
-                // if (!isKeyword(idToken) || idToken === SyntaxKind.SetKeyword || idToken === SyntaxKind.GetKeyword) {
                 if (!isKeyword(idToken)) {
                     return true;
                 }

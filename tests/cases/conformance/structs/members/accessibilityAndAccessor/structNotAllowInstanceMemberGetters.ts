@@ -4,7 +4,7 @@
 struct C {
     private _foo: string;
 
-    get foo() { // error, getters and setters are not allowed in strcut
+    get foo() { // error, getters are not allowed in struct
         return this._foo;
     }
 }

@@ -1,0 +1,37 @@
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts(7,2): error TS8017: Unexpected token. A constructor, method, or property was expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts(7,9): error TS8017: Unexpected token. A constructor, method, or property was expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts(7,13): error TS1005: ';' expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts(7,19): error TS1005: ';' expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts(8,3): error TS1108: A 'return' statement can only be used within a function body.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts(10,1): error TS1128: Declaration or statement expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts(7,9): error TS2304: Cannot find name 'get'.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts(7,13): error TS2304: Cannot find name 'bar'.
+
+
+==== tests/cases/conformance/structs/members/accessibilityAndAccessor/structNotAllowStaticMemberGetters.ts (8 errors) ====
+    // doc 2.2
+    // Due to Typed Objects being nonextensible and non-configurable, accessors are not allowed.
+    
+    struct C {
+    	static _bar: number;
+    
+    	static get bar() { // error, getters are not allowed in struct
+    	~~~~~~
+!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+    	       ~~~
+!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+    	           ~~~
+!!! error TS1005: ';' expected.
+    	                 ~
+!!! error TS1005: ';' expected.
+    	       ~~~
+!!! error TS2304: Cannot find name 'get'.
+    	           ~~~
+!!! error TS2304: Cannot find name 'bar'.
+    		return C._bar;
+    		~~~~~~
+!!! error TS1108: A 'return' statement can only be used within a function body.
+    	}
+    }
+    ~
+!!! error TS1128: Declaration or statement expected.
