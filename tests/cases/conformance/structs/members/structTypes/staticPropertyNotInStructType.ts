@@ -1,10 +1,9 @@
-// @target: ES5
+// doc 2.4
+// Static members are declared using the static modifier and are members of the constructor function type.
 
 module NonGeneric {
     struct C {
         fn() { return this; }
-        /* static get x() { return 1; }
-        static set x(v) { } */
         constructor(public a: number, private b: number) { }
         static foo: string; // not reflected in struct type
     }
@@ -17,20 +16,16 @@ module NonGeneric {
     var r = c.fn();
     var r4 = c.foo; // error
     var r5 = c.bar; // error
-    //var r6 = c.x; // error
 
 	var cs: typeof C;
 	r = cs.fn(); // error
 	r4 = cs.foo; // ok
 	r5 = cs.bar; // ok
-	//r6 = cs.x; // ok
 }
 
-module Generic {
+/* module Generic {
     struct C<T, U> {
         fn() { return this; }
-        /* static get x() { return 1; }
-        static set x(v) { } */
         constructor(public a: T, private b: U) { }
         static foo: T; // not reflected in struct type
     }
@@ -43,5 +38,4 @@ module Generic {
     var r = c.fn();
     var r4 = c.foo; // error
     var r5 = c.bar; // error
-    //var r6 = c.x; // error
-}
+} */

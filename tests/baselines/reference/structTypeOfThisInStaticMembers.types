@@ -51,57 +51,21 @@ var r4 = new t(1);
 >new t(1) : C
 >t : typeof C
 
-struct C2<T> {
->C2 : C2<T>
->T : T
-
+/* struct C2<T> {
     static test: number;
->test : number
-
     constructor(x: string) { }
->x : string
-
     static foo: string;
->foo : string
-
     static bar() {
->bar : () => typeof C2
-
         // type of this is the constructor function type
         var t = this;
->t : typeof C2
->this : typeof C2
-
         return this;
->this : typeof C2
     }
 }
 
 var t2 = C2.bar();
->t2 : typeof C2
->C2.bar() : typeof C2
->C2.bar : () => typeof C2
->C2 : typeof C2
->bar : () => typeof C2
-
 // all ok
 var r5 = t2.foo + 1;
->r5 : string
->t2.foo + 1 : string
->t2.foo : string
->t2 : typeof C2
->foo : string
-
 var r6 = t2.bar();
->r6 : typeof C2
->t2.bar() : typeof C2
->t2.bar : () => typeof C2
->t2 : typeof C2
->bar : () => typeof C2
-
-var r7 = new t2('');
->r7 : C2<{}>
->new t2('') : C2<{}>
->t2 : typeof C2
+var r7 = new t2(''); */
 
 
