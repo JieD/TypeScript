@@ -1,3 +1,8 @@
+// doc 2.5
+// If the struct contains a constructor declaration with overloads, a set of construct signatures with
+// the parameter lists of the overloads, all having the same type parameters as the struct and returning
+// the instance type of the struct.
+
 module NonGeneric {
     struct C {
         constructor(x: string) { }
@@ -23,7 +28,7 @@ module NonGeneric {
     var d3 = new D(''); // ok
 }
 
-module Generics {
+/* module Generics {
     struct C<T> {
         constructor(x: T) { }
     }
@@ -46,4 +51,4 @@ module Generics {
     var d = new D(); // error
     var d2 = new D(1); // ok
     var d3 = new D(''); // ok
-}
+} */

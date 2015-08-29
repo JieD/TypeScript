@@ -1,3 +1,4 @@
+=== tests/cases/conformance/structs/members/constructorFunctionTypes/structWithNoConstructorOrBaseStruct.ts ===
 // doc 2.5
 // If the struct contains no constructor declaration and has no base struct, a single construct signature
 // with no parameters, having the same type parameters as the struct and returning the instance type of
@@ -5,11 +6,20 @@
 // ok
 
 struct C {
+>C : C
+
     x: string;
+>x : string
 }
 
 var c = new C();
+>c : C
+>new C() : C
+>C : typeof C
+
 var r = C;
+>r : typeof C
+>C : typeof C
 
 /* struct D<T,U> {
     x: T;
@@ -19,3 +29,4 @@ var r = C;
 var d = new D();
 var d2 = new D<string, number>();
 var r2 = D; */
+

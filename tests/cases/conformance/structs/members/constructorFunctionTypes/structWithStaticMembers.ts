@@ -1,19 +1,18 @@
-class C {
+// doc 2.5
+// ok
+
+struct C {
     static fn() { return this; }
-    static get x() { return 1; }
-    static set x(v) { }
     constructor(public a: number, private b: number) { }
     static foo: string; 
 }
 
 var r = C.fn();
-var r2 = r.x;
-var r3 = r.foo;
+var r2 = r.foo;
 
-class D extends C {
+struct D extends C {
     bar: string;
 }
 
 var r = D.fn();
-var r2 = r.x;
-var r3 = r.foo;
+var r2 = r.foo;
