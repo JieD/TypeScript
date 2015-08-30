@@ -1,3 +1,4 @@
+// doc 3
 // Only public constructors are supported. Private and protected constructors result in an error
 
 struct C {
@@ -16,7 +17,7 @@ var c = new C(1);
 var d = new D(1);
 var e = new E(1);
 
-module Generic {
+/* module Generic {
     struct C<T> {
         public constructor(public x: T) { }
     }
@@ -32,4 +33,4 @@ module Generic {
     var c = new C(1);
     var d = new D(1);
     var e = new E(1);
-}
+} */
