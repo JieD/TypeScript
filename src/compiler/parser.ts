@@ -3,6 +3,9 @@
 /// <reference path="scanner.ts"/>
 
 module ts {
+	// use for protected modifier in struct
+	export var isProtectedAllowedInStruct = false;
+
     var nodeConstructors = new Array<new () => Node>(SyntaxKind.Count);
 
     export function getNodeConstructor(kind: SyntaxKind): new () => Node {
@@ -770,6 +773,7 @@ module ts {
 
 	// struct does not allow protected as a modifier
     export function isStructModifier(token: SyntaxKind): boolean {
+	    if ((token === SyntaxKind.ProtectedKeyword) && isProtectedAllowedInStruct) return true;
         switch (token) {
             case SyntaxKind.PublicKeyword:
             case SyntaxKind.PrivateKeyword:
@@ -3451,7 +3455,7 @@ module ts {
             var idToken: SyntaxKind;
 
             // Eat up all modifiers, but hold on to the last one in case it is actually an identifier.
-            while (isStructModifier(token)) {
+            while (isModifier(token)) {
                 idToken = token;
                 nextToken();
             }
@@ -3607,6 +3611,9 @@ module ts {
                         else if (context === ModifierContext.ModuleElements || context === ModifierContext.SourceElements) {
                             grammarErrorAtPos(modifierStart, modifierLength, Diagnostics._0_modifier_cannot_appear_on_a_module_element, "protected");
                         }
+                        else if (context === ModifierContext.StructMembers && !isProtectedAllowedInStruct) {
+	                        grammarErrorAtPos(modifierStart, modifierLength, Diagnostics._0_modifier_cannot_appear_on_a_struct_element, "protected");
+                        }
                         lastProtectedModifierStart = modifierStart;
                         lastProtectedModifierLength = modifierLength;
                         flags |= NodeFlags.Protected;
@@ -3709,12 +3716,6 @@ module ts {
         function parseStructMemberDeclaration(): Declaration {
             var pos = getNodePos();
             var flags = parseAndCheckModifiers(ModifierContext.StructMembers);
-            if (parseContextualModifier(SyntaxKind.GetKeyword)) {
-                return parseAndCheckMemberAccessorDeclaration(SyntaxKind.GetAccessor, pos, flags);
-            }
-            if (parseContextualModifier(SyntaxKind.SetKeyword)) {
-                return parseAndCheckMemberAccessorDeclaration(SyntaxKind.SetAccessor, pos, flags);
-            }
             if (token === SyntaxKind.ConstructorKeyword) {
                 return parseConstructorDeclaration(pos, flags);
             }
