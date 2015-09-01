@@ -2262,8 +2262,9 @@ module ts {
                     callSignatures = getSignaturesOfSymbol(symbol);
                 }
                 if (symbol.flags & (SymbolFlags.Class | SymbolFlags.Struct)) {
-                    var classType = getDeclaredTypeOfClass(symbol);
+                    var classType: InterfaceType;
                     if (symbol.flags & SymbolFlags.Struct) classType = getDeclaredTypeOfStruct(symbol);
+	                else classType = getDeclaredTypeOfClass(symbol);
                     constructSignatures = getSignaturesOfSymbol(symbol.members["__constructor"]);
                     if (!constructSignatures.length) {
                         constructSignatures = getDefaultConstructSignatures(classType);
@@ -6398,7 +6399,16 @@ module ts {
 
             if (fullTypeCheck) {
                 checkCollisionWithIndexVariableInGeneratedCode(parameterDeclaration, parameterDeclaration.name);
-
+                if (parameterDeclaration.flags & (NodeFlags.QuestionMark) &&
+                    (parameterDeclaration.parent.kind === SyntaxKind.Constructor) &&
+                    (parameterDeclaration.parent.parent.kind === SyntaxKind.StructDeclaration)) {
+                    error(parameterDeclaration, Diagnostics.struct_constuctor_parameter_cannot_be_optional);
+                }
+				if (parameterDeclaration.flags & (NodeFlags.Protected) && !isProtectedAllowedInStruct &&
+					(parameterDeclaration.parent.kind === SyntaxKind.Constructor) &&
+					(parameterDeclaration.parent.parent.kind === SyntaxKind.StructDeclaration)) {
+					error(parameterDeclaration, Diagnostics.protected_modifier_cannot_appear_on_struct_constructor_parameter);
+				}
                 if (parameterDeclaration.flags & (NodeFlags.Public | NodeFlags.Private | NodeFlags.Protected) &&
                     !(parameterDeclaration.parent.kind === SyntaxKind.Constructor && (<ConstructorDeclaration>parameterDeclaration.parent).body)) {
                     error(parameterDeclaration, Diagnostics.A_parameter_property_is_only_allowed_in_a_constructor_implementation);
@@ -7448,7 +7458,7 @@ module ts {
                             // constructor doesn't have explicit return type annotation and yet its return type is known - declaring type
                             // handle constructors and issue specialized error message for them
 		                    if (returnType.flags & TypeFlags.Struct) { // struct constructor cannot have return expression
-								write("checkReturnStatement/constructor");
+								// write("checkReturnStatement/constructor");
 								error(node.expression, Diagnostics.Struct_constructor_cannot_have_return_expression);
 							} else {
 								if (!isTypeAssignableTo(checkExpression(node.expression), returnType)) {
