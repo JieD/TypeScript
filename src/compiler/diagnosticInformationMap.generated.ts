@@ -418,7 +418,7 @@ module ts {
 	    super_can_only_be_referenced_in_a_derived_struct: { code: 8015, category: DiagnosticCategory.Error, key: "'super' can only be referenced in a derived struct." },
 	    index_member_not_allowed_for_struct: { code: 8016, category: DiagnosticCategory.Error, key: "A struct cannot have index members." },
         Unexpected_token_A_constructor_method_or_property_was_expected: { code: 8017, category: DiagnosticCategory.Error, key: "Unexpected token. A constructor, method, or property was expected." },
-
-
+        protected_modifier_cannot_appear_on_struct_constructor_parameter: { code: 8018, category: DiagnosticCategory.Error, key: "Unexpected token. Modifier Protected cannot appear on struct constructor parameters." },
+        struct_constuctor_parameter_cannot_be_optional: { code: 8019, category: DiagnosticCategory.Error, key: "Unexpected token. Parameter of struct constructor cannot be optional." },
     };
 }
