@@ -1,8 +1,9 @@
 tests/cases/conformance/structs/constructorDeclarations/structConstructorAccessibility.ts(9,5): error TS1089: 'private' modifier cannot appear on a constructor declaration.
-tests/cases/conformance/structs/constructorDeclarations/structConstructorAccessibility.ts(13,5): error TS8017: Unexpected token. A constructor, method, or property was expected.
+tests/cases/conformance/structs/constructorDeclarations/structConstructorAccessibility.ts(13,5): error TS1089: 'protected' modifier cannot appear on a constructor declaration.
+tests/cases/conformance/structs/constructorDeclarations/structConstructorAccessibility.ts(13,5): error TS8004: 'protected' modifier cannot appear on a struct element.
 
 
-==== tests/cases/conformance/structs/constructorDeclarations/structConstructorAccessibility.ts (2 errors) ====
+==== tests/cases/conformance/structs/constructorDeclarations/structConstructorAccessibility.ts (3 errors) ====
     // doc 3
     // Only public constructors are supported. Private and protected constructors result in an error
     
@@ -19,7 +20,9 @@ tests/cases/conformance/structs/constructorDeclarations/structConstructorAccessi
     struct E {
         protected constructor(public x: number) { } // error
         ~~~~~~~~~
-!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+!!! error TS1089: 'protected' modifier cannot appear on a constructor declaration.
+        ~~~~~~~~~
+!!! error TS8004: 'protected' modifier cannot appear on a struct element.
     }
     
     var c = new C(1);

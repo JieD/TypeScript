@@ -1,7 +1,7 @@
-tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts(5,5): error TS8017: Unexpected token. A constructor, method, or property was expected.
-tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts(6,5): error TS8017: Unexpected token. A constructor, method, or property was expected.
-tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts(8,5): error TS8017: Unexpected token. A constructor, method, or property was expected.
-tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts(9,5): error TS8017: Unexpected token. A constructor, method, or property was expected.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts(5,5): error TS8004: 'protected' modifier cannot appear on a struct element.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts(6,5): error TS8004: 'protected' modifier cannot appear on a struct element.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts(8,5): error TS8004: 'protected' modifier cannot appear on a struct element.
+tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts(9,5): error TS8004: 'protected' modifier cannot appear on a struct element.
 
 
 ==== tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyNotAllowProtected.ts (4 errors) ====
@@ -11,15 +11,15 @@ tests/cases/conformance/structs/members/accessibilityAndAccessor/structPropertyN
     struct C {
         protected x: string; // error
         ~~~~~~~~~
-!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+!!! error TS8004: 'protected' modifier cannot appear on a struct element.
         protected foo() { } // error
         ~~~~~~~~~
-!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+!!! error TS8004: 'protected' modifier cannot appear on a struct element.
     
         protected static a: string; // error
         ~~~~~~~~~
-!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+!!! error TS8004: 'protected' modifier cannot appear on a struct element.
         protected static foo() { } // error
         ~~~~~~~~~
-!!! error TS8017: Unexpected token. A constructor, method, or property was expected.
+!!! error TS8004: 'protected' modifier cannot appear on a struct element.
     }

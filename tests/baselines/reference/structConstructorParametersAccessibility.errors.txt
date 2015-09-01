@@ -1,8 +1,12 @@
-tests/cases/conformance/structs/constructorDeclarations/structConstructorParametersAccessibility.ts(12,1): error TS8010: Property 'p' is private and only accessible within struct 'C2'.
-tests/cases/conformance/structs/constructorDeclarations/structConstructorParametersAccessibility.ts(19,1): error TS8011: Property 'p' is protected and only accessible within struct 'C3' and its substructs.
+tests/cases/conformance/structs/constructorDeclarations/constructorParameters/structConstructorParametersAccessibility.ts(15,1): error TS8010: Property 'p' is private and only accessible within struct 'C2'.
+tests/cases/conformance/structs/constructorDeclarations/constructorParameters/structConstructorParametersAccessibility.ts(19,17): error TS8018: Unexpected token. Modifier Protected cannot appear on struct constructor parameters.
+tests/cases/conformance/structs/constructorDeclarations/constructorParameters/structConstructorParametersAccessibility.ts(22,1): error TS8011: Property 'p' is protected and only accessible within struct 'C3' and its substructs.
 
 
-==== tests/cases/conformance/structs/constructorDeclarations/structConstructorParametersAccessibility.ts (2 errors) ====
+==== tests/cases/conformance/structs/constructorDeclarations/constructorParameters/structConstructorParametersAccessibility.ts (3 errors) ====
+    // doc 3.1
+    // Only public and private modifiers are allowed for constructor parameters, but not protected.
+    
     struct C1 {
         constructor(public x: number) { }
     }
@@ -20,7 +24,9 @@ tests/cases/conformance/structs/constructorDeclarations/structConstructorParamet
     
     
     struct C3 {
-        constructor(protected p: number) { }
+        constructor(protected p: number) { } // error
+                    ~~~~~~~~~~~~~~~~~~~
+!!! error TS8018: Unexpected token. Modifier Protected cannot appear on struct constructor parameters.
     }
     var c3: C3;
     c3.p // protected, error
