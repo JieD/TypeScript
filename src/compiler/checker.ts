@@ -3147,12 +3147,7 @@ module ts {
 
 	    function checkStructInheritanceDeclaration(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
 		    var errorInfo:DiagnosticMessageChain;
-            var sourceStack: ObjectType[];
-            var targetStack: ObjectType[];
-            var depth = 0;
-            var overflow = false;
-
-		    var result = isValidStructInheritanceDeclaration(source, target);
+		    var result = isValidStructPropertyInheritanceDeclaration(source, target);
 
 		    if (!result) {
 			    // The error should end in a period when this is the deepest error in the chain
@@ -3165,42 +3160,10 @@ module ts {
 			    Debug.assert(diagnosticKey);
 			    reportError(diagnosticKey, typeToString(source), typeToString(target));
 		    }
-		    if (overflow) {
-			    error(errorNode, Diagnostics.Excessive_stack_depth_comparing_types_0_and_1, typeToString(source), typeToString(target));
-		    }
-		    else if (errorInfo) {
+		    if (errorInfo) {
 			    addDiagnostic(createDiagnosticForNodeFromMessageChain(errorNode, errorInfo, program.getCompilerHost().getNewLine()));
 		    }
 		    return result;
-
-			function isValidStructInheritanceDeclaration(source: Type, target: Type) {
-				if (overflow) return false;
-				var result:boolean;
-				var id = source.id + "," + target.id;
-				if ((result = subtypeRelation[id]) !== undefined) return result;
-				if (depth > 0) {
-					for (var i = 0; i < depth; i++) {
-						if (source === sourceStack[i] && target === targetStack[i]) return true;
-					}
-					if (depth === 100) {
-						overflow = true;
-						return false;
-					}
-				}
-				else {
-					sourceStack = [];
-					targetStack = [];
-				}
-				sourceStack[depth] = source;
-				targetStack[depth] = target;
-				depth++;
-				result = isValidStructPropertyInheritanceDeclaration(source, target);
-				depth--;
-				if (depth === 0) {
-					subtypeRelation[id] = result;
-				}
-				return result;
-			}
 
 		    function isValidStructPropertyInheritanceDeclaration(source: Type, target: Type) {
 				var properties = getPropertiesOfType(target);
@@ -3209,9 +3172,27 @@ module ts {
 					var sourceProp = getPropertyOfApparentType(<ApparentType>source, targetProp.name);
 					if (sourceProp !== targetProp) {
 						if (!(targetProp.flags & SymbolFlags.Prototype)) {
-							if (sourceProp.flags & SymbolFlags.Property) { // no override member variables
+							var sourceFlags = getDeclarationFlagsFromSymbol(sourceProp);
+							var targetFlags = getDeclarationFlagsFromSymbol(targetProp);
+							if (!(targetFlags & NodeFlags.Static) && sourceProp.flags & SymbolFlags.Property) { // no override instance member variables
 								reportError(ts.Diagnostics.derived_struct_0_cannot_override_base_struct_1_member_variable_2, typeToString(source), typeToString(target), symbolToString(targetProp));
 								return false;
+							}
+							// can override static members
+							if (sourceFlags & NodeFlags.Static || targetFlags & NodeFlags.Static) {
+								if (sourceProp.valueDeclaration !== targetProp.valueDeclaration) {
+									if ((sourceFlags & NodeFlags.Private || targetFlags & NodeFlags.Private) && !(sourceFlags & targetFlags)) {
+										reportError(Diagnostics.Property_0_is_private_in_type_1_but_not_in_type_2, symbolToString(targetProp),
+											typeToString(sourceFlags & NodeFlags.Private ? source : target),
+											typeToString(sourceFlags & NodeFlags.Private ? target : source));
+										return false;
+									}
+								}
+								else if (!isProtectedAllowedInStruct && sourceFlags & NodeFlags.Protected) {
+									reportError(Diagnostics.Property_0_is_protected_in_type_1_but_public_in_type_2,
+										symbolToString(targetProp), typeToString(source), typeToString(target));
+									return false;
+								}
 							}
 						}
 					}
@@ -7705,7 +7686,6 @@ module ts {
             if (type.baseTypes.length) {
                 if (fullTypeCheck) {
                     var baseType = type.baseTypes[0];
-	                checkTypeAssignableTo(type, baseType, node.name, Diagnostics.Struct_0_incorrectly_extends_base_struct_1_Colon, Diagnostics.Struct_0_incorrectly_extends_base_struct_1);
 	                checkStructInheritanceDeclaration(type, baseType, node.name,
 	                    Diagnostics.Struct_0_incorrectly_extends_base_struct_1_Colon,
 	                    Diagnostics.Struct_0_incorrectly_extends_base_struct_1);

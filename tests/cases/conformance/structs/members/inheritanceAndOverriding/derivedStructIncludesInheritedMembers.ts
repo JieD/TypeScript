@@ -1,15 +1,13 @@
-// @target: ES5
+// doc 2.3
+// A derived struct inherits all members from its base struct it doesn’t override.
+// all ok
 
 struct Base {
     a: string;
     b() { }
-    get c() { return ''; }
-    set c(v) { }
 
     static r: string;
     static s() { }
-    static get t() { return ''; }
-    static set t(v) { }
 
     constructor(x) { }
 }
@@ -20,22 +18,5 @@ struct Derived extends Base {
 var d: Derived = new Derived(1);
 var r1 = d.a;
 var r2 = d.b();
-var r3 = d.c;
-d.c = '';
-var r4 = Derived.r;
-var r5 = Derived.s();
-var r6 = Derived.t;
-Derived.t = '';
-
-struct Base2 {
-    [x: string]: Object;
-    [x: number]: Date;
-}
-
-struct Derived2 extends Base2 {
-}
-
-var d2: Derived2;
-var r7 = d2[''];
-var r8 = d2[1];
-
+var r3 = Derived.r;
+var r4 = Derived.s();

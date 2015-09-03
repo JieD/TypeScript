@@ -1,0 +1,40 @@
+tests/cases/conformance/structs/members/inheritanceAndOverriding/derivedStructCannotOverrideMemberVariables.ts(8,8): error TS8006: Struct 'Derived' incorrectly extends base struct 'Base':
+  Derived Struct 'Derived' cannot override base struct 'Base' member variable 'x'.
+tests/cases/conformance/structs/members/inheritanceAndOverriding/derivedStructCannotOverrideMemberVariables.ts(16,8): error TS2418: Class static side 'typeof Derived2' incorrectly extends base class static side 'typeof Base2':
+  Derived Struct 'typeof Derived2' cannot override base struct 'typeof Base2' member variable 'y'.
+tests/cases/conformance/structs/members/inheritanceAndOverriding/derivedStructCannotOverrideMemberVariables.ts(20,8): error TS2418: Class static side 'typeof Derived3' incorrectly extends base class static side 'typeof Base2':
+  Derived Struct 'typeof Derived3' cannot override base struct 'typeof Base2' member variable 'y'.
+
+
+==== tests/cases/conformance/structs/members/inheritanceAndOverriding/derivedStructCannotOverrideMemberVariables.ts (3 errors) ====
+    // doc 2.3
+    // only public function members can be overridden.
+    
+    struct Base {
+        private x: { foo: string };
+    }
+    
+    struct Derived extends Base {
+           ~~~~~~~
+!!! error TS8006: Struct 'Derived' incorrectly extends base struct 'Base':
+!!! error TS8006:   Derived Struct 'Derived' cannot override base struct 'Base' member variable 'x'.
+        private x: { foo: string; bar: string; }; // error
+    }
+    
+    struct Base2 {
+        public static y: { foo: string };
+    }
+    
+    struct Derived2 extends Base2 {
+           ~~~~~~~~
+!!! error TS2418: Class static side 'typeof Derived2' incorrectly extends base class static side 'typeof Base2':
+!!! error TS2418:   Derived Struct 'typeof Derived2' cannot override base struct 'typeof Base2' member variable 'y'.
+        public static y: { foo: string; bar: string; }; // error
+    }
+    
+    struct Derived3 extends Base2 {
+           ~~~~~~~~
+!!! error TS2418: Class static side 'typeof Derived3' incorrectly extends base class static side 'typeof Base2':
+!!! error TS2418:   Derived Struct 'typeof Derived3' cannot override base struct 'typeof Base2' member variable 'y'.
+    	public static y: { foo: any }; // error
+    }

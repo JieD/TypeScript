@@ -1,0 +1,43 @@
+tests/cases/conformance/structs/members/inheritanceAndOverriding/derivedStructCannotOverrideInstanceMemberVariables.ts(8,8): error TS8006: Struct 'Derived' incorrectly extends base struct 'Base':
+  Derived Struct 'Derived' cannot override base struct 'Base' member variable 'x'.
+tests/cases/conformance/structs/members/inheritanceAndOverriding/derivedStructCannotOverrideInstanceMemberVariables.ts(16,8): error TS8006: Struct 'Derived1' incorrectly extends base struct 'Base1':
+  Derived Struct 'Derived1' cannot override base struct 'Base1' member variable 'foo'.
+
+
+==== tests/cases/conformance/structs/members/inheritanceAndOverriding/derivedStructCannotOverrideInstanceMemberVariables.ts (2 errors) ====
+    // doc 2.3
+    // only public function members can be overridden.
+    
+    struct Base {
+        private x: { foo: string };
+    }
+    
+    struct Derived extends Base {
+           ~~~~~~~
+!!! error TS8006: Struct 'Derived' incorrectly extends base struct 'Base':
+!!! error TS8006:   Derived Struct 'Derived' cannot override base struct 'Base' member variable 'x'.
+        private x: { foo: string; bar: string; }; // error
+    }
+    
+    struct Base1 {
+    	public foo: any;
+    }
+    
+    struct Derived1 extends Base1 {
+           ~~~~~~~~
+!!! error TS8006: Struct 'Derived1' incorrectly extends base struct 'Base1':
+!!! error TS8006:   Derived Struct 'Derived1' cannot override base struct 'Base1' member variable 'foo'.
+    	public foo: string; // error}
+    }
+    
+    struct Base2 {
+    	static y: { foo: string };
+    }
+    
+    struct Derived2 extends Base2 {
+    	static y: { foo: string; bar: string; }; // ok
+    }
+    
+    struct Derived3 extends Base2 {
+    	static y: { foo: any }; // ok
+    }
