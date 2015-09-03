@@ -420,5 +420,6 @@ module ts {
         Unexpected_token_A_constructor_method_or_property_was_expected: { code: 8017, category: DiagnosticCategory.Error, key: "Unexpected token. A constructor, method, or property was expected." },
         protected_modifier_cannot_appear_on_struct_constructor_parameter: { code: 8018, category: DiagnosticCategory.Error, key: "Unexpected token. Modifier Protected cannot appear on struct constructor parameters." },
         struct_constuctor_parameter_cannot_be_optional: { code: 8019, category: DiagnosticCategory.Error, key: "Unexpected token. Parameter of struct constructor cannot be optional." },
+        derived_struct_0_cannot_override_base_struct_1_member_variable_2: { code: 8020, category: DiagnosticCategory.Error, key: "Derived Struct '{0}' cannot override base struct '{1}' member variable '{2}'." },
     };
 }

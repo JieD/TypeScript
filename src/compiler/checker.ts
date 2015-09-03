@@ -3145,6 +3145,85 @@ module ts {
             return checkTypeAssignableTo(source, target, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
         }
 
+	    function checkStructInheritanceDeclaration(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
+		    var errorInfo:DiagnosticMessageChain;
+            var sourceStack: ObjectType[];
+            var targetStack: ObjectType[];
+            var depth = 0;
+            var overflow = false;
+
+		    var result = isValidStructInheritanceDeclaration(source, target);
+
+		    if (!result) {
+			    // The error should end in a period when this is the deepest error in the chain
+			    // (when errorInfo is undefined). Otherwise, it has a colon before the nested
+			    // error.
+			    // write('report errors');
+			    chainedMessage = chainedMessage || Diagnostics.Type_0_is_not_assignable_to_type_1_Colon;
+			    terminalMessage = terminalMessage || Diagnostics.Type_0_is_not_assignable_to_type_1;
+			    var diagnosticKey = errorInfo ? chainedMessage : terminalMessage;
+			    Debug.assert(diagnosticKey);
+			    reportError(diagnosticKey, typeToString(source), typeToString(target));
+		    }
+		    if (overflow) {
+			    error(errorNode, Diagnostics.Excessive_stack_depth_comparing_types_0_and_1, typeToString(source), typeToString(target));
+		    }
+		    else if (errorInfo) {
+			    addDiagnostic(createDiagnosticForNodeFromMessageChain(errorNode, errorInfo, program.getCompilerHost().getNewLine()));
+		    }
+		    return result;
+
+			function isValidStructInheritanceDeclaration(source: Type, target: Type) {
+				if (overflow) return false;
+				var result:boolean;
+				var id = source.id + "," + target.id;
+				if ((result = subtypeRelation[id]) !== undefined) return result;
+				if (depth > 0) {
+					for (var i = 0; i < depth; i++) {
+						if (source === sourceStack[i] && target === targetStack[i]) return true;
+					}
+					if (depth === 100) {
+						overflow = true;
+						return false;
+					}
+				}
+				else {
+					sourceStack = [];
+					targetStack = [];
+				}
+				sourceStack[depth] = source;
+				targetStack[depth] = target;
+				depth++;
+				result = isValidStructPropertyInheritanceDeclaration(source, target);
+				depth--;
+				if (depth === 0) {
+					subtypeRelation[id] = result;
+				}
+				return result;
+			}
+
+		    function isValidStructPropertyInheritanceDeclaration(source: Type, target: Type) {
+				var properties = getPropertiesOfType(target);
+				for (var i = 0; i < properties.length; i++) {
+					var targetProp = properties[i];
+					var sourceProp = getPropertyOfApparentType(<ApparentType>source, targetProp.name);
+					if (sourceProp !== targetProp) {
+						if (!(targetProp.flags & SymbolFlags.Prototype)) {
+							if (sourceProp.flags & SymbolFlags.Property) { // no override member variables
+								reportError(ts.Diagnostics.derived_struct_0_cannot_override_base_struct_1_member_variable_2, typeToString(source), typeToString(target), symbolToString(targetProp));
+								return false;
+							}
+						}
+					}
+				}
+				return true;
+			}
+
+		    function reportError(message: DiagnosticMessage, arg0?: string, arg1?: string, arg2?: string): void {
+			    errorInfo = chainDiagnosticMessages(errorInfo, message, arg0, arg1, arg2);
+		    }
+	    }
+
         function checkTypeAssignableTo(source: Type, target: Type, errorNode: Node, chainedMessage: DiagnosticMessage, terminalMessage: DiagnosticMessage): boolean {
 	        return checkTypeRelatedTo(source, target, assignableRelation, errorNode, chainedMessage, terminalMessage);
         }
@@ -7626,10 +7705,13 @@ module ts {
             if (type.baseTypes.length) {
                 if (fullTypeCheck) {
                     var baseType = type.baseTypes[0];
-                    checkTypeAssignableTo(type, baseType, node.name, Diagnostics.Struct_0_incorrectly_extends_base_struct_1_Colon, Diagnostics.Struct_0_incorrectly_extends_base_struct_1);
+	                checkTypeAssignableTo(type, baseType, node.name, Diagnostics.Struct_0_incorrectly_extends_base_struct_1_Colon, Diagnostics.Struct_0_incorrectly_extends_base_struct_1);
+	                checkStructInheritanceDeclaration(type, baseType, node.name,
+	                    Diagnostics.Struct_0_incorrectly_extends_base_struct_1_Colon,
+	                    Diagnostics.Struct_0_incorrectly_extends_base_struct_1);
                     var staticBaseType = getTypeOfSymbol(baseType.symbol);
-                    checkTypeAssignableTo(staticType, getTypeWithoutConstructors(staticBaseType), node.name,
-                        Diagnostics.Class_static_side_0_incorrectly_extends_base_class_static_side_1_Colon, Diagnostics.Class_static_side_0_incorrectly_extends_base_class_static_side_1);
+	                checkStructInheritanceDeclaration(staticType, getTypeWithoutConstructors(staticBaseType), node.name,
+		                Diagnostics.Class_static_side_0_incorrectly_extends_base_class_static_side_1_Colon, Diagnostics.Class_static_side_0_incorrectly_extends_base_class_static_side_1);
                     if (baseType.symbol !== resolveEntityName(node, node.baseType.typeName, SymbolFlags.Value)) {
                         error(node.baseType, Diagnostics.Type_name_0_in_extends_clause_does_not_reference_constructor_function_for_0, typeToString(baseType));
                     }
