@@ -1,0 +1,48 @@
+=== tests/cases/conformance/structs/members/structReferenceType.ts ===
+struct Node {
+>Node : Node
+
+	elem: number;
+>elem : number
+
+	next: Node;
+>next : Node
+>Node : Node
+
+	constructor(elem: number, next: Node) {
+>elem : number
+>next : Node
+>Node : Node
+
+		this.elem = elem;
+>this.elem = elem : number
+>this.elem : number
+>this : Node
+>elem : number
+>elem : number
+
+		this.next = next;
+>this.next = next : Node
+>this.next : Node
+>this : Node
+>next : Node
+>next : Node
+	}
+}
+var endNode = new Node(3, null);
+>endNode : Node
+>new Node(3, null) : Node
+>Node : typeof Node
+
+var secondNode = new Node(2, endNode);
+>secondNode : Node
+>new Node(2, endNode) : Node
+>Node : typeof Node
+>endNode : Node
+
+var firstNode = new Node(1, secondNode);
+>firstNode : Node
+>new Node(1, secondNode) : Node
+>Node : typeof Node
+>secondNode : Node
+
