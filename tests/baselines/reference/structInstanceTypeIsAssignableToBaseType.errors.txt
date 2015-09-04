@@ -1,0 +1,25 @@
+tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structInstanceTypeIsAssignableToBaseType.ts(12,8): error TS8006: Struct 'D' incorrectly extends base struct 'C':
+  Derived Struct 'D' cannot override base struct 'C' member variable 'foo'.
+
+
+==== tests/cases/conformance/structs/structDeclarations/structHeritageSpecification/structInstanceTypeIsAssignableToBaseType.ts (1 errors) ====
+    // doc 1.1
+    // Because struct uses nominal typing, the instance type of the declared struct doesn’t need to be
+    // assignable to the base type reference. However, member variables override is not allowed.
+    
+    struct C {
+    	foo: string;
+    	thing(): string {
+    		return "1";
+    	}
+    }
+    
+    struct D extends C {
+           ~
+!!! error TS8006: Struct 'D' incorrectly extends base struct 'C':
+!!! error TS8006:   Derived Struct 'D' cannot override base struct 'C' member variable 'foo'.
+    	foo: number; // error
+    	thing(): number {
+    		return 1;  // ok
+    	}
+    }

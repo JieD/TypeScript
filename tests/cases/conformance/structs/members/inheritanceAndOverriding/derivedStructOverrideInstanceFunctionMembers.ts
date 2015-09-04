@@ -7,16 +7,11 @@ var y: { foo: string; bar: string; }
 struct Base {
     a: typeof x;
     b(a: typeof x) { }
-    d: (a: typeof x) => void;
-
     constructor(a: typeof x) { }
 }
 
 struct Derived extends Base {
-    a: typeof y; // error
-    b(a: typeof y) { } // ok
-    d: (a: typeof y) => void; // ok
-
+    b(a: typeof y) { return 1; } // ok
     constructor(a: typeof y) { super(x) }
 }
 

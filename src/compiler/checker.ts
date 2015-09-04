@@ -3415,18 +3415,14 @@ module ts {
 		                if (isStructAssignedToOrFromStructType(source, target)) {
 			                write('check inheritance chain');
 			                var baseTypes = (<InterfaceType>sourceOrApparentType).baseTypes;
-			                if (baseTypes) {
+			                while (baseTypes && baseTypes.length > 0) {
 				                if (baseTypes.indexOf(<ObjectType>target) > -1) { // target is on source's inheritance chain
 					                write('inheritance holds');
 					                errorInfo = saveErrorInfo;
 					                return true;
-				                }
-				                if (baseTypes.indexOf(<ObjectType>target) == 0) { // extends clause check assignability
-					                if (objectTypeRelatedTo(sourceOrApparentType, <ObjectType>target, reportStructuralErrors)) {
-						                errorInfo = saveErrorInfo;
-						                return true;
-					                }
-				                }
+				                } else {
+                                    baseTypes = (<InterfaceType>baseTypes[0]).baseTypes; // expand the inheritance chain
+                                }
 			                }
 		                } else { // structural comparison
 			                if (objectTypeRelatedTo(sourceOrApparentType, <ObjectType>target, reportStructuralErrors)) {

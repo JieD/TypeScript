@@ -13,7 +13,7 @@ struct Derived extends Base {
 }
 
 struct Derived2 extends Base {
-    // ok, use assignability here
+    // ok
     static foo: {
         bar: any;
     }

@@ -28,7 +28,7 @@ struct Derived2 extends Base {
 >Derived2 : Derived2
 >Base : Base
 
-    // ok, use assignability here
+    // ok
     static foo: {
 >foo : { bar: any; }
 

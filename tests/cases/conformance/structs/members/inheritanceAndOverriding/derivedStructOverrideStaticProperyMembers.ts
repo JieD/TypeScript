@@ -6,8 +6,8 @@ var y: { foo: string; bar: string; }
 
 struct Base {
     static r: typeof x;
-    static s(a: typeof x) { }
-    static u: (a: typeof x) => void;
+    static s(a: typeof x) { return 1; }
+    static u: (a: typeof x) => any;
 
     constructor(a: typeof x) { }
 }
