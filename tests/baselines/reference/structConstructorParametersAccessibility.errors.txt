@@ -33,10 +33,4 @@ tests/cases/conformance/structs/constructorDeclarations/constructorParameters/st
     ~~~~
 !!! error TS8011: Property 'p' is protected and only accessible within struct 'C3' and its substructs.
     
-    struct Derived extends C3 {
-        constructor(p: number) {
-            super(p);
-            this.p; // OK
-        }
-    }
     

@@ -12,10 +12,3 @@ struct C2 {
 struct C3 {
     constructor(protected p?: number) { } // error
 }
-
-struct Derived extends C3 {
-    constructor(p: number) {
-        super(p);
-        this.p; // OK
-    }
-}

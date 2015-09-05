@@ -20,5 +20,5 @@ struct Derived1 extends Base {
 	}
 }
 
-var d: Derived;
-d.p;  // public, OK
+var d: Derived1;
+d.x;  // public, OK

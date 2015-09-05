@@ -1,0 +1,21 @@
+tests/cases/conformance/structs/constructorDeclarations/constructorParameters/structConstructorParametersNotOverride.ts(8,8): error TS8006: Struct 'Derived' incorrectly extends base struct 'C':
+  Derived Struct 'Derived' cannot override base struct 'C' member variable 'p'.
+
+
+==== tests/cases/conformance/structs/constructorDeclarations/constructorParameters/structConstructorParametersNotOverride.ts (1 errors) ====
+    // doc 3.1
+    // parameter property declaration cannot override inherited member variables from base struct
+    
+    struct C {
+        constructor(private p: number) { }
+    }
+    
+    struct Derived extends C {
+           ~~~~~~~
+!!! error TS8006: Struct 'Derived' incorrectly extends base struct 'C':
+!!! error TS8006:   Derived Struct 'Derived' cannot override base struct 'C' member variable 'p'.
+        constructor(public p: number) { // error
+            super(p);
+        }
+    }
+    

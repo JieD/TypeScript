@@ -22,23 +22,11 @@ struct C3 {
 var c3: C3;
 c3.p // protected, error
 
-struct Derived extends C3 {
-    constructor(p: number) {
-        super(p);
-        this.p; // OK
-    }
-}
 
 
 //// [structConstructorParametersAccessibility.js]
 // doc 3.1
 // Only public and private modifiers are allowed for constructor parameters, but not protected.
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
 var C1 = (function () {
     function C1(x) {
         this.x = x;
@@ -63,11 +51,3 @@ var C3 = (function () {
 })();
 var c3;
 c3.p; // protected, error
-var Derived = (function (_super) {
-    __extends(Derived, _super);
-    function Derived(p) {
-        _super.call(this, p);
-        this.p; // OK
-    }
-    return Derived;
-})(C3);
