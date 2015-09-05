@@ -1,3 +1,5 @@
+// doc 3.1
+
 struct C {
     y: number;
     constructor(y: number) { } // ok
@@ -22,10 +24,3 @@ struct E {
 var e: E;
 var r3 = e.y; // error
 
-struct F {
-    y: number;
-    constructor(protected y: number) { } // error, Duplicate identifier 'y'
-}
-
-var f: F;
-var r4 = f.y; // error

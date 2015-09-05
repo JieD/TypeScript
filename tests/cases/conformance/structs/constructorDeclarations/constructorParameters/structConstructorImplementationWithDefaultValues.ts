@@ -1,3 +1,5 @@
+// doc3.1
+//
 // no errors
 struct C {
     constructor(x);
@@ -6,7 +8,7 @@ struct C {
     }
 }
 
-struct D<T> {
+/* struct D<T> {
     constructor(x);
     constructor(x:T = null) {
         var y = x;
@@ -18,4 +20,4 @@ struct E<T extends Date> {
     constructor(x: T = null) {
         var y = x;
     }
-}
+} */
