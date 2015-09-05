@@ -1,5 +1,6 @@
+// doc 3.2
 // ordering of super calls in derived constructors matters depending on other struct contents
-// A 'super' call must be the first statement in the constructor when a class contains
+// A 'super' call must be the first statement in the constructor when a struct contains
 // initialized properties or has parameter properties.
 
 struct Base {
@@ -72,7 +73,7 @@ struct Derived8 extends Base {
     }
 }
 
-// generic cases of Derived7 and Derived8
+/* generic cases of Derived7 and Derived8
 struct Base2<T> { x: T; }
 
 struct Derived9<T> extends Base2<T> {
@@ -93,4 +94,4 @@ struct Derived10<T> extends Base2<T> {
         this.a = 3;
         this.b = 3;
     }
-}
+} */
