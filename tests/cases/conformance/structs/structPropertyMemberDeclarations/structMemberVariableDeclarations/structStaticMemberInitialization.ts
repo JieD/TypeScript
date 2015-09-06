@@ -1,3 +1,4 @@
+// doc 4.1
 // ok
 
 struct C {
