@@ -1,3 +1,7 @@
+// doc 4.2
+// An instance member function declaration declares a property in the struct instance type and
+// assigns a function object to a property on the prototype object of the struct.
+
 struct C {
     foo() {
         C.prototype.foo = () => { }

@@ -1,3 +1,7 @@
+// doc 4.2
+// A static member function declaration declares a property in the constructor function type and
+// assigns a function object to a property on the constructor function object.
+
 struct C {
     static foo() {
         C.foo = () => { }

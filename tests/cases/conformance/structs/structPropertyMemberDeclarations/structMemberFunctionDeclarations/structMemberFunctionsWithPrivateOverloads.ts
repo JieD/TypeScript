@@ -1,3 +1,6 @@
+// doc 4.2
+// All overloads of a member function must have the same accessibility (public or private) and
+// kind (instance or static).
 struct C {
     private foo(x: number);
     private foo(x: number, y: string);
@@ -18,7 +21,11 @@ struct C {
     private static bar(x: any, y?: any) { }
 }
 
-struct D<T> {
+var c: C;
+var r1 = c.foo(1); // error
+var r2 = C.foo(1); // error
+
+/* struct D<T> {
     private foo(x: number);
     private foo(x: T, y: T);
     private foo(x: any, y?: any) { }
@@ -39,11 +46,9 @@ struct D<T> {
 
 }
 
-var c: C;
-var r = c.foo(1); // error
+
 
 var d: D<number>;
 var r2 = d.foo(2); // error
-
-var r3 = C.foo(1); // error
 var r4 = D.bar(''); // error
+*/

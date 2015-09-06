@@ -1,3 +1,6 @@
+// doc 4.2
+// A member function can access overridden base struct members using a super property access.
+
 struct Base {
     foo(x: { a: number }): { a: number } {
         return null;
