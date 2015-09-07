@@ -1,9 +1,18 @@
+=== tests/cases/conformance/structs/constructorDeclarations/constructorParameters/structConstructorImplementationWithDefaultValues.ts ===
 // doc3.1
 
 struct C {
+>C : C
+
     constructor(x);
+>x : any
+
     constructor(x = 1) {
+>x : number
+
         var y = x;
+>y : number
+>x : number
     }
 }
 
