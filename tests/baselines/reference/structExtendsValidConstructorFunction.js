@@ -15,10 +15,16 @@ var __extends = this.__extends || function (d, b) {
 function foo() {
 }
 var x = new foo(); // can be used as a constructor function
-var C = (function (_super) {
-    __extends(C, _super);
+var C = (function () {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function C() {
-        _super.apply(this, arguments);
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
-})(foo); // error, cannot extend it though
+})();
+ // error, cannot extend it though

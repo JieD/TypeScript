@@ -41,7 +41,14 @@ var r7 = new t2(''); */
 // Within static member functions and static member accessors, the type of this is
 // the constructor function type.
 var C = (function () {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor(x) {
+    }
     function C(x) {
+        var obj = new _C();
+        _ctor.call(obj ,x);
+        return obj;
     }
     C.bar = function () {
         // type of this is the constructor function type

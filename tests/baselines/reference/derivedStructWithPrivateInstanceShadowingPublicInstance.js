@@ -30,7 +30,14 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Base = (function () {
+    var _Base = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Base() {
+        var obj = new _Base();
+        _ctor.call(obj);
+        return obj;
     }
     Base.prototype.fn = function () {
         return '';
@@ -38,16 +45,21 @@ var Base = (function () {
     return Base;
 })();
 // error, not a subtype
-var Derived = (function (_super) {
-    __extends(Derived, _super);
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Derived() {
-        _super.apply(this, arguments);
+        var obj = new _Derived();
+        _ctor.call(obj);
+        return obj;
     }
     Derived.prototype.fn = function () {
         return '';
     };
     return Derived;
-})(Base);
+})();
 var b;
 var d;
 var r1 = b.fn(); // ok

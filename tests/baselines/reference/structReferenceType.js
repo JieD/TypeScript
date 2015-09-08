@@ -13,9 +13,18 @@ var firstNode = new Node(1, secondNode);
 
 //// [structReferenceType.js]
 var Node = (function () {
-    function Node(elem, next) {
+    var _Node = new TypedObject.StructType({
+        elem: TypedObject.float64,
+        next: TypedObject.Object,
+    });
+    function _ctor(elem, next) {
         this.elem = elem;
         this.next = next;
+    }
+    function Node(elem, next) {
+        var obj = new _Node();
+        _ctor.call(obj ,elem, next);
+        return obj;
     }
     return Node;
 })();

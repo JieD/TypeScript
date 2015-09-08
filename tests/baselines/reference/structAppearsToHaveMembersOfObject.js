@@ -10,7 +10,15 @@ var o2: {} = c; // error, not assignable
 
 //// [structAppearsToHaveMembersOfObject.js]
 var C = (function () {
+    var _C = new TypedObject.StructType({
+        foo: TypedObject.string
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
 })();

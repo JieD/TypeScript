@@ -29,12 +29,21 @@ rs.forEach(x => {
 
 //// [structTypeOfThisInInstanceMember2.js]
 var C = (function () {
-    function C(x) {
+    var _C = new TypedObject.StructType({
+        x: TypedObject.Object,
+        z: TypedObject.Object
+    });
+    function _ctor(x) {
         this.x = this;
         var t = this;
         t.x;
         t.z;
         var r = t.foo();
+    }
+    function C(x) {
+        var obj = new _C();
+        _ctor.call(obj ,x);
+        return obj;
     }
     C.prototype.foo = function () {
         return this;

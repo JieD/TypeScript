@@ -1,0 +1,88 @@
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(4,2): error TS8016: A struct cannot have index members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(5,2): error TS8016: A struct cannot have index members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(11,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(11,10): error TS8016: A struct cannot have index members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(25,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(25,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(29,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(29,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(39,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(39,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(43,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/structs/structNotAllowIndexMember.ts(43,9): error TS8016: A struct cannot have index members.
+
+
+==== tests/cases/conformance/structs/structNotAllowIndexMember.ts (12 errors) ====
+    // doc 5
+    // no indexers are allowed
+    struct S {
+    	[x: string]: string;
+    	~
+!!! error TS8016: A struct cannot have index members.
+    	[y: number]: string;
+    	~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    // private indexers not allowed
+    
+    struct C1 {
+    	private [x: string]: string;
+    	~~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	        ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    /* struct D1 {
+    	private [x: number]: string;
+    }
+    
+    struct E1<T> {
+    	private [x: string]: T;
+    } */
+    
+    // public indexers not allowed
+    
+    struct C2 {
+    	public [x: string]: string;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    struct D2 {
+    	public [x: number]: string;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    /* struct E2<T> {
+    	public [x: string]: T;
+    } */
+    
+    // static indexers not allowed
+    
+    struct C3 {
+    	static [x: string]: string;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    struct D3 {
+    	static [x: number]: string;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    /* struct E3<T> {
+    	static [x: string]: T;
+    } */
+    

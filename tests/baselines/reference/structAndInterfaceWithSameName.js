@@ -14,14 +14,30 @@ module M {
 
 //// [structAndInterfaceWithSameName.js]
 var C = (function () {
+    var _C = new TypedObject.StructType({
+        foo: TypedObject.string
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
 })();
 var M;
 (function (M) {
     var D = (function () {
+        var _D = new TypedObject.StructType({
+            bar: TypedObject.string
+        });
+        function _ctor() {
+        }
         function D() {
+            var obj = new _D();
+            _ctor.call(obj);
+            return obj;
         }
         return D;
     })();

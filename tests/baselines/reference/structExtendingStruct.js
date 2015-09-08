@@ -39,7 +39,15 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var C = (function () {
+    var _C = new TypedObject.StructType({
+        foo: TypedObject.string,
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     C.prototype.thing = function () {
     };
@@ -47,13 +55,19 @@ var C = (function () {
     };
     return C;
 })();
-var D = (function (_super) {
-    __extends(D, _super);
+var D = (function () {
+    var _D = new TypedObject.StructType({
+        bar: TypedObject.string
+    });
+    function _ctor() {
+    }
     function D() {
-        _super.apply(this, arguments);
+        var obj = new _D();
+        _ctor.call(obj);
+        return obj;
     }
     return D;
-})(C);
+})();
 var d;
 var r = d.foo;
 var r2 = d.bar;

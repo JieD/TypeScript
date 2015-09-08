@@ -8,9 +8,16 @@ c.lastName = c.firstName; // error, cannot add undefined members to struct
 
 //// [structNotAddNonDeclaredMember.js]
 var C = (function () {
-    function C(firstName, age) {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor(firstName, age) {
         this.firstName = firstName;
         this.age = age;
+    }
+    function C(firstName, age) {
+        var obj = new _C();
+        _ctor.call(obj ,firstName, age);
+        return obj;
     }
     return C;
 })();

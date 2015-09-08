@@ -21,7 +21,15 @@ C.foo();
 // doc 2.2
 // all ok
 var C = (function () {
+    var _C = new TypedObject.StructType({
+        x: TypedObject.string,
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     C.prototype.foo = function () {
     };

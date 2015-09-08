@@ -15,7 +15,7 @@ tests/cases/conformance/structs/constructorDeclarations/structSuperCalls/derived
     
     struct Derived extends Base {
         constructor() {
-            super(this); // ok
+            super(this); // error, not assignable
                   ~~~~
 !!! error TS2345: Argument of type 'Derived' is not assignable to parameter of type 'any'.
         }

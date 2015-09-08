@@ -34,29 +34,48 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Base = (function () {
-    function Base(x) {
+    var _Base = new TypedObject.StructType({
+    });
+    function _ctor(x) {
         this.x = x;
+    }
+    function Base(x) {
+        var obj = new _Base();
+        _ctor.call(obj ,x);
+        return obj;
     }
     return Base;
 })();
-var Derived = (function (_super) {
-    __extends(Derived, _super);
-    function Derived(x) {
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+    });
+    function _ctor(x) {
         _super.call(this, x);
         this.x = x;
         this.x; // OK
     }
+    function Derived(x) {
+        var obj = new _Derived();
+        _ctor.call(obj ,x);
+        return obj;
+    }
     return Derived;
-})(Base);
-var Derived1 = (function (_super) {
-    __extends(Derived1, _super);
-    function Derived1(y) {
+})();
+var Derived1 = (function () {
+    var _Derived1 = new TypedObject.StructType({
+    });
+    function _ctor(y) {
         _super.call(this, y);
         this.y = y;
         this.x; // OK
         this.y; // OK
     }
+    function Derived1(y) {
+        var obj = new _Derived1();
+        _ctor.call(obj ,y);
+        return obj;
+    }
     return Derived1;
-})(Base);
+})();
 var d;
 d.x; // public, OK

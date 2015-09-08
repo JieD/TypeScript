@@ -30,24 +30,48 @@ var r3 = e.y; // error
 //// [structConstructorParameterProperties2.js]
 // doc 3.1
 var C = (function () {
-    function C(y) {
+    var _C = new TypedObject.StructType({
+        y: TypedObject.float64,
+    });
+    function _ctor(y) {
     } // ok
+    function C(y) {
+        var obj = new _C();
+        _ctor.call(obj ,y);
+        return obj;
+    }
     return C;
 })();
 var c;
 var r = c.y;
 var D = (function () {
-    function D(y) {
+    var _D = new TypedObject.StructType({
+        y: TypedObject.float64,
+    });
+    function _ctor(y) {
         this.y = y;
     } // error, Duplicate identifier 'y'
+    function D(y) {
+        var obj = new _D();
+        _ctor.call(obj ,y);
+        return obj;
+    }
     return D;
 })();
 var d;
 var r2 = d.y;
 var E = (function () {
-    function E(y) {
+    var _E = new TypedObject.StructType({
+        y: TypedObject.float64,
+    });
+    function _ctor(y) {
         this.y = y;
     } // error, Duplicate identifier 'y'
+    function E(y) {
+        var obj = new _E();
+        _ctor.call(obj ,y);
+        return obj;
+    }
     return E;
 })();
 var e;

@@ -9,7 +9,7 @@ struct Base {
 
 struct Derived extends Base {
     constructor() {
-        super(this); // ok
+        super(this); // error, not assignable
     }
 }
 
@@ -41,41 +41,73 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Base = (function () {
+    var _Base = new TypedObject.StructType({
+        x: TypedObject.string,
+    });
+    function _ctor(a) {
+    }
     function Base(a) {
+        var obj = new _Base();
+        _ctor.call(obj ,a);
+        return obj;
     }
     return Base;
 })();
-var Derived = (function (_super) {
-    __extends(Derived, _super);
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+    });
+    function _ctor() {
+        _super.call(this, this); // error, not assignable
+    }
     function Derived() {
-        _super.call(this, this); // ok
+        var obj = new _Derived();
+        _ctor.call(obj);
+        return obj;
     }
     return Derived;
-})(Base);
-var Derived2 = (function (_super) {
-    __extends(Derived2, _super);
-    function Derived2(a) {
+})();
+var Derived2 = (function () {
+    var _Derived2 = new TypedObject.StructType({
+    });
+    function _ctor(a) {
         _super.call(this, this); // error, 'this' cannot be referenced in current location
         this.a = a;
     }
+    function Derived2(a) {
+        var obj = new _Derived2();
+        _ctor.call(obj ,a);
+        return obj;
+    }
     return Derived2;
-})(Base);
-var Derived3 = (function (_super) {
-    __extends(Derived3, _super);
-    function Derived3(a) {
+})();
+var Derived3 = (function () {
+    var _Derived3 = new TypedObject.StructType({
+    });
+    function _ctor(a) {
         var _this = this;
         _super.call(this, function () { return _this; }); // error, 'this' cannot be referenced in current location
         this.a = a;
     }
+    function Derived3(a) {
+        var obj = new _Derived3();
+        _ctor.call(obj ,a);
+        return obj;
+    }
     return Derived3;
-})(Base);
-var Derived4 = (function (_super) {
-    __extends(Derived4, _super);
-    function Derived4(a) {
+})();
+var Derived4 = (function () {
+    var _Derived4 = new TypedObject.StructType({
+    });
+    function _ctor(a) {
         _super.call(this, function () {
             return this;
         }); // ok
         this.a = a;
     }
+    function Derived4(a) {
+        var obj = new _Derived4();
+        _ctor.call(obj ,a);
+        return obj;
+    }
     return Derived4;
-})(Base);
+})();

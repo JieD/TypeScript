@@ -41,23 +41,42 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Base = (function () {
+    var _Base = new TypedObject.StructType({
+    });
+    function _ctor(x) {
+    }
     function Base(x) {
+        var obj = new _Base();
+        _ctor.call(obj ,x);
+        return obj;
     }
     return Base;
 })();
-var Derived = (function (_super) {
-    __extends(Derived, _super);
-    function Derived(x) {
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+    });
+    function _ctor(x) {
         _super.call(this, x);
     }
+    function Derived(x) {
+        var obj = new _Derived();
+        _ctor.call(obj ,x);
+        return obj;
+    }
     return Derived;
-})(Base);
-var Derived2 = (function (_super) {
-    __extends(Derived2, _super);
+})();
+var Derived2 = (function () {
+    var _Derived2 = new TypedObject.StructType({
+    });
     // ok, not enforcing assignability relation on this
-    function Derived2(x) {
+    function _ctor(x) {
         _super.call(this, x);
         return 1; // return expression not allowed
     }
+    function Derived2(x) {
+        var obj = new _Derived2();
+        _ctor.call(obj ,x);
+        return obj;
+    }
     return Derived2;
-})(Base);
+})();

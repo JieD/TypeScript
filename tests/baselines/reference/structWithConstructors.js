@@ -68,27 +68,46 @@ var __extends = this.__extends || function (d, b) {
 var NonGeneric;
 (function (NonGeneric) {
     var C = (function () {
+        var _C = new TypedObject.StructType({
+        });
+        function _ctor(x) {
+        }
         function C(x) {
+            var obj = new _C();
+            _ctor.call(obj ,x);
+            return obj;
         }
         return C;
     })();
     var c = new C(); // error
     var c2 = new C(''); // ok
     var C2 = (function () {
+        var _C2 = new TypedObject.StructType({
+        });
+        function _ctor(x) {
+        }
         function C2(x) {
+            var obj = new _C2();
+            _ctor.call(obj ,x);
+            return obj;
         }
         return C2;
     })();
     var c3 = new C2(); // error
     var c4 = new C2(''); // ok
     var c5 = new C2(1); // ok
-    var D = (function (_super) {
-        __extends(D, _super);
+    var D = (function () {
+        var _D = new TypedObject.StructType({
+        });
+        function _ctor() {
+        }
         function D() {
-            _super.apply(this, arguments);
+            var obj = new _D();
+            _ctor.call(obj);
+            return obj;
         }
         return D;
-    })(C2);
+    })();
     var d = new D(); // error
     var d2 = new D(1); // ok
     var d3 = new D(''); // ok

@@ -28,7 +28,15 @@ struct C2 {
 // private property members can be accessed only within the struct body that contains their declaration
 // no errors
 var C = (function () {
+    var _C = new TypedObject.StructType({
+        x: TypedObject.string,
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     C.prototype.foo = function () {
         return this.foo;
@@ -43,7 +51,15 @@ var C = (function () {
 })();
 // added level of function nesting
 var C2 = (function () {
+    var _C2 = new TypedObject.StructType({
+        x: TypedObject.string,
+    });
+    function _ctor() {
+    }
     function C2() {
+        var obj = new _C2();
+        _ctor.call(obj);
+        return obj;
     }
     C2.prototype.foo = function () {
         var _this = this;

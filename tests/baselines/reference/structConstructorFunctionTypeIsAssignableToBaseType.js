@@ -27,21 +27,38 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Base = (function () {
+    var _Base = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Base() {
+        var obj = new _Base();
+        _ctor.call(obj);
+        return obj;
     }
     return Base;
 })();
-var Derived = (function (_super) {
-    __extends(Derived, _super);
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Derived() {
-        _super.apply(this, arguments);
+        var obj = new _Derived();
+        _ctor.call(obj);
+        return obj;
     }
     return Derived;
-})(Base);
-var Derived2 = (function (_super) {
-    __extends(Derived2, _super);
+})();
+var Derived2 = (function () {
+    var _Derived2 = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Derived2() {
-        _super.apply(this, arguments);
+        var obj = new _Derived2();
+        _ctor.call(obj);
+        return obj;
     }
     return Derived2;
-})(Base);
+})();

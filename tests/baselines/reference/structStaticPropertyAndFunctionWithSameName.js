@@ -20,14 +20,29 @@ struct D {
 // and must specify names that are unique among all static property member declarations
 // in the containing struct
 var C = (function () {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     C.f = function () {
     }; // error
     return C;
 })();
 var D = (function () {
+    var _D = new TypedObject.StructType({
+        f: TypedObject.float64,
+    });
+    function _ctor() {
+    }
     function D() {
+        var obj = new _D();
+        _ctor.call(obj);
+        return obj;
     }
     return D;
 })();

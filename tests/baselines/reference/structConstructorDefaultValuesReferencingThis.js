@@ -18,8 +18,15 @@ struct E<T> {
 // doc 3.1
 // 'this' cannot be referenced in constructor arguments
 var C = (function () {
-    function C(x) {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor(x) {
         if (x === void 0) { x = this; }
     } // error
+    function C(x) {
+        var obj = new _C();
+        _ctor.call(obj ,x);
+        return obj;
+    }
     return C;
 })();

@@ -45,22 +45,36 @@ var __extends = this.__extends || function (d, b) {
 var NonGeneric;
 (function (NonGeneric) {
     var C = (function () {
-        function C(a, b) {
+        var _C = new TypedObject.StructType({
+            x: TypedObject.string,
+        });
+        function _ctor(a, b) {
             this.a = a;
             this.b = b;
+        }
+        function C(a, b) {
+            var obj = new _C();
+            _ctor.call(obj ,a, b);
+            return obj;
         }
         C.prototype.fn = function () {
             return this;
         };
         return C;
     })();
-    var D = (function (_super) {
-        __extends(D, _super);
+    var D = (function () {
+        var _D = new TypedObject.StructType({
+            e: TypedObject.string
+        });
+        function _ctor() {
+        }
         function D() {
-            _super.apply(this, arguments);
+            var obj = new _D();
+            _ctor.call(obj);
+            return obj;
         }
         return D;
-    })(C);
+    })();
     var d = new D(1, 2);
     var r = d.fn();
     var r2 = r.x;

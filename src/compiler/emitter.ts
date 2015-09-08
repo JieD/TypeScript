@@ -2361,7 +2361,7 @@ module ts {
                     case SyntaxKind.VariableDeclaration:
                         return emitVariableDeclaration(<VariableDeclaration>node);
                     case SyntaxKind.StructDeclaration:
-                        //return emitStructDeclaration(<StructDeclaration>node);
+                        return emitStructDeclaration(<StructDeclaration>node);
                     case SyntaxKind.ClassDeclaration:
                         return emitClassDeclaration(<ClassDeclaration>node);
                     case SyntaxKind.InterfaceDeclaration:

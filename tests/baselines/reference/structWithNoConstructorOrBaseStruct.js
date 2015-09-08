@@ -29,7 +29,15 @@ var r2 = D; */
 // the struct.
 // ok
 var C = (function () {
+    var _C = new TypedObject.StructType({
+        x: TypedObject.string
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
 })();

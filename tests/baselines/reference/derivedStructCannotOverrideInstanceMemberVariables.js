@@ -40,45 +40,90 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Base = (function () {
+    var _Base = new TypedObject.StructType({
+        x: TypedObject.Object
+    });
+    function _ctor() {
+    }
     function Base() {
+        var obj = new _Base();
+        _ctor.call(obj);
+        return obj;
     }
     return Base;
 })();
-var Derived = (function (_super) {
-    __extends(Derived, _super);
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+        x: TypedObject.Object
+    });
+    function _ctor() {
+    }
     function Derived() {
-        _super.apply(this, arguments);
+        var obj = new _Derived();
+        _ctor.call(obj);
+        return obj;
     }
     return Derived;
-})(Base);
+})();
 var Base1 = (function () {
+    var _Base1 = new TypedObject.StructType({
+        foo: TypedObject.Any
+    });
+    function _ctor() {
+    }
     function Base1() {
+        var obj = new _Base1();
+        _ctor.call(obj);
+        return obj;
     }
     return Base1;
 })();
-var Derived1 = (function (_super) {
-    __extends(Derived1, _super);
+var Derived1 = (function () {
+    var _Derived1 = new TypedObject.StructType({
+        foo: TypedObject.string
+    });
+    function _ctor() {
+    }
     function Derived1() {
-        _super.apply(this, arguments);
+        var obj = new _Derived1();
+        _ctor.call(obj);
+        return obj;
     }
     return Derived1;
-})(Base1);
+})();
 var Base2 = (function () {
+    var _Base2 = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Base2() {
+        var obj = new _Base2();
+        _ctor.call(obj);
+        return obj;
     }
     return Base2;
 })();
-var Derived2 = (function (_super) {
-    __extends(Derived2, _super);
+var Derived2 = (function () {
+    var _Derived2 = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Derived2() {
-        _super.apply(this, arguments);
+        var obj = new _Derived2();
+        _ctor.call(obj);
+        return obj;
     }
     return Derived2;
-})(Base2);
-var Derived3 = (function (_super) {
-    __extends(Derived3, _super);
+})();
+var Derived3 = (function () {
+    var _Derived3 = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Derived3() {
-        _super.apply(this, arguments);
+        var obj = new _Derived3();
+        _ctor.call(obj);
+        return obj;
     }
     return Derived3;
-})(Base2);
+})();

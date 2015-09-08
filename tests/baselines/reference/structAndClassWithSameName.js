@@ -13,16 +13,19 @@ module M {
 }
 
 //// [structAndClassWithSameName.js]
-var _C = (function () {
+var C = (function () {
     var _C = new TypedObject.StructType({
         foo: TypedObject.string
     });
-    return _C
+    function _ctor() {
+    }
+    function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
+    }
+    return C;
 })();
-function C() {
-    var _this = new _C();
-    return _this;
-}
 var C = (function () {
     function C() {
     }
@@ -30,16 +33,19 @@ var C = (function () {
 })(); // error
 var M;
 (function (M) {
-    var _D = (function () {
+    var D = (function () {
         var _D = new TypedObject.StructType({
             bar: TypedObject.string
         });
-        return _D
+        function _ctor() {
+        }
+        function D() {
+            var obj = new _D();
+            _ctor.call(obj);
+            return obj;
+        }
+        return D;
     })();
-    function D() {
-        var _this = new _D();
-        return _this;
-    }
     var D = (function () {
         function D() {
         }

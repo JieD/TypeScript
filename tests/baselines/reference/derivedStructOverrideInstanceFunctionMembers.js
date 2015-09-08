@@ -45,19 +45,33 @@ var __extends = this.__extends || function (d, b) {
 var x;
 var y;
 var Base = (function () {
+    var _Base = new TypedObject.StructType({
+        a: TypedObject.Object,
+    });
+    function _ctor(a) {
+    }
     function Base(a) {
+        var obj = new _Base();
+        _ctor.call(obj ,a);
+        return obj;
     }
     Base.prototype.b = function (a) {
     };
     return Base;
 })();
-var Derived = (function (_super) {
-    __extends(Derived, _super);
-    function Derived(a) {
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+    });
+    function _ctor(a) {
         _super.call(this, x);
+    }
+    function Derived(a) {
+        var obj = new _Derived();
+        _ctor.call(obj ,a);
+        return obj;
     }
     Derived.prototype.b = function (a) {
         return 1;
     }; // ok
     return Derived;
-})(Base);
+})();

@@ -109,80 +109,143 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Base = (function () {
+    var _Base = new TypedObject.StructType({
+        x: TypedObject.string
+    });
+    function _ctor() {
+    }
     function Base() {
+        var obj = new _Base();
+        _ctor.call(obj);
+        return obj;
     }
     return Base;
 })();
-var Derived = (function (_super) {
-    __extends(Derived, _super);
-    function Derived(y) {
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+    });
+    function _ctor(y) {
         var a = 1;
         _super.call(this); // ok
+    }
+    function Derived(y) {
+        var obj = new _Derived();
+        _ctor.call(obj ,y);
+        return obj;
     }
     return Derived;
-})(Base);
-var Derived2 = (function (_super) {
-    __extends(Derived2, _super);
-    function Derived2(y) {
+})();
+var Derived2 = (function () {
+    var _Derived2 = new TypedObject.StructType({
+    });
+    function _ctor(y) {
         this.y = y;
         var a = 1;
         _super.call(this); // error
+    }
+    function Derived2(y) {
+        var obj = new _Derived2();
+        _ctor.call(obj ,y);
+        return obj;
     }
     return Derived2;
-})(Base);
-var Derived3 = (function (_super) {
-    __extends(Derived3, _super);
-    function Derived3(y) {
+})();
+var Derived3 = (function () {
+    var _Derived3 = new TypedObject.StructType({
+    });
+    function _ctor(y) {
         _super.call(this); // ok
         this.y = y;
         var a = 1;
     }
+    function Derived3(y) {
+        var obj = new _Derived3();
+        _ctor.call(obj ,y);
+        return obj;
+    }
     return Derived3;
-})(Base);
-var Derived4 = (function (_super) {
-    __extends(Derived4, _super);
-    function Derived4(y) {
+})();
+var Derived4 = (function () {
+    var _Derived4 = new TypedObject.StructType({
+        a: TypedObject.float64,
+    });
+    function _ctor(y) {
         this.a = 1; // contains initialized properties
         var b = 2;
         _super.call(this); // error
+    }
+    function Derived4(y) {
+        var obj = new _Derived4();
+        _ctor.call(obj ,y);
+        return obj;
     }
     return Derived4;
-})(Base);
-var Derived5 = (function (_super) {
-    __extends(Derived5, _super);
-    function Derived5(y) {
+})();
+var Derived5 = (function () {
+    var _Derived5 = new TypedObject.StructType({
+        a: TypedObject.float64,
+    });
+    function _ctor(y) {
         _super.call(this); // ok
         this.a = 1;
         var b = 2;
+    }
+    function Derived5(y) {
+        var obj = new _Derived5();
+        _ctor.call(obj ,y);
+        return obj;
     }
     return Derived5;
-})(Base);
-var Derived6 = (function (_super) {
-    __extends(Derived6, _super);
-    function Derived6(y) {
+})();
+var Derived6 = (function () {
+    var _Derived6 = new TypedObject.StructType({
+        a: TypedObject.float64,
+    });
+    function _ctor(y) {
         this.a = 1;
         var b = 2;
         _super.call(this); // ok
     }
+    function Derived6(y) {
+        var obj = new _Derived6();
+        _ctor.call(obj ,y);
+        return obj;
+    }
     return Derived6;
-})(Base);
-var Derived7 = (function (_super) {
-    __extends(Derived7, _super);
-    function Derived7(y) {
+})();
+var Derived7 = (function () {
+    var _Derived7 = new TypedObject.StructType({
+        a: TypedObject.float64,
+        b: TypedObject.float64,
+    });
+    function _ctor(y) {
         this.a = 1; // contains initialized properties
         this.a = 3;
         this.b = 3;
         _super.call(this); // error
     }
+    function Derived7(y) {
+        var obj = new _Derived7();
+        _ctor.call(obj ,y);
+        return obj;
+    }
     return Derived7;
-})(Base);
-var Derived8 = (function (_super) {
-    __extends(Derived8, _super);
-    function Derived8(y) {
+})();
+var Derived8 = (function () {
+    var _Derived8 = new TypedObject.StructType({
+        a: TypedObject.float64,
+        b: TypedObject.float64,
+    });
+    function _ctor(y) {
         _super.call(this); // ok
         this.a = 1;
         this.a = 3;
         this.b = 3;
     }
+    function Derived8(y) {
+        var obj = new _Derived8();
+        _ctor.call(obj ,y);
+        return obj;
+    }
     return Derived8;
-})(Base);
+})();

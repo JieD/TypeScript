@@ -9,7 +9,14 @@ struct C {
 
 //// [structTypeOfThisInStaticMembers2.js]
 var C = (function () {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     C.foo = this; // error, 'this' cannot be referenced in a static property initializer.
     return C;

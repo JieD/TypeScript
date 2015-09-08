@@ -26,10 +26,16 @@ var C = (function () {
     };
     return C;
 })();
-var D = (function (_super) {
-    __extends(D, _super);
+var D = (function () {
+    var _D = new TypedObject.StructType({
+        bar: TypedObject.string
+    });
+    function _ctor() {
+    }
     function D() {
-        _super.apply(this, arguments);
+        var obj = new _D();
+        _ctor.call(obj);
+        return obj;
     }
     return D;
-})(C);
+})();

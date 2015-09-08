@@ -18,8 +18,15 @@ struct C {
 // doc 3.2
 // 'super' can only be referenced in a derived struct
 var C = (function () {
-    function C() {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor() {
         _super.call(this); // error
+    }
+    function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
 })();

@@ -29,8 +29,16 @@ var r4 = d.z; // error
 // doc 3.1
 // modifiers in parameter property declaration define accessibility for parameters
 var C = (function () {
-    function C(x) {
+    var _C = new TypedObject.StructType({
+        y: TypedObject.string,
+    });
+    function _ctor(x) {
         this.x = x;
+    }
+    function C(x) {
+        var obj = new _C();
+        _ctor.call(obj ,x);
+        return obj;
     }
     return C;
 })();

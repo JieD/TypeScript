@@ -47,9 +47,16 @@ module NonGeneric {
 var NonGeneric;
 (function (NonGeneric) {
     var C = (function () {
-        function C(a, b) {
+        var _C = new TypedObject.StructType({
+        });
+        function _ctor(a, b) {
             this.a = a;
             this.b = b;
+        }
+        function C(a, b) {
+            var obj = new _C();
+            _ctor.call(obj ,a, b);
+            return obj;
         }
         C.prototype.fn = function () {
             return this;

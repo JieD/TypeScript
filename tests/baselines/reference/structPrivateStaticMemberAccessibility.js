@@ -21,16 +21,29 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var Base = (function () {
+    var _Base = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function Base() {
+        var obj = new _Base();
+        _ctor.call(obj);
+        return obj;
     }
     return Base;
 })();
-var Derived = (function (_super) {
-    __extends(Derived, _super);
-    function Derived() {
-        _super.apply(this, arguments);
+var Derived = (function () {
+    var _Derived = new TypedObject.StructType({
+        bing: TypedObject.Object
+    });
+    function _ctor() {
         this.bing = function () { return Base.foo; }; // error
+    }
+    function Derived() {
+        var obj = new _Derived();
+        _ctor.call(obj);
+        return obj;
     }
     Derived.bar = Base.foo; // error
     return Derived;
-})(Base);
+})();

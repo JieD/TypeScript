@@ -40,20 +40,43 @@ struct G<T> {
 // doc 3
 // A struct constructor canot return an expression.
 var C = (function () {
-    function C() {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor() {
         return 1; // error
+    }
+    function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
 })();
 var D = (function () {
-    function D() {
+    var _D = new TypedObject.StructType({
+        x: TypedObject.float64,
+    });
+    function _ctor() {
         return 1; // error
+    }
+    function D() {
+        var obj = new _D();
+        _ctor.call(obj);
+        return obj;
     }
     return D;
 })();
 var E = (function () {
-    function E() {
+    var _E = new TypedObject.StructType({
+        x: TypedObject.float64,
+    });
+    function _ctor() {
         return { x: 1 }; // error
+    }
+    function E() {
+        var obj = new _E();
+        _ctor.call(obj);
+        return obj;
     }
     return E;
 })();

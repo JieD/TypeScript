@@ -25,17 +25,31 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var C = (function () {
+    var _C = new TypedObject.StructType({
+        foo: TypedObject.string,
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
 })();
-var D = (function (_super) {
-    __extends(D, _super);
+var D = (function () {
+    var _D = new TypedObject.StructType({
+        baz: TypedObject.float64
+    });
+    function _ctor() {
+    }
     function D() {
-        _super.apply(this, arguments);
+        var obj = new _D();
+        _ctor.call(obj);
+        return obj;
     }
     return D;
-})(C);
+})();
 var D;
 (function (D) {
     D.y = D.bar; // error

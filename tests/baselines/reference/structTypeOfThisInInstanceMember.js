@@ -31,12 +31,20 @@ rs.forEach(x => {
 // doc 2.1
 // Within constructors and instance member functions, the type of this is the instance type of the sturct.
 var C = (function () {
-    function C(x) {
+    var _C = new TypedObject.StructType({
+        x: TypedObject.Object,
+    });
+    function _ctor(x) {
         this.x = this;
         var t = this;
         t.x;
         t.z; // error, z doesn't exist.
         var r = t.foo();
+    }
+    function C(x) {
+        var obj = new _C();
+        _ctor.call(obj ,x);
+        return obj;
     }
     C.prototype.foo = function () {
         return this;

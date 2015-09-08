@@ -12,10 +12,16 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var C = (function (_super) {
-    __extends(C, _super);
+var C = (function () {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function C() {
-        _super.apply(this, arguments);
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
-})(C); // error
+})();
+ // error

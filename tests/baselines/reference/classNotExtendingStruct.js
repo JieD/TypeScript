@@ -16,7 +16,15 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 var S = (function () {
+    var _S = new TypedObject.StructType({
+        bar: TypedObject.string
+    });
+    function _ctor() {
+    }
     function S() {
+        var obj = new _S();
+        _ctor.call(obj);
+        return obj;
     }
     return S;
 })();

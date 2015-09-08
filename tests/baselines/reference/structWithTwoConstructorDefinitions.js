@@ -16,7 +16,14 @@ struct C {
 // doc 3
 // Multiple constructor implementations are not allowed
 var C = (function () {
-    function C() {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor() {
     } // error
+    function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
+    }
     return C;
 })();

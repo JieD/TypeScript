@@ -32,7 +32,14 @@ e = 1; // error, Type 'number' is not assignable to type 'E'
 
 //// [structWithEmptyBody.js]
 var C = (function () {
+    var _C = new TypedObject.StructType({
+    });
+    function _ctor() {
+    }
     function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
 })();
@@ -44,8 +51,15 @@ c = function () {
 }; // error
 c = new C(); // ok
 var D = (function () {
-    function D() {
+    var _D = new TypedObject.StructType({
+    });
+    function _ctor() {
         return 1; // error
+    }
+    function D() {
+        var obj = new _D();
+        _ctor.call(obj);
+        return obj;
     }
     return D;
 })();
@@ -57,7 +71,15 @@ d = function () {
 }; // error
 d = c; // error, no inheritance
 var E = (function () {
+    var _E = new TypedObject.StructType({
+        foo: TypedObject.float64
+    });
+    function _ctor() {
+    }
     function E() {
+        var obj = new _E();
+        _ctor.call(obj);
+        return obj;
     }
     return E;
 })();

@@ -23,9 +23,18 @@ var d2 = new D(null); // error, Supplied parameters do not match any signature o
 // doc 3.3
 // If a struct omits a constructor declaration, an automatic constructor is provided.
 var C = (function () {
-    function C() {
+    var _C = new TypedObject.StructType({
+        x: TypedObject.float64,
+        y: TypedObject.string
+    });
+    function _ctor() {
         this.x = 1;
         this.y = 'hello';
+    }
+    function C() {
+        var obj = new _C();
+        _ctor.call(obj);
+        return obj;
     }
     return C;
 })();
