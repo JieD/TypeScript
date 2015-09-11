@@ -1,4 +1,4 @@
-=== tests/cases/conformance/structs/members/structReferenceType.ts ===
+=== tests/cases/conformance/structs/structReferenceType.ts ===
 struct Node {
 >Node : Node
 

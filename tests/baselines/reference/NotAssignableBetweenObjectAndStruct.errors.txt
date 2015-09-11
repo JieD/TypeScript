@@ -1,0 +1,30 @@
+tests/cases/conformance/structs/types/NotAssignableBetweenObjectAndStruct.ts(11,1): error TS2323: Type '{}' is not assignable to type 'S'.
+tests/cases/conformance/structs/types/NotAssignableBetweenObjectAndStruct.ts(12,6): error TS2352: Neither type '{}' nor type 'S' is assignable to the other.
+tests/cases/conformance/structs/types/NotAssignableBetweenObjectAndStruct.ts(13,1): error TS2323: Type 'S' is not assignable to type '{}'.
+tests/cases/conformance/structs/types/NotAssignableBetweenObjectAndStruct.ts(14,5): error TS2352: Neither type 'S' nor type 'Object' is assignable to the other.
+
+
+==== tests/cases/conformance/structs/types/NotAssignableBetweenObjectAndStruct.ts (4 errors) ====
+    // doc 8
+    // A struct cannot be assigned to object type, and vice versa.
+    
+    var o: {};
+    
+    struct S {
+    	foo: string;
+    }
+    var os: S;
+    
+    os = o; // error
+    ~~
+!!! error TS2323: Type '{}' is not assignable to type 'S'.
+    os = <S>o; // error
+         ~~~~
+!!! error TS2352: Neither type '{}' nor type 'S' is assignable to the other.
+    o = os; // error
+    ~
+!!! error TS2323: Type 'S' is not assignable to type '{}'.
+    o = <Object>os; // error
+        ~~~~~~~~~~
+!!! error TS2352: Neither type 'S' nor type 'Object' is assignable to the other.
+    

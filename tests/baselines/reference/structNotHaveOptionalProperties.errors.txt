@@ -1,8 +1,8 @@
-tests/cases/conformance/structs/members/structNotHaveOptionalProperties.ts(10,3): error TS1112: A class/struct member cannot be declared optional.
-tests/cases/conformance/structs/members/structNotHaveOptionalProperties.ts(14,3): error TS1112: A class/struct member cannot be declared optional.
+tests/cases/conformance/structs/structNotHaveOptionalProperties.ts(10,3): error TS1112: A class/struct member cannot be declared optional.
+tests/cases/conformance/structs/structNotHaveOptionalProperties.ts(14,3): error TS1112: A class/struct member cannot be declared optional.
 
 
-==== tests/cases/conformance/structs/members/structNotHaveOptionalProperties.ts (2 errors) ====
+==== tests/cases/conformance/structs/structNotHaveOptionalProperties.ts (2 errors) ====
     /**
      * inspired by conformance/types/objectTypeLiteral/methodSignatures/objectTypesWithOptionalProperties
      */

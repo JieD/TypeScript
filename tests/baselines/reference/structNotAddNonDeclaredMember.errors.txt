@@ -1,7 +1,7 @@
-tests/cases/conformance/structs/members/structNotAddNonDeclaredMember.ts(6,3): error TS2339: Property 'lastName' does not exist on type 'C'.
+tests/cases/conformance/structs/structNotAddNonDeclaredMember.ts(6,3): error TS2339: Property 'lastName' does not exist on type 'C'.
 
 
-==== tests/cases/conformance/structs/members/structNotAddNonDeclaredMember.ts (1 errors) ====
+==== tests/cases/conformance/structs/structNotAddNonDeclaredMember.ts (1 errors) ====
     struct C {
     	constructor(public firstName: string, public age: number) {}
     }

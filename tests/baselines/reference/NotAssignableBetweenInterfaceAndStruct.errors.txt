@@ -1,0 +1,38 @@
+tests/cases/conformance/structs/types/NotAssignableBetweenInterfaceAndStruct.ts(19,1): error TS2323: Type 'Point2' is not assignable to type 'P'.
+tests/cases/conformance/structs/types/NotAssignableBetweenInterfaceAndStruct.ts(20,6): error TS2352: Neither type 'Point2' nor type 'P' is assignable to the other.
+tests/cases/conformance/structs/types/NotAssignableBetweenInterfaceAndStruct.ts(21,1): error TS2323: Type 'P' is not assignable to type 'Point2'.
+tests/cases/conformance/structs/types/NotAssignableBetweenInterfaceAndStruct.ts(22,6): error TS2352: Neither type 'P' nor type 'Point2' is assignable to the other.
+
+
+==== tests/cases/conformance/structs/types/NotAssignableBetweenInterfaceAndStruct.ts (4 errors) ====
+    // doc 8
+    // A struct cannot be assigned to interface and vice versa, even if their type shapes are similar.
+    interface P {
+    	x: number;
+    	y: number;
+    }
+    var ip: P;
+    
+    struct Point2 {
+    	x: number;
+    	y: number;
+    	constructor(x: number, y: number) {
+    		this.x = x;
+    		this.y = y
+    	}
+    }
+    var sp: Point2 = new Point2(2,2);
+    
+    ip = sp; // error
+    ~~
+!!! error TS2323: Type 'Point2' is not assignable to type 'P'.
+    ip = <P>sp; // error
+         ~~~~~
+!!! error TS2352: Neither type 'Point2' nor type 'P' is assignable to the other.
+    sp = ip; // error
+    ~~
+!!! error TS2323: Type 'P' is not assignable to type 'Point2'.
+    sp = <Point2>ip; // error
+         ~~~~~~~~~~
+!!! error TS2352: Neither type 'P' nor type 'Point2' is assignable to the other.
+    

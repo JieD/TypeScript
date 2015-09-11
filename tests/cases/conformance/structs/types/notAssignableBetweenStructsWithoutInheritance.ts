@@ -1,3 +1,6 @@
+// doc 8
+// Only a subtype struct can be assigned to a supertype struct.
+
 struct Animal {
 	feet: number;
 	constructor(name: string, numFeet: number) { }

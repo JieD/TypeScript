@@ -1,3 +1,6 @@
+// doc 8
+// A struct cannot be assigned or cast to class and vice versa, even if their type shapes are similar.
+
 class Point {
 	x: number;
 	y: number;
@@ -18,5 +21,8 @@ struct Point2 {
 }
 var sp: Point2 = new Point2(2,2);
 
-cp = sp; // error, cannot assign struct to class
-sp = cp; // error, cannot assign class to struct
+cp = sp; // error
+cp = <Point>sp; // error
+sp = cp; // error
+sp = <Point2>cp; // error
+

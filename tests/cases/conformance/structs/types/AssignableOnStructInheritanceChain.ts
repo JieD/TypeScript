@@ -1,3 +1,6 @@
+// doc 8
+// A subtype struct can be assigned to a supertype struct.
+
 struct Point2 {
 	x: number;
 	y: number;
@@ -24,5 +27,4 @@ p2 = p21; // ok
 p2 = p31; // ok
 p3 = p21; // error
 p3 = p31; // ok
-p21 = p3;
 

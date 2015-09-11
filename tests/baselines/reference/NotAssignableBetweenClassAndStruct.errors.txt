@@ -1,0 +1,44 @@
+tests/cases/conformance/structs/types/NotAssignableBetweenClassAndStruct.ts(24,1): error TS2323: Type 'Point2' is not assignable to type 'Point'.
+tests/cases/conformance/structs/types/NotAssignableBetweenClassAndStruct.ts(25,6): error TS2352: Neither type 'Point2' nor type 'Point' is assignable to the other.
+tests/cases/conformance/structs/types/NotAssignableBetweenClassAndStruct.ts(26,1): error TS2323: Type 'Point' is not assignable to type 'Point2'.
+tests/cases/conformance/structs/types/NotAssignableBetweenClassAndStruct.ts(27,6): error TS2352: Neither type 'Point' nor type 'Point2' is assignable to the other.
+
+
+==== tests/cases/conformance/structs/types/NotAssignableBetweenClassAndStruct.ts (4 errors) ====
+    // doc 8
+    // A struct cannot be assigned or cast to class and vice versa, even if their type shapes are similar.
+    
+    class Point {
+    	x: number;
+    	y: number;
+    	constructor(x: number, y: number) {
+    		this.x = x;
+    		this.y = y
+    	}
+    }
+    var cp: Point = new Point(1,1);
+    
+    struct Point2 {
+    	x: number;
+    	y: number;
+    	constructor(x: number, y: number) {
+    		this.x = x;
+    		this.y = y
+    	}
+    }
+    var sp: Point2 = new Point2(2,2);
+    
+    cp = sp; // error
+    ~~
+!!! error TS2323: Type 'Point2' is not assignable to type 'Point'.
+    cp = <Point>sp; // error
+         ~~~~~~~~~
+!!! error TS2352: Neither type 'Point2' nor type 'Point' is assignable to the other.
+    sp = cp; // error
+    ~~
+!!! error TS2323: Type 'Point' is not assignable to type 'Point2'.
+    sp = <Point2>cp; // error
+         ~~~~~~~~~~
+!!! error TS2352: Neither type 'Point' nor type 'Point2' is assignable to the other.
+    
+    

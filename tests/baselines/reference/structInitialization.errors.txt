@@ -1,0 +1,30 @@
+tests/cases/conformance/structs/types/structInitialization.ts(7,25): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+tests/cases/conformance/structs/types/structInitialization.ts(8,10): error TS2346: Supplied parameters do not match any signature of call target.
+tests/cases/conformance/structs/types/structInitialization.ts(9,13): error TS2346: Supplied parameters do not match any signature of call target.
+tests/cases/conformance/structs/types/structInitialization.ts(13,6): error TS2345: Argument of type '{ name: string; age: number; }' is not assignable to parameter of type 'Person'.
+
+
+==== tests/cases/conformance/structs/types/structInitialization.ts (4 errors) ====
+    // doc 7
+    // Struct initialization requires explicit declaration and the sequence of the arguments matters.
+    struct Person {
+    	constructor(public name: string, public age: number) {}
+    }
+    var john = new Person("John", 25); // ok
+    var george = new Person(25, "George"); // error, sequence matters
+                            ~~
+!!! error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+    var jg = new Person("John", "George", 25); // error, wrong call signature
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2346: Supplied parameters do not match any signature of call target.
+    var john1 = new Person({name: "John", age: 25}); // error, wrong call signature
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2346: Supplied parameters do not match any signature of call target.
+    
+    var test = function (person: Person) {}
+    test(john); // ok
+    test({ name: "John", age: 25 }); // error, type incompatibility. need an explicit declaration
+         ~~~~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2345: Argument of type '{ name: string; age: number; }' is not assignable to parameter of type 'Person'.
+    
+    

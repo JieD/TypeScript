@@ -1,3 +1,5 @@
+// doc 8
+// A struct cannot be assigned to interface and vice versa, even if their type shapes are similar.
 interface P {
 	x: number;
 	y: number;
@@ -14,5 +16,7 @@ struct Point2 {
 }
 var sp: Point2 = new Point2(2,2);
 
-ip = sp; // error, cannot assign struct to interface
-sp = ip; // error, cannot assign interface to struct
+ip = sp; // error
+ip = <P>sp; // error
+sp = ip; // error
+sp = <Point2>ip; // error

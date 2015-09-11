@@ -1,0 +1,30 @@
+tests/cases/conformance/structs/types/NotAssignableBetweenAnyAndStruct.ts(11,1): error TS2323: Type 'any' is not assignable to type 'S'.
+tests/cases/conformance/structs/types/NotAssignableBetweenAnyAndStruct.ts(12,6): error TS2352: Neither type 'any' nor type 'S' is assignable to the other.
+tests/cases/conformance/structs/types/NotAssignableBetweenAnyAndStruct.ts(13,1): error TS2323: Type 'S' is not assignable to type 'any'.
+tests/cases/conformance/structs/types/NotAssignableBetweenAnyAndStruct.ts(14,5): error TS2352: Neither type 'S' nor type 'any' is assignable to the other.
+
+
+==== tests/cases/conformance/structs/types/NotAssignableBetweenAnyAndStruct.ts (4 errors) ====
+    // doc 8
+    // A struct cannot be assigned or cast to any type, and vice versa.
+    
+    var a: any;
+    
+    struct S {
+    	foo: string;
+    }
+    var as: S;
+    
+    as = a; // error
+    ~~
+!!! error TS2323: Type 'any' is not assignable to type 'S'.
+    as = <S>a; // error
+         ~~~~
+!!! error TS2352: Neither type 'any' nor type 'S' is assignable to the other.
+    a = as; // error
+    ~
+!!! error TS2323: Type 'S' is not assignable to type 'any'.
+    a = <any>as; // error
+        ~~~~~~~
+!!! error TS2352: Neither type 'S' nor type 'any' is assignable to the other.
+    

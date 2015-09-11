@@ -1,17 +1,14 @@
-var a: any;
+// doc 8
+// A struct cannot be assigned or cast to any type, and vice versa.
 
-class C {
-	foo: string;
-}
-var ac: C;
+var a: any;
 
 struct S {
 	foo: string;
 }
 var as: S;
 
-ac = a; // ok
 as = a; // error
-
-a = ac; // ok
+as = <S>a; // error
 a = as; // error
+a = <any>as; // error
