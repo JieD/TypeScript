@@ -132,10 +132,12 @@ module ts {
 
         var globals: SymbolTable = {};
 
+	    var globalStructArraySymbol: Symbol;
         var globalArraySymbol: Symbol;
 
         var globalObjectType: ObjectType;
         var globalFunctionType: ObjectType;
+	    var globalStructArrayType: ObjectType;
         var globalArrayType: ObjectType;
         var globalStringType: ObjectType;
         var globalNumberType: ObjectType;
@@ -2747,6 +2749,16 @@ module ts {
             return getTypeOfGlobalSymbol(getGlobalSymbol(name), 0);
         }
 
+	    function createStructArrayType(elementType: Type): Type {
+		    // globalStructArrayType will be undefined if we get here during creation of the StructArray type.
+		    // This for example happens if user code augments the structArray type with call or construct signatures
+		    // that have an struct array type as the return type.
+		    // We instead use globalStructArraySymbol to obtain the (not yet fully constructed) StructArray type.
+		    var structArrayType = globalStructArrayType || getDeclaredTypeOfSymbol(globalStructArraySymbol);
+		    structArrayType = createTypeReference(<GenericType>structArrayType, [elementType]);
+		    return structArrayType;
+	    }
+
         function createArrayType(elementType: Type): Type {
             // globalArrayType will be undefined if we get here during creation of the Array type. This for example happens if
             // user code augments the Array type with call or construct signatures that have an array type as the return type.
@@ -2754,6 +2766,14 @@ module ts {
             var arrayType = globalArrayType || getDeclaredTypeOfSymbol(globalArraySymbol);
             return arrayType !== emptyObjectType ? createTypeReference(<GenericType>arrayType, [elementType]) : emptyObjectType;
         }
+
+	    function getTypeFromStructArrayTypeNode(node: StructArrayTypeNode): Type {
+		    var links = getNodeLinks(node);
+		    if (!links.resolvedType) {
+			    links.resolvedType = createStructArrayType(getTypeFromTypeNode(node.elementType));
+		    }
+		    return links.resolvedType;
+	    }
 
         function getTypeFromArrayTypeNode(node: ArrayTypeNode): Type {
             var links = getNodeLinks(node);
@@ -2909,6 +2929,8 @@ module ts {
                     return getTypeFromTypeReferenceNode(<TypeReferenceNode>node);
                 case SyntaxKind.TypeQuery:
                     return getTypeFromTypeQueryNode(<TypeQueryNode>node);
+                case SyntaxKind.StructArrayType:
+                    return getTypeFromStructArrayTypeNode(<StructArrayTypeNode>node);
                 case SyntaxKind.ArrayType:
                     return getTypeFromArrayTypeNode(<ArrayTypeNode>node);
                 case SyntaxKind.TupleType:
@@ -5027,8 +5049,88 @@ module ts {
             return true;
         }
 
+        // replace IndexedAccess node to StructArray Node (refer to parseCallAndAccess in parser - how to build an Array Node)
+	    // node.parent === NewExpression
+	    // current parent node structure:
+	    //     node.parent.func = IndexedAccess (object + index)
+	    // desired parent node structure:
+	    //     parent.func = Identifier (text: StructArray)
+	    //     parent.typeArguments = [TypeReference: T]  <-- IndexedAccess.object
+	    //     parent.arguments = [NumericLiteral: 2]     <-- IndexedAccess.index
+	    // return StructArray type. the rest will be handled in resolveNewExpression.
+	    function checkStructArrayDeclaration(node: IndexedAccess): Type {
+		    var parentNode = <NewExpression>node.parent;
+		    var indexedAccessNode = node;
+		    var objectNode = indexedAccessNode.object;
+		    var indexNode = indexedAccessNode.index;
+
+		    // reassign func to be StructArray
+		    // no position info since we artifacially add StructArray node
+		    var func = <Identifier>new (getNodeConstructor(SyntaxKind.Identifier))();
+		    func.text = "StructArray";
+		    func.parent = parentNode;
+		    parentNode.func = func;
+
+		    // reassign typeArguments
+		    var typeArguments = <NodeArray<Node>>[];
+		    typeArguments.pos = objectNode.pos;
+		    typeArguments.end = objectNode.end;
+		    parentNode.typeArguments = typeArguments;
+
+		    // reassign structType (should be TypeReference)
+		    var structTypeReference = <TypeReferenceNode>new (getNodeConstructor(SyntaxKind.TypeReference))();
+		    structTypeReference.pos = typeArguments.pos;
+		    structTypeReference.end = typeArguments.end;
+		    structTypeReference.parent = parentNode;
+		    var structTypeName = <EntityName>objectNode;
+		    structTypeReference.typeName = structTypeName;
+		    structTypeName.parent = structTypeReference;
+		    typeArguments.push(structTypeReference);
+
+			// reassign arguments (store StructArray length)
+		    var arguments = <NodeArray<Node>>[];
+		    arguments.pos = indexNode.pos;
+		    arguments.end = indexNode.end;
+		    parentNode.arguments = arguments;
+		    var structArrayLength = indexNode;
+		    structArrayLength.parent = parentNode;
+		    arguments.push(structArrayLength);
+
+		    node = null;
+            return checkExpression(func);
+	    }
+
+	    // check struct array index access bound
+	    function checkStructArrayAccess(node: IndexedAccess) {
+		    var objectNode = node.object;
+		    var indexNode = node.index;
+		    var symbol = getResolvedSymbol(<Identifier>objectNode);
+		    var valueDeclaration = <VariableDeclaration>symbol.valueDeclaration;
+		    var newExpression: NewExpression;
+            if (valueDeclaration && valueDeclaration.initializer) newExpression = <NewExpression>valueDeclaration.initializer;
+		    var arguments: NodeArray<Expression>;
+		    if (newExpression && newExpression.arguments) arguments = newExpression.arguments;
+		    var arrayLength: string;
+		    if (arguments) arrayLength = (<LiteralExpression>arguments[0]).text;
+		    var index = (<LiteralExpression>indexNode).text;
+		    if (+index >= +arrayLength) {
+			    error(node, Diagnostics.struct_array_index_out_of_bound, symbolToString(symbol), arrayLength);
+		    }
+	    }
+
         function checkIndexedAccess(node: IndexedAccess): Type {
             var objectType = checkExpression(node.object);
+
+	        // check if node's actual type is struct array
+            if (objectType && objectType.symbol && getDeclarationKindFromSymbol(objectType.symbol) === SyntaxKind.StructDeclaration) {
+                if (node.parent.kind === SyntaxKind.NewExpression) { // struct array declaration
+	                return checkStructArrayDeclaration(node);
+                }
+            }
+	        if (objectType && objectType.symbol && objectType.symbol.name === 'StructArray') {  // struct array access
+		        checkStructArrayAccess(node);
+	        }
+
             var indexType = checkExpression(node.index);
             if (objectType === unknownType) return unknownType;
 
@@ -6740,6 +6842,10 @@ module ts {
                     }
                 }
             }
+	        if (node.parent.kind === SyntaxKind.ArrayType && type.flags & TypeFlags.Struct) {
+		        // node.parent.kind = SyntaxKind.StructArrayType;
+		        Object.getPrototypeOf(node.parent).kind = SyntaxKind.StructArrayType;
+	        }
         }
 
         function checkTypeQuery(node: TypeQueryNode) {
@@ -6758,6 +6864,10 @@ module ts {
         function checkArrayType(node: ArrayTypeNode) {
             checkSourceElement(node.elementType);
         }
+
+	    function checkStructArrayType(node: StructArrayTypeNode) {
+		    checkSourceElement(node.elementType);
+	    }
 
         function checkTupleType(node: TupleTypeNode) {
             forEach(node.elementTypes, checkSourceElement);
@@ -8152,6 +8262,8 @@ module ts {
                     return checkTypeLiteral(<TypeLiteralNode>node);
                 case SyntaxKind.ArrayType:
                     return checkArrayType(<ArrayTypeNode>node);
+	            case SyntaxKind.StructArrayType:
+		            return checkStructArrayType(<StructArrayTypeNode>node);
                 case SyntaxKind.TupleType:
                     return checkTupleType(<TupleTypeNode>node);
                 case SyntaxKind.UnionType:
@@ -9078,6 +9190,8 @@ module ts {
             globals[undefinedSymbol.name] = undefinedSymbol;
             // Initialize special types
 
+            globalStructArraySymbol = getGlobalSymbol("StructArray");
+	        globalStructArrayType = getTypeOfGlobalSymbol(globalStructArraySymbol, 1);
             globalArraySymbol = getGlobalSymbol("Array");
             globalArrayType = getTypeOfGlobalSymbol(globalArraySymbol, 1);
             globalObjectType = getGlobalType("Object");

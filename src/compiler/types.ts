@@ -165,6 +165,7 @@ module ts {
         TypeQuery,
         TypeLiteral,
         ArrayType,
+	    StructArrayType,
         TupleType,
         UnionType,
         // Expression
@@ -347,8 +348,7 @@ module ts {
         elementType: TypeNode;
     }
 
-    export interface StructArrayTypeNode extends ArrayTypeNode {
-        numElements: number;
+    export interface StructArrayTypeNode extends ArrayTypeNode{
     }
 
     export interface TupleTypeNode extends TypeNode {
@@ -954,9 +954,6 @@ module ts {
         target: GenericType;    // Type reference target
         typeArguments: Type[];  // Type reference type arguments
     }
-
-	// Struct type references (TypeFlags.StructReference)
-	export interface StructTypeReference extends TypeReference {}
 
     // Generic struct, class and interface types
     export interface GenericType extends InterfaceType, TypeReference {
