@@ -2755,8 +2755,7 @@ module ts {
 		    // that have an struct array type as the return type.
 		    // We instead use globalStructArraySymbol to obtain the (not yet fully constructed) StructArray type.
 		    var structArrayType = globalStructArrayType || getDeclaredTypeOfSymbol(globalStructArraySymbol);
-		    structArrayType = createTypeReference(<GenericType>structArrayType, [elementType]);
-		    return structArrayType;
+		    return structArrayType !== emptyObjectType ? createTypeReference(<GenericType>structArrayType, [elementType]) : emptyObjectType;
 	    }
 
         function createArrayType(elementType: Type): Type {
@@ -5101,7 +5100,7 @@ module ts {
 		    if (newExpression && newExpression.arguments) arguments = newExpression.arguments;
 		    var arrayLength: string;
 		    if (arguments) arrayLength = (<LiteralExpression>arguments[0]).text;
-		    var index = (<LiteralExpression>indexNode).text;
+		    var index: string = (<LiteralExpression>indexNode).text;
 		    if (+index >= +arrayLength) {
 			    error(node, Diagnostics.struct_array_index_out_of_bound, symbolToString(symbol), arrayLength);
 		    }
