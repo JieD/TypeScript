@@ -3302,20 +3302,13 @@ module ts {
             }
         }
 
-	    function isStructAssignedToOrFromStructType(source: Type, target: Type): number {
+	    function isBothStructType(source: Type, target: Type): number {
 		    return (source.flags & TypeFlags.Struct && (target.flags & TypeFlags.Struct))
 	    }
 
-	    function isStructAssignedToOrFromNonStructType(source: Type, target: Type): boolean {
+	    function isOneTypeStructType(source: Type, target: Type): boolean {
 		    return (source.flags & TypeFlags.Struct && !(target.flags & TypeFlags.Struct)) ||
 			       (target.flags & TypeFlags.Struct && !(source.flags & TypeFlags.Struct))
-	    }
-	    function log(source: Type, target: Type, info: string): void {
-		    if (isStructAssignedToOrFromNonStructType(source, target)) {
-			    write("non-struct & struct: " + info);
-		    } else if (isStructAssignedToOrFromStructType(source, target)) {
-			    write("struct & struct: " + info);
-		    }
 	    }
 
 	    function write(info: string): void {
@@ -3368,7 +3361,7 @@ module ts {
                     if (source.flags & TypeFlags.StringLiteral && target === stringType) return true;
 
 	                // assignability doesn't hold between struct and non-struct types
-	                if (isStructAssignedToOrFromNonStructType(source, target)) {
+	                if (isOneTypeStructType(source, target)) {
 		                reportStructAssignabilityError(reportErrors, chainedMessage, terminalMessage);
 		                return false;
 	                }
@@ -3420,8 +3413,6 @@ module ts {
                 else {
                     var saveErrorInfo = errorInfo;
                     if (source.flags & TypeFlags.Reference && target.flags & TypeFlags.Reference && (<TypeReference>source).target === (<TypeReference>target).target) {
-                        // We have type references to same target type, see if relationship holds for all type arguments
-	                    if (isStructAssignedToOrFromStructType(source, target)) write('have type references to same target type');
                         if (typesRelatedTo((<TypeReference>source).typeArguments, (<TypeReference>target).typeArguments, reportErrors)) {
                             return true;
                         }
@@ -3433,13 +3424,11 @@ module ts {
                     var sourceOrApparentType = relation === identityRelation ? source : getApparentType(source);
 
 	                if (sourceOrApparentType.flags & TypeFlags.ObjectType && target.flags & TypeFlags.ObjectType) {
-		                // for struct assignability, check its inheritance chain
-		                if (isStructAssignedToOrFromStructType(source, target)) {
-			                write('check inheritance chain');
+		                if (isBothStructType(source, target)) {
+                            // for struct assignability, check its inheritance chain
 			                var baseTypes = (<InterfaceType>sourceOrApparentType).baseTypes;
 			                while (baseTypes && baseTypes.length > 0) {
 				                if (baseTypes.indexOf(<ObjectType>target) > -1) { // target is on source's inheritance chain
-					                write('inheritance holds');
 					                errorInfo = saveErrorInfo;
 					                return true;
 				                } else {
@@ -7809,8 +7798,6 @@ module ts {
                 checkExpression(node.baseType.typeName);
             }
 
-            // debugging purpose
-	        forEach(node.members, printInfo);
             forEach(node.members, checkSourceElement);
 
             if (fullTypeCheck) {
@@ -7818,10 +7805,6 @@ module ts {
                 checkTypeForDuplicateIndexSignatures(node);
             }
         }
-
-	    function printInfo(node: Node): void {
-		    if(!node) write(symbolToString(node.symbol));
-	    }
 
         function checkClassDeclaration(node: ClassDeclaration) {
             checkTypeNameIsReserved(node.name, Diagnostics.Class_name_cannot_be_0);
