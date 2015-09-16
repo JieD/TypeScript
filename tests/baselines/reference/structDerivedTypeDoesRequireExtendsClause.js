@@ -16,9 +16,7 @@ var b: Base;
 var d1: Derived;
 var d2: Derived2;
 b = d1; // error, not structural typing
-b = d2;
-
-var r: Base[] = [d1, d2]; // error, not structural typing
+b = d2; // ok
 
 //// [structDerivedTypeDoesRequireExtendsClause.js]
 var __extends = this.__extends || function (d, b) {
@@ -71,5 +69,4 @@ var b;
 var d1;
 var d2;
 b = d1; // error, not structural typing
-b = d2;
-var r = [d1, d2]; // error, not structural typing
+b = d2; // ok

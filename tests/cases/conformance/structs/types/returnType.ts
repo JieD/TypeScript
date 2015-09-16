@@ -1,5 +1,5 @@
 // doc 8
-//
+
 struct Person {
 	constructor(public name: string, public age: number) {}
 }

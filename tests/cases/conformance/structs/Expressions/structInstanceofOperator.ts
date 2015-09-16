@@ -1,3 +1,6 @@
+// instanceof operator cannot applied to struct
+// all error
+
 struct P {
 	x: number;
 	constructor(x: number) {

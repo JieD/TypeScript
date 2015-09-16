@@ -1,9 +1,12 @@
-tests/cases/conformance/structs/Expressions/instanceofOperator.ts(31,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
-tests/cases/conformance/structs/Expressions/instanceofOperator.ts(32,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
-tests/cases/conformance/structs/Expressions/instanceofOperator.ts(33,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
+tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts(34,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
+tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts(35,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
+tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts(36,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
 
 
-==== tests/cases/conformance/structs/Expressions/instanceofOperator.ts (3 errors) ====
+==== tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts (3 errors) ====
+    // instanceof operator cannot applied to struct
+    // all error
+    
     struct P {
     	x: number;
     	constructor(x: number) {

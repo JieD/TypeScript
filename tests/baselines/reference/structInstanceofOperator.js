@@ -1,4 +1,7 @@
-//// [instanceofOperator.ts]
+//// [structInstanceofOperator.ts]
+// instanceof operator cannot applied to struct
+// all error
+
 struct P {
 	x: number;
 	constructor(x: number) {
@@ -34,7 +37,9 @@ var r2: boolean = p2 instanceof P2;
 var r3: boolean = p3 instanceof P3;
 
 
-//// [instanceofOperator.js]
+//// [structInstanceofOperator.js]
+// instanceof operator cannot applied to struct
+// all error
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
