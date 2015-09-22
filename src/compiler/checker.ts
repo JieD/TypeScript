@@ -3441,8 +3441,6 @@ module ts {
 			                }
 		                }
 	                }
-
-
                 }
 
                 if (reportErrors) {
@@ -5046,7 +5044,7 @@ module ts {
 	    //     parent.typeArguments = [TypeReference: T]  <-- IndexedAccess.object
 	    //     parent.arguments = [NumericLiteral: 2]     <-- IndexedAccess.index
 	    // return StructArray type. the rest will be handled in resolveNewExpression.
-	    function checkStructArrayDeclaration(node: IndexedAccess): Type {
+	    function checkStructArrayInitialization(node: IndexedAccess): Type {
 		    var parentNode = <NewExpression>node.parent;
 		    var indexedAccessNode = node;
 		    var objectNode = indexedAccessNode.object;
@@ -5112,7 +5110,7 @@ module ts {
 	        // check if node's actual type is struct array
             if (objectType && objectType.symbol && getDeclarationKindFromSymbol(objectType.symbol) === SyntaxKind.StructDeclaration) {
                 if (node.parent.kind === SyntaxKind.NewExpression) { // struct array declaration
-	                return checkStructArrayDeclaration(node);
+	                return checkStructArrayInitialization(node);
                 }
             }
 	        if (objectType && objectType.symbol && objectType.symbol.name === 'StructArray') {  // struct array access
@@ -6830,8 +6828,8 @@ module ts {
                     }
                 }
             }
+            // check if structArray declaration
 	        if (node.parent.kind === SyntaxKind.ArrayType && type.flags & TypeFlags.Struct) {
-		        // node.parent.kind = SyntaxKind.StructArrayType;
 		        Object.getPrototypeOf(node.parent).kind = SyntaxKind.StructArrayType;
 	        }
         }
