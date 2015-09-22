@@ -1,4 +1,4 @@
-tests/cases/conformance/classes/members/accessibility/privateStaticNotAccessibleInClodule.ts(9,20): error TS8010: Property 'bar' is private and only accessible within struct 'C'.
+tests/cases/conformance/classes/members/accessibility/privateStaticNotAccessibleInClodule.ts(9,20): error TS2341: Property 'bar' is private and only accessible within class 'C'.
 
 
 ==== tests/cases/conformance/classes/members/accessibility/privateStaticNotAccessibleInClodule.ts (1 errors) ====
@@ -12,5 +12,5 @@ tests/cases/conformance/classes/members/accessibility/privateStaticNotAccessible
     module C {
         export var y = C.bar; // error
                        ~~~~~
-!!! error TS8010: Property 'bar' is private and only accessible within struct 'C'.
+!!! error TS2341: Property 'bar' is private and only accessible within class 'C'.
     }

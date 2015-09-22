@@ -54,6 +54,7 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
+    C._TO = _C;
     return C;
 })();
 var D = (function () {
@@ -68,6 +69,7 @@ var D = (function () {
         _ctor.call(obj);
         return obj;
     }
+    D._TO = _D;
     return D;
 })();
 var E = (function () {
@@ -82,6 +84,7 @@ var E = (function () {
         _ctor.call(obj);
         return obj;
     }
+    E._TO = _E;
     return E;
 })();
 var Base = (function () {
@@ -95,6 +98,7 @@ var Base = (function () {
         _ctor.call(obj);
         return obj;
     }
+    Base._TO = _Base;
     return Base;
 })();
 var F = (function () {
@@ -109,6 +113,7 @@ var F = (function () {
         _ctor.call(obj);
         return obj;
     }
+    F._TO = _F;
     return F;
 })();
 var G = (function () {
@@ -123,5 +128,6 @@ var G = (function () {
         _ctor.call(obj);
         return obj;
     }
+    G._TO = _G;
     return G;
 })();

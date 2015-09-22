@@ -34,13 +34,14 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
+    C._TO = _C;
     // get y() { return null; }
     // set y(x) { }
-    C.prototype.foo = function () {
+    _C.prototype.foo = function () {
     };
     // static get b() { return null; }
     // static set b(x) { }
-    C.foo = function () {
+    _C.foo = function () {
     };
     return C;
 })();

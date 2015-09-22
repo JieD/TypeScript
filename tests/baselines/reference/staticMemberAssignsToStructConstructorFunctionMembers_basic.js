@@ -23,11 +23,12 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
-    C.foo = function () {
+    C._TO = _C;
+    _C.foo = function () {
         C.foo = function () {
         };
     };
-    C.bar = function (x) {
+    _C.bar = function (x) {
         C.bar = function () {
         }; // error, Type '() => void' is not assignable to type '(x: number) => number'
         C.bar = function (x) { return x; }; // ok

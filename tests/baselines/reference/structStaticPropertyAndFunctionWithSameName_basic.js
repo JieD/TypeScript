@@ -24,6 +24,7 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
+    C._TO = _C;
     return C;
 })();
 var D = (function () {
@@ -36,7 +37,8 @@ var D = (function () {
         _ctor.call(obj);
         return obj;
     }
-    D.prototype.f = function () {
+    D._TO = _D;
+    _D.prototype.f = function () {
     };
     return D;
 })();

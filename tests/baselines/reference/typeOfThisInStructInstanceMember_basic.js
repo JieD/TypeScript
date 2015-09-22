@@ -46,7 +46,8 @@ var C = (function () {
         _ctor.call(obj ,x);
         return obj;
     }
-    C.prototype.foo = function () {
+    C._TO = _C;
+    _C.prototype.foo = function () {
         return this;
     };
     return C;

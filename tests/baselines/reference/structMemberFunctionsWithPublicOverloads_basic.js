@@ -51,13 +51,14 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
-    C.prototype.foo = function (x, y) {
+    C._TO = _C;
+    _C.prototype.foo = function (x, y) {
     };
-    C.prototype.bar = function (x, y) {
+    _C.prototype.bar = function (x, y) {
     };
-    C.foo = function (x, y) {
+    _C.foo = function (x, y) {
     };
-    C.bar = function (x, y) {
+    _C.bar = function (x, y) {
     };
     return C;
 })();
@@ -71,13 +72,14 @@ var D = (function () {
         _ctor.call(obj);
         return obj;
     }
-    D.prototype.foo = function (x, y) {
+    D._TO = _D;
+    _D.prototype.foo = function (x, y) {
     };
-    D.prototype.bar = function (x, y) {
+    _D.prototype.bar = function (x, y) {
     };
-    D.foo = function (x, y) {
+    _D.foo = function (x, y) {
     };
-    D.bar = function (x, y) {
+    _D.bar = function (x, y) {
     };
     return D;
 })();

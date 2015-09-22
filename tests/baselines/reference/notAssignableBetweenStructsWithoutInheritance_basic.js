@@ -29,6 +29,7 @@ var Animal = (function () {
         _ctor.call(obj ,name, numFeet);
         return obj;
     }
+    Animal._TO = _Animal;
     return Animal;
 })();
 var Size = (function () {
@@ -42,6 +43,7 @@ var Size = (function () {
         _ctor.call(obj ,numFeet);
         return obj;
     }
+    Size._TO = _Size;
     return Size;
 })();
 var a;

@@ -26,6 +26,7 @@ var S = (function () {
         _ctor.call(obj);
         return obj;
     }
+    S._TO = _S;
     return S;
 })();
 var C = (function (_super) {

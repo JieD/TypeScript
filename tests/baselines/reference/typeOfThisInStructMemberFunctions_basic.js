@@ -31,10 +31,11 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
-    C.prototype.foo = function () {
+    C._TO = _C;
+    _C.prototype.foo = function () {
         var r = this;
     };
-    C.bar = function () {
+    _C.bar = function () {
         var r2 = this;
     };
     return C;
@@ -50,10 +51,11 @@ var D = (function () {
         _ctor.call(obj);
         return obj;
     }
-    D.prototype.foo = function () {
+    D._TO = _D;
+    _D.prototype.foo = function () {
         var r = this;
     };
-    D.bar = function () {
+    _D.bar = function () {
         var r2 = this;
     };
     return D;

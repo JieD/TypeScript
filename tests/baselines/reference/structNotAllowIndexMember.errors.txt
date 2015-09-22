@@ -1,0 +1,138 @@
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(3,2): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(4,2): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(10,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(10,10): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(14,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(14,10): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(18,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(18,10): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(24,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(24,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(28,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(28,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(32,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(32,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(38,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(38,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(42,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(42,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(46,2): error TS1145: Modifiers not permitted on index signature members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(46,9): error TS8016: A struct cannot have index members.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(9,8): error TS2300: Duplicate identifier 'C'.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(13,8): error TS2300: Duplicate identifier 'D'.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(17,8): error TS2300: Duplicate identifier 'E'.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(23,8): error TS2300: Duplicate identifier 'C'.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(27,8): error TS2300: Duplicate identifier 'D'.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(31,8): error TS2300: Duplicate identifier 'E'.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(37,8): error TS2300: Duplicate identifier 'C'.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(41,8): error TS2300: Duplicate identifier 'D'.
+tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts(45,8): error TS2300: Duplicate identifier 'E'.
+
+
+==== tests/cases/conformance/basicStructs/structNotAllowIndexMember.ts (29 errors) ====
+    // no indexers are allowed
+    struct S {
+    	[x: string]: string;
+    	~
+!!! error TS8016: A struct cannot have index members.
+    	[y: number]: string;
+    	~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    // private indexers not allowed
+    
+    struct C {
+           ~
+!!! error TS2300: Duplicate identifier 'C'.
+    	private [x: string]: string;
+    	~~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	        ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    struct D {
+           ~
+!!! error TS2300: Duplicate identifier 'D'.
+    	private [x: number]: string;
+    	~~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	        ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    struct E<T> {
+           ~
+!!! error TS2300: Duplicate identifier 'E'.
+    	private [x: string]: T;
+    	~~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	        ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    // public indexers not allowed
+    
+    struct C {
+           ~
+!!! error TS2300: Duplicate identifier 'C'.
+    	public [x: string]: string;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    struct D {
+           ~
+!!! error TS2300: Duplicate identifier 'D'.
+    	public [x: number]: string;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    struct E<T> {
+           ~
+!!! error TS2300: Duplicate identifier 'E'.
+    	public [x: string]: T;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    // static indexers not allowed
+    
+    struct C {
+           ~
+!!! error TS2300: Duplicate identifier 'C'.
+    	static [x: string]: string;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    struct D {
+           ~
+!!! error TS2300: Duplicate identifier 'D'.
+    	static [x: number]: string;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    
+    struct E<T> {
+           ~
+!!! error TS2300: Duplicate identifier 'E'.
+    	static [x: string]: T;
+    	~~~~~~
+!!! error TS1145: Modifiers not permitted on index signature members.
+    	       ~
+!!! error TS8016: A struct cannot have index members.
+    }
+    

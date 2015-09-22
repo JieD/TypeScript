@@ -57,11 +57,12 @@ var NonGeneric;
             _ctor.call(obj ,a, b);
             return obj;
         }
+        C._TO = _C;
         /* get y() {
             return 1;
         }
         set y(v) { } */
-        C.prototype.fn = function () {
+        _C.prototype.fn = function () {
             return this;
         };
         return C;
@@ -85,11 +86,12 @@ var Generic;
             _ctor.call(obj ,a, b);
             return obj;
         }
+        C._TO = _C;
         /* get y() {
             return null;
         }
         set y(v: U) { } */
-        C.prototype.fn = function () {
+        _C.prototype.fn = function () {
             return this;
         };
         return C;

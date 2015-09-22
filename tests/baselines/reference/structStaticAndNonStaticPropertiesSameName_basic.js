@@ -21,9 +21,10 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
-    C.prototype.f = function () {
+    C._TO = _C;
+    _C.prototype.f = function () {
     };
-    C.f = function () {
+    _C.f = function () {
     };
     return C;
 })();

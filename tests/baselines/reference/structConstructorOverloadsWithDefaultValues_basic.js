@@ -35,6 +35,7 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
+    C._TO = _C;
     return C;
 })();
 var C1 = (function () {
@@ -49,6 +50,7 @@ var C1 = (function () {
         _ctor.call(obj ,x);
         return obj;
     }
+    C1._TO = _C1;
     return C1;
 })();
 var D = (function () {
@@ -62,5 +64,6 @@ var D = (function () {
         _ctor.call(obj);
         return obj;
     }
+    D._TO = _D;
     return D;
 })();

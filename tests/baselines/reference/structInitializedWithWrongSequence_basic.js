@@ -24,6 +24,7 @@ var Person = (function () {
         _ctor.call(obj ,name, age);
         return obj;
     }
+    Person._TO = _Person;
     return Person;
 })();
 var john = new Person("John", 25); // ok

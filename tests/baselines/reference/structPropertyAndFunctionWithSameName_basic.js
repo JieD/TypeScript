@@ -23,7 +23,8 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
-    C.prototype.x = function () {
+    C._TO = _C;
+    _C.prototype.x = function () {
         return 1;
     };
     return C;
@@ -39,7 +40,8 @@ var D = (function () {
         _ctor.call(obj);
         return obj;
     }
-    D.prototype.x = function (v) {
+    D._TO = _D;
+    _D.prototype.x = function (v) {
     }; // error
     return D;
 })();

@@ -1,12 +1,12 @@
 tests/cases/compiler/protectedMembers.ts(86,5): error TS1089: 'protected' modifier cannot appear on a constructor declaration.
-tests/cases/compiler/protectedMembers.ts(40,1): error TS8011: Property 'x' is protected and only accessible within struct 'C1' and its substructs.
-tests/cases/compiler/protectedMembers.ts(41,1): error TS8011: Property 'f' is protected and only accessible within struct 'C1' and its substructs.
-tests/cases/compiler/protectedMembers.ts(42,1): error TS8011: Property 'sx' is protected and only accessible within struct 'C1' and its substructs.
-tests/cases/compiler/protectedMembers.ts(43,1): error TS8011: Property 'sf' is protected and only accessible within struct 'C1' and its substructs.
-tests/cases/compiler/protectedMembers.ts(46,1): error TS8011: Property 'x' is protected and only accessible within struct 'C1' and its substructs.
-tests/cases/compiler/protectedMembers.ts(47,1): error TS8011: Property 'f' is protected and only accessible within struct 'C2' and its substructs.
-tests/cases/compiler/protectedMembers.ts(48,1): error TS8011: Property 'sx' is protected and only accessible within struct 'C1' and its substructs.
-tests/cases/compiler/protectedMembers.ts(49,1): error TS8011: Property 'sf' is protected and only accessible within struct 'C2' and its substructs.
+tests/cases/compiler/protectedMembers.ts(40,1): error TS2445: Property 'x' is protected and only accessible within class 'C1' and its subclasses.
+tests/cases/compiler/protectedMembers.ts(41,1): error TS2445: Property 'f' is protected and only accessible within class 'C1' and its subclasses.
+tests/cases/compiler/protectedMembers.ts(42,1): error TS2445: Property 'sx' is protected and only accessible within class 'C1' and its subclasses.
+tests/cases/compiler/protectedMembers.ts(43,1): error TS2445: Property 'sf' is protected and only accessible within class 'C1' and its subclasses.
+tests/cases/compiler/protectedMembers.ts(46,1): error TS2445: Property 'x' is protected and only accessible within class 'C1' and its subclasses.
+tests/cases/compiler/protectedMembers.ts(47,1): error TS2445: Property 'f' is protected and only accessible within class 'C2' and its subclasses.
+tests/cases/compiler/protectedMembers.ts(48,1): error TS2445: Property 'sx' is protected and only accessible within class 'C1' and its subclasses.
+tests/cases/compiler/protectedMembers.ts(49,1): error TS2445: Property 'sf' is protected and only accessible within class 'C2' and its subclasses.
 tests/cases/compiler/protectedMembers.ts(68,9): error TS2446: Property 'x' is protected and only accessible through an instance of class 'C'.
 tests/cases/compiler/protectedMembers.ts(69,9): error TS2446: Property 'x' is protected and only accessible through an instance of class 'C'.
 tests/cases/compiler/protectedMembers.ts(98,1): error TS2322: Type 'B1' is not assignable to type 'A1':
@@ -59,30 +59,30 @@ tests/cases/compiler/protectedMembers.ts(112,7): error TS2416: Class 'B3' incorr
     // All of these should be errors
     c1.x;
     ~~~~
-!!! error TS8011: Property 'x' is protected and only accessible within struct 'C1' and its substructs.
+!!! error TS2445: Property 'x' is protected and only accessible within class 'C1' and its subclasses.
     c1.f();
     ~~~~
-!!! error TS8011: Property 'f' is protected and only accessible within struct 'C1' and its substructs.
+!!! error TS2445: Property 'f' is protected and only accessible within class 'C1' and its subclasses.
     C1.sx;
     ~~~~~
-!!! error TS8011: Property 'sx' is protected and only accessible within struct 'C1' and its substructs.
+!!! error TS2445: Property 'sx' is protected and only accessible within class 'C1' and its subclasses.
     C1.sf();
     ~~~~~
-!!! error TS8011: Property 'sf' is protected and only accessible within struct 'C1' and its substructs.
+!!! error TS2445: Property 'sf' is protected and only accessible within class 'C1' and its subclasses.
     
     // All of these should be errors
     c2.x;
     ~~~~
-!!! error TS8011: Property 'x' is protected and only accessible within struct 'C1' and its substructs.
+!!! error TS2445: Property 'x' is protected and only accessible within class 'C1' and its subclasses.
     c2.f();
     ~~~~
-!!! error TS8011: Property 'f' is protected and only accessible within struct 'C2' and its substructs.
+!!! error TS2445: Property 'f' is protected and only accessible within class 'C2' and its subclasses.
     C2.sx;
     ~~~~~
-!!! error TS8011: Property 'sx' is protected and only accessible within struct 'C1' and its substructs.
+!!! error TS2445: Property 'sx' is protected and only accessible within class 'C1' and its subclasses.
     C2.sf();
     ~~~~~
-!!! error TS8011: Property 'sf' is protected and only accessible within struct 'C2' and its substructs.
+!!! error TS2445: Property 'sf' is protected and only accessible within class 'C2' and its subclasses.
     
     // All of these should be ok
     c3.x;

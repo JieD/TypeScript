@@ -18,6 +18,7 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
+    C._TO = _C;
     C.foo = this; // error, 'this' cannot be referenced in a static property initializer.
     return C;
 })();
@@ -31,6 +32,7 @@ var C2 = (function () {
         _ctor.call(obj);
         return obj;
     }
+    C2._TO = _C2;
     C2.foo = this; // error
     return C2;
 })();

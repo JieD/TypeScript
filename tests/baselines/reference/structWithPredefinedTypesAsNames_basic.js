@@ -18,6 +18,7 @@ var any = (function () {
         _ctor.call(obj);
         return obj;
     }
+    any._TO = _any;
     return any;
 })();
 var number = (function () {
@@ -30,6 +31,7 @@ var number = (function () {
         _ctor.call(obj);
         return obj;
     }
+    number._TO = _number;
     return number;
 })();
 var boolean = (function () {
@@ -42,6 +44,7 @@ var boolean = (function () {
         _ctor.call(obj);
         return obj;
     }
+    boolean._TO = _boolean;
     return boolean;
 })();
 var string = (function () {
@@ -54,5 +57,6 @@ var string = (function () {
         _ctor.call(obj);
         return obj;
     }
+    string._TO = _string;
     return string;
 })();

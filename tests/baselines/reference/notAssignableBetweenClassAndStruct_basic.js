@@ -46,6 +46,7 @@ var Point2 = (function () {
         _ctor.call(obj ,x, y);
         return obj;
     }
+    Point2._TO = _Point2;
     return Point2;
 })();
 var sp = new Point2(2, 2);

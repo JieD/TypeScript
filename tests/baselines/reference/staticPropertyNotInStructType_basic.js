@@ -63,7 +63,8 @@ var NonGeneric;
             _ctor.call(obj ,a, b);
             return obj;
         }
-        C.prototype.fn = function () {
+        C._TO = _C;
+        _C.prototype.fn = function () {
             return this;
         };
         return C;
@@ -98,7 +99,8 @@ var Generic;
             _ctor.call(obj ,a, b);
             return obj;
         }
-        C.prototype.fn = function () {
+        C._TO = _C;
+        _C.prototype.fn = function () {
             return this;
         };
         return C;

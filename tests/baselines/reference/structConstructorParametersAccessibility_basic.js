@@ -33,6 +33,7 @@ var C1 = (function () {
         _ctor.call(obj ,x);
         return obj;
     }
+    C1._TO = _C1;
     return C1;
 })();
 var c1;
@@ -48,6 +49,7 @@ var C2 = (function () {
         _ctor.call(obj ,p);
         return obj;
     }
+    C2._TO = _C2;
     return C2;
 })();
 var c2;
@@ -63,6 +65,7 @@ var C3 = (function () {
         _ctor.call(obj ,p);
         return obj;
     }
+    C3._TO = _C3;
     return C3;
 })();
 var c3;

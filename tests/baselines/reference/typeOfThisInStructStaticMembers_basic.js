@@ -50,7 +50,8 @@ var C = (function () {
         _ctor.call(obj ,x);
         return obj;
     }
-    C.bar = function () {
+    C._TO = _C;
+    _C.bar = function () {
         // type of this is the constructor function type
         var t = this;
         return this;
@@ -72,7 +73,8 @@ var C2 = (function () {
         _ctor.call(obj ,x);
         return obj;
     }
-    C2.bar = function () {
+    C2._TO = _C2;
+    _C2.bar = function () {
         // type of this is the constructor function type
         var t = this;
         return this;

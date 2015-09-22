@@ -24,6 +24,7 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
+    C._TO = _C;
     return C;
 })();
 var M;
@@ -39,6 +40,7 @@ var M;
             _ctor.call(obj);
             return obj;
         }
+        D._TO = _D;
         return D;
     })();
 })(M || (M = {}));

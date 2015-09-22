@@ -20,6 +20,7 @@ var C = (function () {
         _ctor.call(obj);
         return obj;
     }
+    C._TO = _C;
     C.x = 1;
     return C;
 })();

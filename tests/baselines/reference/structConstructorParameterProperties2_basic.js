@@ -44,6 +44,7 @@ var C = (function () {
         _ctor.call(obj ,y);
         return obj;
     }
+    C._TO = _C;
     return C;
 })();
 var c;
@@ -60,6 +61,7 @@ var D = (function () {
         _ctor.call(obj ,y);
         return obj;
     }
+    D._TO = _D;
     return D;
 })();
 var d;
@@ -76,6 +78,7 @@ var E = (function () {
         _ctor.call(obj ,y);
         return obj;
     }
+    E._TO = _E;
     return E;
 })();
 var e;
@@ -92,6 +95,7 @@ var F = (function () {
         _ctor.call(obj ,y);
         return obj;
     }
+    F._TO = _F;
     return F;
 })();
 var f;

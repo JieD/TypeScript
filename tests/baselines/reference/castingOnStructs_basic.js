@@ -28,6 +28,7 @@ var P1 = (function () {
         _ctor.call(obj);
         return obj;
     }
+    P1._TO = _P1;
     return P1;
 })();
 var P3 = (function () {
@@ -43,6 +44,7 @@ var P3 = (function () {
         _ctor.call(obj);
         return obj;
     }
+    P3._TO = _P3;
     return P3;
 })();
 var p1;
