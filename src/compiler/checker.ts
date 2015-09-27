@@ -5905,6 +5905,10 @@ module ts {
             // and the right operand to be of type Any or a subtype of the 'Function' interface type. 
             // The result is always of the Boolean primitive type.
             // NOTE: do not raise error if leftType is unknown as related error was already reported
+            if ((leftType.flags & TypeFlags.Struct) && (leftType.flags & TypeFlags.Struct)) {
+	            error(node, Diagnostics.instanceof_operator_not_work_with_struct);
+	            return booleanType;
+            }
             if (leftType !== unknownType && !isTypeAnyOrObjectOrTypeParameter(leftType)) {
                 error(node.left, Diagnostics.The_left_hand_side_of_an_instanceof_expression_must_be_of_type_any_an_object_type_or_a_type_parameter);
             }

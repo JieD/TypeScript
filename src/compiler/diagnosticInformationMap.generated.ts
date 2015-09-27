@@ -422,5 +422,6 @@ module ts {
         struct_constuctor_parameter_cannot_be_optional: { code: 8019, category: DiagnosticCategory.Error, key: "Unexpected token. Parameter of struct constructor cannot be optional." },
         derived_struct_0_cannot_override_base_struct_1_member_variable_2: { code: 8020, category: DiagnosticCategory.Error, key: "Derived Struct '{0}' cannot override base struct '{1}' member variable '{2}'." },
         struct_array_index_out_of_bound: { code: 8021, category: DiagnosticCategory.Error, key: "Struct Array index out of bound. Length of struct array '{0}' is '{1}'." },
+        instanceof_operator_not_work_with_struct: { code: 8022, category: DiagnosticCategory.Error, key: "JavaScript instanceof operator does not work with struct." },
     };
 }

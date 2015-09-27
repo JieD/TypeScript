@@ -1,9 +1,9 @@
-tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts(34,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
-tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts(35,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
-tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts(36,33): error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
+tests/cases/conformance/structs/structInstanceofOperator.ts(34,19): error TS8022: JavaScript instanceof operator does not work with struct.
+tests/cases/conformance/structs/structInstanceofOperator.ts(35,19): error TS8022: JavaScript instanceof operator does not work with struct.
+tests/cases/conformance/structs/structInstanceofOperator.ts(36,19): error TS8022: JavaScript instanceof operator does not work with struct.
 
 
-==== tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts (3 errors) ====
+==== tests/cases/conformance/structs/structInstanceofOperator.ts (3 errors) ====
     // instanceof operator cannot applied to struct
     // all error
     
@@ -38,12 +38,12 @@ tests/cases/conformance/structs/Expressions/structInstanceofOperator.ts(36,33): 
     p3 = new P3(3,3,3);
     
     var r1: boolean = p1 instanceof P;
-                                    ~
-!!! error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
+                      ~~~~~~~~~~~~~~~
+!!! error TS8022: JavaScript instanceof operator does not work with struct.
     var r2: boolean = p2 instanceof P2;
-                                    ~~
-!!! error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
+                      ~~~~~~~~~~~~~~~~
+!!! error TS8022: JavaScript instanceof operator does not work with struct.
     var r3: boolean = p3 instanceof P3;
-                                    ~~
-!!! error TS2359: The right-hand side of an 'instanceof' expression must be of type 'any' or of a type assignable to the 'Function' interface type.
+                      ~~~~~~~~~~~~~~~~
+!!! error TS8022: JavaScript instanceof operator does not work with struct.
     
