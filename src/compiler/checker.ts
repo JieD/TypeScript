@@ -3230,10 +3230,6 @@ module ts {
 	        return checkTypeRelatedTo(source, target, assignableRelation, errorNode, chainedMessage, terminalMessage);
         }
 
-        function isTypeRelatedTo(source: Type, target: Type, relation: Map<boolean>): boolean {
-            return checkTypeRelatedTo(source, target, relation, /*errorNode*/ undefined, /*chainedMessage*/ undefined, /*terminalMessage*/ undefined);
-        }
-
         function isSignatureAssignableTo(source: Signature, target: Signature): boolean {
             var sourceType = getOrCreateTypeFromSignature(source);
             var targetType = getOrCreateTypeFromSignature(target);
@@ -3626,7 +3622,7 @@ module ts {
                                 }
                             }
                             else if (targetFlags & NodeFlags.Protected) {
-                                var sourceDeclaredInClass = sourceProp.parent && sourceProp.parent.flags & (SymbolFlags.Class | SymbolFlags.Struct);
+                                var sourceDeclaredInClass = sourceProp.parent && sourceProp.parent.flags & SymbolFlags.Class;
                                 var sourceClass = sourceDeclaredInClass ? <InterfaceType>getDeclaredTypeOfSymbol(sourceProp.parent) : undefined;
                                 var targetClass = <InterfaceType>getDeclaredTypeOfSymbol(targetProp.parent);
                                 if (!sourceClass || !hasBaseType(sourceClass, targetClass)) {
@@ -6855,10 +6851,6 @@ module ts {
             checkSourceElement(node.elementType);
         }
 
-	    function checkStructArrayType(node: StructArrayTypeNode) {
-		    checkSourceElement(node.elementType);
-	    }
-
         function checkTupleType(node: TupleTypeNode) {
             forEach(node.elementTypes, checkSourceElement);
         }
@@ -8246,8 +8238,6 @@ module ts {
                     return checkTypeLiteral(<TypeLiteralNode>node);
                 case SyntaxKind.ArrayType:
                     return checkArrayType(<ArrayTypeNode>node);
-	            case SyntaxKind.StructArrayType:
-		            return checkStructArrayType(<StructArrayTypeNode>node);
                 case SyntaxKind.TupleType:
                     return checkTupleType(<TupleTypeNode>node);
                 case SyntaxKind.UnionType:
