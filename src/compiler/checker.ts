@@ -6232,7 +6232,7 @@ module ts {
 
             var leftType = checkExpression(node.left, contextualMapper);
             var rightType = checkExpression(node.right, contextualMapper);
-	        
+
 	        // if struct array initialized separately from its delcaration, impossible to access length information.
 	        // manually add initializer to such struct array varaibles by updating symbol table
 	        if (leftType && leftType.symbol && leftType.symbol.name === 'StructArray') {

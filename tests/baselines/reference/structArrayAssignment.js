@@ -78,7 +78,10 @@ var E = (function () {
     return E;
 })();
 var e;
-var structArr;
+var structArr = new // doc 6
+// If struct array members are assigned with values of incompatible type, type error will be issued.
+
+(5);
 structArr = new // doc 6
 // If struct array members are assigned with values of incompatible type, type error will be issued.
 
