@@ -5047,7 +5047,7 @@ module ts {
 		    var indexNode = indexedAccessNode.index;
 
 		    // reassign func to be StructArray
-		    // no position info since we artifacially add StructArray node
+		    // no position info since we artificially add StructArray node
 		    var func = <Identifier>new (getNodeConstructor(SyntaxKind.Identifier))();
 		    func.text = "StructArray";
 		    func.parent = parentNode;
@@ -6232,6 +6232,17 @@ module ts {
 
             var leftType = checkExpression(node.left, contextualMapper);
             var rightType = checkExpression(node.right, contextualMapper);
+	        
+	        // if struct array initialized separately from its delcaration, impossible to access length information.
+	        // manually add initializer to such struct array varaibles by updating symbol table
+	        if (leftType && leftType.symbol && leftType.symbol.name === 'StructArray') {
+		        var symbol: Symbol = getResolvedSymbol(<Identifier>node.left);
+		        var declaration: VariableDeclaration = <VariableDeclaration>(symbol.valueDeclaration);
+		        if (!declaration.initializer) {  // no initializer
+			        declaration.initializer = node.right;
+			        symbolLinks[symbol.id] = symbol;
+		        }
+	        }
 
             var splitedOp = splitAssignmentOp(operator);
 
